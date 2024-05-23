@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gp5/screens/patient_trials_screen/patient_trials_screen.dart';
-import 'package:flutter_gp5/widgets/custom_app_bar.dart';
-import 'package:flutter_gp5/widgets/custom_divider.dart';
+import 'package:flutter_gp5/screens/patient_trials/patient_trials_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -11,9 +9,14 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Home Screen',
+      appBar: AppBar(
+        title: const Text(
+          'Home Screen',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.teal.shade600,
+        centerTitle: true,
+        elevation: 4.00,
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -24,23 +27,23 @@ class HomeScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _buildTrialsButton(context),
-              const CustomDivider(
+              _customDivider(
                 thickness: _dividerThickness,
               ),
               // Add validation if the user is a doctor to see this button:
               // Add CreateTrial Button here:
               const Text("Create Trial"),
-              const CustomDivider(
+              _customDivider(
                 thickness: _dividerThickness,
               ),
               // Add Help Button here:
               const Text("Help"),
-              const CustomDivider(
+              _customDivider(
                 thickness: _dividerThickness,
               ),
               // Add Setting Button here:
               const Text("Setting"),
-              const CustomDivider(
+              _customDivider(
                 thickness: _dividerThickness,
               ),
               // Add Info Button here:
@@ -71,6 +74,23 @@ class HomeScreen extends StatelessWidget {
         ),
         textAlign: TextAlign.center,
       ),
+    );
+  }
+
+//Custom divider
+  Divider _customDivider({
+    double thickness = 0.0,
+    Color color = Colors.black,
+    double indent = 0.0,
+    double endIndent = 0.0,
+    double height = 0.0,
+  }) {
+    return Divider(
+      thickness: thickness,
+      color: color,
+      indent: indent,
+      endIndent: endIndent,
+      height: height,
     );
   }
 }
