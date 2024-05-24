@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_gp5/screens/doctor_trials/doctor_trials_button.dart';
 import 'package:flutter_gp5/screens/patient_trials/patient_trials_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
+  
   static const double _dividerThickness = 2.0;
+  static FirebaseAuth user = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +35,10 @@ class HomeScreen extends StatelessWidget {
               ),
               // Add validation if the user is a doctor to see this button:
               // Add CreateTrial Button here:
-              const Text("Create Trial"),
-              _customDivider(
-                thickness: _dividerThickness,
-              ),
+              _buildCreateTrialsButton(context),
+                _customDivider(
+                  thickness: _dividerThickness,
+                ),
               // Add Help Button here:
               const Text("Help"),
               _customDivider(
@@ -55,7 +58,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-//Patient Trials button
+  //Patient Trials button
   Widget _buildTrialsButton(BuildContext context) {
     return TextButton(
       onPressed: () {
@@ -71,6 +74,28 @@ class HomeScreen extends StatelessWidget {
           inherit: true,
           fontWeight: FontWeight.bold,
           color: Colors.deepPurple.shade900,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+//Doctor Trials button
+  Widget _buildCreateTrialsButton(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const DoctorTrialsScreen()),
+        );
+      },
+      child: Text(
+        'Create Trial',
+        style: TextStyle(
+          fontSize: 20,
+          inherit: true,
+          fontWeight: FontWeight.bold,
+          color: Colors.orange.shade600,
         ),
         textAlign: TextAlign.center,
       ),
