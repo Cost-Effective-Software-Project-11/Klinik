@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gp5/screens/patient_trials/patient_trials_screen.dart';
+import 'package:flutter_gp5/screens/settings/settings_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -42,7 +43,7 @@ class HomeScreen extends StatelessWidget {
                 thickness: _dividerThickness,
               ),
               // Add Setting Button here:
-              const Text("Setting"),
+              _buildSettingsButton(context),
               _customDivider(
                 thickness: _dividerThickness,
               ),
@@ -71,6 +72,27 @@ class HomeScreen extends StatelessWidget {
           inherit: true,
           fontWeight: FontWeight.bold,
           color: Colors.deepPurple.shade900,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+  //Settings button
+  Widget _buildSettingsButton(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const SettingsScreen()),
+        );
+      },
+      child: Text(
+        'Settings',
+        style: TextStyle(
+          fontSize: 20,
+          inherit: true,
+          fontWeight: FontWeight.bold,
+          color: Colors.green.shade900,
         ),
         textAlign: TextAlign.center,
       ),
