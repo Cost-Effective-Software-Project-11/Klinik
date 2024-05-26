@@ -115,15 +115,3 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-
-  class ButtonSettings {
-  final String text;
-  final TextStyle textStyle;
-  final Widget targetScreen;
-
-  ButtonSettings({
-    required this.text,
-    required this.textStyle,
-    required this.targetScreen,
-  });
-}
