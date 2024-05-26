@@ -37,53 +37,53 @@ class _PatientTrialsScreenState extends State<PatientTrialsScreen> {
       ),
       body: _isLoaded
           // If the data from the database has been loaded show this:
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: _trials.length,
-                      itemBuilder: (context, index) {
-                        final trial = _trials[index];
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  // This will redirect to a page where the selected trial will be started
-                                  builder: (context) => const HomeScreen(),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 16.0),
-                              decoration: BoxDecoration(
-                                color: Colors.teal.shade100,
-                                borderRadius: BorderRadius.circular(8.0),
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  //Create a list of widgets
+                  child: ListView.builder(
+                    itemCount: _trials.length,
+                    itemBuilder: (context, index) {
+                      final trial = _trials[index];
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InkWell(
+                          //Open the trial
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                // This will redirect to a page where the selected trial will be started
+                                builder: (context) => const HomeScreen(),
                               ),
-                              child: Center(
-                                child: Text(
-                                  trial.getName,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.teal.shade800,
-                                  ),
+                            );
+                          },
+                          //The trial info visualization
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                            decoration: BoxDecoration(
+                              color: Colors.teal.shade100,
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: ListTile(
+                              title: Text(
+                                trial.getName,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.teal.shade800,
                                 ),
                               ),
                             ),
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                      );
+                    },
                   ),
-                ],
-              ),
+                ),
+              ],
             )
           // If the data from the database has not been loaded show this:
           : const Center(child: CircularProgressIndicator()),
