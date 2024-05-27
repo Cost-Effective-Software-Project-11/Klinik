@@ -1,26 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_gp5/screens/doctor_trials/doctor_trials_button.dart';
+import 'package:flutter_gp5/screens/doctor_trials/doctor_trials_screen.dart';
 import 'package:flutter_gp5/screens/patient_trials/patient_trials_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
   
   static const double _dividerThickness = 2.0;
-  static FirebaseAuth user = FirebaseAuth.instance;
-
-  static Future<DocumentSnapshot<Map<String, dynamic>>> userDoc = FirebaseFirestore.instance
-          .collection('doctors')
-          .doc(user.currentUser?.uid)
-          .get();
-
-  Future<Map<String, dynamic>> processData() async {
-    DocumentSnapshot snapshot = await userDoc;
-    Map<String, dynamic> userData = snapshot.data() as Map<String, dynamic>;
-
-    return userData;
-  }
   
   @override
   Widget build(BuildContext context) {
@@ -46,17 +31,7 @@ class HomeScreen extends StatelessWidget {
               _customDivider(
                 thickness: _dividerThickness,
               ),
-              // Add validation if the user is a doctor to see this button:
-              FutureBuilder<Map<String, dynamic>>(
-                future: processData(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData && snapshot.data!['Doctor']) {
-                    return _buildCreateTrialsButton(context);
-                  } else {
-                    return Container();
-                  }
-                },
-              ),
+              _buildCreateTrialsButton(context),
               _customDivider(
                 thickness: _dividerThickness,
               ),
