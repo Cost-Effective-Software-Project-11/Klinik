@@ -56,7 +56,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-//Patient Trials button
   Widget _buildTrialsButton(BuildContext context) {
     return TextButton(
       onPressed: () {
@@ -77,7 +76,7 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-  //Settings button
+
   Widget _buildSettingsButton(BuildContext context) {
     return TextButton(
       onPressed: () {
