@@ -33,7 +33,6 @@ class DoctorTrialsScreen extends StatelessWidget {
                     subtitle: const Text('Trial description'),
                     trailing: ElevatedButton(
                       onPressed: () {
-                        // Create a PDF document
                         _createPDF();
                       },
                       style: ElevatedButton.styleFrom(
