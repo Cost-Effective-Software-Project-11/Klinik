@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gp5/screens/patient_trials/patient_trials_screen.dart';
+import 'package:flutter_gp5/screens/settings/settings_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -22,38 +23,39 @@ class HomeScreen extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black, width: 1.0),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildTrialsButton(context),
-            _customDivider(
-              thickness: _dividerThickness,
-            ),
-            // Add validation if the user is a doctor to see this button:
-            // Add CreateTrial Button here:
-            const Text("Create Trial"),
-            _customDivider(
-              thickness: _dividerThickness,
-            ),
-            // Add Help Button here:
-            const Text("Help"),
-            _customDivider(
-              thickness: _dividerThickness,
-            ),
-            // Add Setting Button here:
-            const Text("Setting"),
-            _customDivider(
-              thickness: _dividerThickness,
-            ),
-            // Add Info Button here:
-            const Text("Info"),
-          ],
+        child: Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildTrialsButton(context),
+              _customDivider(
+                thickness: _dividerThickness,
+              ),
+              // Add validation if the user is a doctor to see this button:
+              // Add CreateTrial Button here:
+              const Text("Create Trial"),
+              _customDivider(
+                thickness: _dividerThickness,
+              ),
+              // Add Help Button here:
+              const Text("Help"),
+              _customDivider(
+                thickness: _dividerThickness,
+              ),
+              // Add Setting Button here:
+              _buildSettingsButton(context),
+              _customDivider(
+                thickness: _dividerThickness,
+              ),
+              // Add Info Button here:
+              const Text("Info"),
+            ],
+          ),
         ),
       ),
     );
   }
 
-// Patient Trials button
   Widget _buildTrialsButton(BuildContext context) {
     return TextButton(
       onPressed: () {
@@ -75,7 +77,28 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-// Custom divider
+  Widget _buildSettingsButton(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const SettingsScreen()),
+        );
+      },
+      child: Text(
+        'Settings',
+        style: TextStyle(
+          fontSize: 20,
+          inherit: true,
+          fontWeight: FontWeight.bold,
+          color: Colors.green.shade900,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+//Custom divider
   Divider _customDivider({
     double thickness = 0.0,
     Color color = Colors.black,
