@@ -1,5 +1,5 @@
 enum QuestionEnum {
-  singleChoise,
-  multipleChoice,
-  openAnswer,
+  radioButton,
+  checkbox,
+  freeText,
 }
