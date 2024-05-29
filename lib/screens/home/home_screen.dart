@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
-<<<<<<< CreateЕxtensionОnBuildContext
-import 'package:flutter_gp5/extensions/build_context_extensions.dart';
-=======
 import 'package:flutter_gp5/screens/patient_trials/patient_trials_screen.dart';
 import 'package:flutter_gp5/screens/settings/settings_screen.dart';
->>>>>>> master
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
+  static const double _dividerThickness = 2.0;
+
   @override
   Widget build(BuildContext context) {
-    double containerWidth = context.widthPercentage(60); // 50% of screen width
-    double containerHeight = context.heightPercentage(30); // 30% of screen height
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -24,18 +19,6 @@ class HomeScreen extends StatelessWidget {
         centerTitle: true,
         elevation: 4.00,
       ),
-<<<<<<< CreateЕxtensionОnBuildContext
-      body: Center(
-        child: Container(
-          width: containerWidth,
-          height: containerHeight,
-          color: Colors.blue,
-          child: const Center(
-            child: Text(
-              '50% width, 30% height',
-              style: TextStyle(color: Colors.white),
-            ),
-=======
       body: Container(
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black, width: 1.0),
@@ -67,20 +50,12 @@ class HomeScreen extends StatelessWidget {
               // Add Info Button here:
               const Text("Info"),
             ],
->>>>>>> master
           ),
         ),
       ),
     );
   }
-}
 
-<<<<<<< CreateЕxtensionОnBuildContext
-void main() {
-  runApp(const MaterialApp(
-    home: HomeScreen(),
-  ));
-=======
   Widget _buildTrialsButton(BuildContext context) {
     return TextButton(
       onPressed: () {
@@ -139,5 +114,4 @@ void main() {
       height: height,
     );
   }
->>>>>>> master
 }

@@ -1,40 +1,20 @@
-// ignore_for_file: prefer_conditional_assignment
-
 import 'package:flutter/material.dart';
 
-class _MediaQueryCache {
-  static double? _screenWidth;
-  static double? _screenHeight;
+extension ContextExtention on BuildContext {
+  double get _width => MediaQuery.of(this).size.width;
+  double get _height => MediaQuery.of(this).size.height;
 
-  static double getScreenWidth(BuildContext context) {
-    if (_screenWidth == null) {
-      _screenWidth = MediaQuery.of(context).size.width;
-    }
-    return _screenWidth!;
+  double setWidth(double percent) {
+    final decimalPercentage = _getDecimalPercentage(percent);
+    return _width * decimalPercentage;
   }
 
-  static double getScreenHeight(BuildContext context) {
-    if (_screenHeight == null) {
-      _screenHeight = MediaQuery.of(context).size.height;
-    }
-    return _screenHeight!;
-  }
-}
-
-extension BuildContextExtensions on BuildContext {
-  double widthPercentage(double percentage) {
-    assert(percentage >= 0 && percentage <= 100);
-    double screenWidth = _MediaQueryCache.getScreenWidth(this);
-    return screenWidth * _getDecimalPercentage(percentage);
+  double setHight(double percent) {
+    final decimalPercentage = _getDecimalPercentage(percent);
+    return _height * decimalPercentage;
   }
 
-  double heightPercentage(double percentage) {
-    assert(percentage >= 0 && percentage <= 100);
-    double screenHeight = _MediaQueryCache.getScreenHeight(this);
-    return screenHeight * _getDecimalPercentage(percentage);
-  }
-
-  double _getDecimalPercentage(double percentage) {
-    return percentage / 100;
+  _getDecimalPercentage(double percent) {
+    return percent / 100;
   }
 }
