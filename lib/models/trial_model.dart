@@ -3,17 +3,20 @@ import 'package:flutter_gp5/models/question_model.dart';
 class TrialModel {
   String id;
   String name;
+  String description;
   List<QuestionModel> questions = [];
 
   TrialModel(
     this.id,
     this.name,
+    this.description,
     this.questions,
   );
 
   //Getters
   String get getId => id;
   String get getName => name;
+  String get getDescription => description;
   List<QuestionModel> get getAllQuestions => questions;
   int get questionsCount => questions.length;
 
@@ -24,6 +27,10 @@ class TrialModel {
 
   set setName(String name) {
     this.name = name;
+  }
+
+  set setDescription(String description) {
+    this.description = description;
   }
 
   set setSungleQuestion(QuestionModel question) {
@@ -39,6 +46,7 @@ class TrialModel {
     return {
       'id': id,
       'name': name,
+      'description': description,
       'questions': questions.map((question) => question.toJson()).toList(),
     };
   }
@@ -48,6 +56,7 @@ class TrialModel {
     return TrialModel(
       json['id'],
       json['name'],
+      json['description'],
       (json['questions'] as List<dynamic>)
           .map((questionJson) => QuestionModel.fromJson(questionJson))
           .toList(),
