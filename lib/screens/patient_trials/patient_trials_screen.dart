@@ -12,15 +12,13 @@ class PatientTrialsScreen extends StatefulWidget {
 }
 
 class _PatientTrialsScreenState extends State<PatientTrialsScreen> {
-  List<TrialModel> _trials = [];
-  bool _isLoaded = false;
+  late Future<List<TrialModel>> _trialsFuture;
 
   @override
   void initState() {
     super.initState();
-    // Here we have to get a collection of trials for this patient from the database
-    _trials = _getTrials();
-    _isLoaded = true;
+    // Fetch the collection of trials for this patient from the database asynchronously
+    _trialsFuture = _getTrials();
   }
 
   @override
@@ -33,18 +31,27 @@ class _PatientTrialsScreenState extends State<PatientTrialsScreen> {
         ),
         backgroundColor: Colors.teal.shade600,
         centerTitle: true,
-        elevation: 4.00,
+        elevation: 4.0,
       ),
-      body: _isLoaded
-          // If the data from the database has been loaded show this:
-          ? ListView.builder(
-              itemCount: _trials.length,
+      body: FutureBuilder<List<TrialModel>>(
+        future: _trialsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No trials available'));
+          } else {
+            final trials = snapshot.data!;
+            return ListView.builder(
+              itemCount: trials.length,
               itemBuilder: (context, index) {
-                final trial = _trials[index];
+                final trial = trials[index];
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: InkWell(
-                    //Open the trial
+                    // Open the trial
                     onTap: () {
                       Navigator.push(
                         context,
@@ -54,7 +61,7 @@ class _PatientTrialsScreenState extends State<PatientTrialsScreen> {
                         ),
                       );
                     },
-                    //The trial info visualization
+                    // The trial info visualization
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       decoration: BoxDecoration(
@@ -76,15 +83,19 @@ class _PatientTrialsScreenState extends State<PatientTrialsScreen> {
                   ),
                 );
               },
-            )
-          // If the data from the database has not been loaded show this:
-          : const Center(child: CircularProgressIndicator()),
+            );
+          }
+        },
+      ),
     );
   }
 
   // Test data
-  List<TrialModel> _getTrials() {
-    //One
+  Future<List<TrialModel>> _getTrials() async {
+    // Simulate network delay
+    await Future.delayed(const Duration(seconds: 2));
+
+    // One
     QuestionModel question_1_1 = QuestionModel(
         'Pain/stiffness during the day. How severe was your usual joint or muscle pain and/or stiffness overall during the day in the last 2 weeks?',
         [
@@ -96,7 +107,7 @@ class _PatientTrialsScreenState extends State<PatientTrialsScreen> {
         ],
         QuestionEnum.radioButton);
     QuestionModel question_1_2 = QuestionModel(
-        'Pain/stiffness during the night.How severe was your usual joint or muscle pain and/or stiffness overall during the night in the last 2 weeks?',
+        'Pain/stiffness during the night. How severe was your usual joint or muscle pain and/or stiffness overall during the night in the last 2 weeks?',
         [
           'Not at all',
           'Slightly',
@@ -111,7 +122,7 @@ class _PatientTrialsScreenState extends State<PatientTrialsScreen> {
         'This questionnaire is about your joint, back, neck, bone and muscle symptoms such as aches, pains and/or stiffness. Please focus on the particular health problem(s) for which you sought treatment from this service. For each question tick (x) one box to indicate which statement best describes you over the last 2 weeks.',
         [question_1_1, question_1_2]);
 
-    //Two
+    // Two
     QuestionModel question_2_1 = QuestionModel(
         'My back pain has spread down my leg(s) in the last 2 weeks',
         ['Yes', 'No'],
@@ -125,7 +136,8 @@ class _PatientTrialsScreenState extends State<PatientTrialsScreen> {
         'STarT BACK',
         'Thinking about the last 2 weeks tick your response to the following questions:',
         [question_2_1, question_2_2]);
-    //Three
+
+    // Three
     QuestionModel question_3_1 = QuestionModel(
         'Pain Intensity',
         [
@@ -153,19 +165,21 @@ class _PatientTrialsScreenState extends State<PatientTrialsScreen> {
         'THE OSWESTRY DISABILITY INDEX',
         'This questionnaire has been designed to give your therapists information as to how your back / leg pain has affected your ability to manage in everyday life. Please answer every question by placing a mark on the line that best describes your condition today. We realise you may feel that two of the statements may describe your condition, but please mark only the line which most closely describes your current condition.',
         [question_3_1, question_3_2]);
-    //Four
+
+    // Four
     QuestionModel question_4_1 = QuestionModel(
         'Describe your emotional state in a few sentences',
         [],
-        QuestionEnum.freeText);
+        QuestionEnum.inputText);
     QuestionModel question_4_2 = QuestionModel(
-        'Tell us about your last 2 weeks', [], QuestionEnum.freeText);
+        'Tell us about your last 2 weeks', [], QuestionEnum.inputText);
     TrialModel trial4 = TrialModel(
         '4',
         'Emotional well-being',
         'This questionnaire is about your Emotional well-being.',
         [question_4_1, question_4_2]);
-    //Five
+
+    // Five
     QuestionModel question_5_1 = QuestionModel(
         'First question',
         ['checkbox 1', 'checkbox 2', 'checkbox 3', 'checkbox 4'],
@@ -176,6 +190,7 @@ class _PatientTrialsScreenState extends State<PatientTrialsScreen> {
         QuestionEnum.checkbox);
     TrialModel trial5 = TrialModel('5', 'Example',
         'This questionnaire is an Example.', [question_5_1, question_5_2]);
+
     return [trial1, trial2, trial3, trial4, trial5];
   }
 }
