@@ -1,20 +1,20 @@
 import 'package:flutter_gp5/enums/question_enum.dart';
 
 class QuestionModel {
-  String questionText;
+  String text;
   List<String> answers = [];
   QuestionEnum type;
 
-  QuestionModel(this.questionText, this.answers, this.type);
+  QuestionModel(this.text, this.answers, this.type);
 
   //Getters
-  String get text => questionText;
+  String get getText => text;
   List<String> get allAnswers => answers;
   QuestionEnum get questionType => type;
 
   //Setters
   set setQuestionText(String text) {
-    questionText = text;
+    text = text;
   }
 
   set setAnswer(String answer) {
@@ -32,7 +32,7 @@ class QuestionModel {
 // Method to convert a Question instance to JSON
   Map<String, dynamic> toJson() {
     return {
-      'questionText': questionText,
+      'questionText': text,
       'answers': answers,
       'type': type.toString().split('.').last,
     };
