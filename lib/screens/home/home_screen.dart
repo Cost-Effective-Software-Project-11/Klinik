@@ -46,7 +46,7 @@ class HomeScreen extends StatelessWidget {
               thickness: _dividerThickness,
             ),
             // Add Setting Button here:
-            const Text("Setting", textAlign: TextAlign.center),
+            _buildSettingsButton(context),
             _customDivider(
               thickness: _dividerThickness,
             ),
