@@ -33,22 +33,25 @@ class HomeScreen extends StatelessWidget {
             ),
             // Add validation if the user is a doctor to see this button:
             // Add CreateTrial Button here:
-            const Text("Create Trial"),
+            const Text(
+              "Create Trial",
+              textAlign: TextAlign.center,
+            ),
             _customDivider(
               thickness: _dividerThickness,
             ),
             // Add Help Button here:
-            const Text("Help"),
+            const Text("Help", textAlign: TextAlign.center),
             _customDivider(
               thickness: _dividerThickness,
             ),
             // Add Setting Button here:
-            const Text("Setting"),
+            const Text("Setting", textAlign: TextAlign.center),
             _customDivider(
               thickness: _dividerThickness,
             ),
             // Add Info Button here:
-            const Text("Info"),
+            const Text("Info", textAlign: TextAlign.center),
           ],
         ),
       ),
