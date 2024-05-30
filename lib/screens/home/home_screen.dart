@@ -22,34 +22,33 @@ class HomeScreen extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black, width: 1.0),
         ),
-        child: Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildTrialsButton(context),
-              _customDivider(
-                thickness: _dividerThickness,
-              ),
-              // Add validation if the user is a doctor to see this button:
-              // Add CreateTrial Button here:
-              const Text("Create Trial"),
-              _customDivider(
-                thickness: _dividerThickness,
-              ),
-              // Add Help Button here:
-              const Text("Help"),
-              _customDivider(
-                thickness: _dividerThickness,
-              ),
-              // Add Setting Button here:
-              const Text("Setting"),
-              _customDivider(
-                thickness: _dividerThickness,
-              ),
-              // Add Info Button here:
-              const Text("Info"),
-            ],
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildTrialsButton(context),
+            _customDivider(
+              thickness: _dividerThickness,
+            ),
+            // Add validation if the user is a doctor to see this button:
+            // Add CreateTrial Button here:
+            const Text("Create Trial"),
+            _customDivider(
+              thickness: _dividerThickness,
+            ),
+            // Add Help Button here:
+            const Text("Help"),
+            _customDivider(
+              thickness: _dividerThickness,
+            ),
+            // Add Setting Button here:
+            const Text("Setting"),
+            _customDivider(
+              thickness: _dividerThickness,
+            ),
+            // Add Info Button here:
+            const Text("Info"),
+          ],
         ),
       ),
     );
