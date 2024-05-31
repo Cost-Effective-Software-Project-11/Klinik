@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gp5/screens/create_trials/create_trials_screen.dart';
 import 'package:flutter_gp5/screens/patient_trials/patient_trials_screen.dart';
 import 'package:flutter_gp5/screens/settings/settings_screen.dart';
 
@@ -32,11 +33,7 @@ class HomeScreen extends StatelessWidget {
               thickness: _dividerThickness,
             ),
             // Add validation if the user is a doctor to see this button:
-            // Add CreateTrial Button here:
-            const Text(
-              "Create Trial",
-              textAlign: TextAlign.center,
-            ),
+            _buildCreateTrialButton(context),
             _customDivider(
               thickness: _dividerThickness,
             ),
@@ -94,6 +91,27 @@ class HomeScreen extends StatelessWidget {
           inherit: true,
           fontWeight: FontWeight.bold,
           color: Colors.green.shade900,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  Widget _buildCreateTrialButton(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const CreateTrialsScreen()),
+        );
+      },
+      child: Text(
+        'Create Trial',
+        style: TextStyle(
+          fontSize: 20,
+          inherit: true,
+          fontWeight: FontWeight.bold,
+          color: Colors.blue.shade900,
         ),
         textAlign: TextAlign.center,
       ),
