@@ -1,7 +1,4 @@
-import 'dart:convert';
-import 'dart:html';
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 class CreateTrialsScreen extends StatelessWidget {
   const CreateTrialsScreen({super.key});
@@ -14,14 +11,14 @@ class CreateTrialsScreen extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.lightBlue.shade600,
       ),
-      body: Expanded(
-      child: Column(
+      body: Column(
         children: [
           Container(
             padding: const EdgeInsets.all(16.0),
+            color: Colors.white,
             child: const Text('Doctor name'),
           ),
-          Expanded(
+          Flexible(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView.builder(
@@ -33,7 +30,7 @@ class CreateTrialsScreen extends StatelessWidget {
                     subtitle: const Text('Trial description'),
                     trailing: ElevatedButton(
                       onPressed: () {
-                        _createPDF();
+                        // Generate PDF
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.teal.shade200,
@@ -61,29 +58,6 @@ class CreateTrialsScreen extends StatelessWidget {
           ),
         ],
       ),
-    ),
-
     );
   }
 }
-
-Future<void> _createPDF() async {
-    //Create a PDF document.
-    PdfDocument document = PdfDocument();
-    //Add a page and draw text
-    document.pages.add().graphics.drawString(
-        'Hello World!', PdfStandardFont(PdfFontFamily.helvetica, 20),
-        brush: PdfSolidBrush(PdfColor(0, 0, 0)),
-        bounds: const Rect.fromLTWH(20, 60, 150, 30));    
-    //Save the document
-    List<int> bytes = await document.save();
-    //Dispose the document
-    document.dispose();
-
-    //Download the output file
-    AnchorElement(
-        href:
-            "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(bytes)}")
-      ..setAttribute("download", "output.pdf")
-      ..click();
- }
