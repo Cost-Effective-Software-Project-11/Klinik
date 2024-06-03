@@ -1,5 +1,13 @@
+import 'package:authentication_repository/authentication_repository.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gp5/screens/home/home_screen.dart';
+import 'package:flutter_gp5/screens/auth/login-screen.dart';
+import 'package:flutter_gp5/screens/auth/signup-screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gp5/authentication/authentication.dart';
+import 'package:flutter_gp5/authentication/bloc/authentication_bloc.dart';
+import 'package:user_repository/user_repository.dart';
 import 'package:flutter_gp5/screens/auth/login-screen.dart';
 import 'package:flutter_gp5/screens/auth/signup-screen.dart';
 
@@ -12,23 +20,46 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    // Mock authentication state
-    bool isLoggedIn = false; // Change this
-
-    return MaterialApp(
-      title: 'GP5',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return RepositoryProvider<AuthenticationRepository>(
+      create: (context) => AuthenticationRepository(),
+      child: RepositoryProvider<UserRepository>(
+        create: (context) => UserRepository(),
+        child: BlocProvider<AuthenticationBloc>(
+          create: (context) => AuthenticationBloc(
+            authenticationRepository: context.read<AuthenticationRepository>(),
+            userRepository: context.read<UserRepository>(),
+          ),
+          child: MaterialApp(
+            title: 'GP5',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+              useMaterial3: true,
+            ),
+            home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+              builder: (context, state) {
+                // Decide initial route based on authentication state
+                String initialRoute = state.status == AuthenticationStatus.authenticated ? '/' : '/login';
+                return Navigator(
+                  initialRoute: initialRoute,
+                  onGenerateRoute: (RouteSettings settings) {
+                    switch (settings.name) {
+                      case '/':
+                        return MaterialPageRoute(builder: (_) => const HomeScreen());
+                      case '/login':
+                        return MaterialPageRoute(builder: (_) => const LoginScreen());
+                      case '/signup':
+                        return MaterialPageRoute(builder: (_) => const SignupScreen());
+                      default:
+                        return MaterialPageRoute(builder: (_) => const LoginScreen());
+                    }
+                  },
+                );
+              },
+            ),
+          ),
+        ),
       ),
-      initialRoute: isLoggedIn ? '/' : '/signup',
-      routes: {
-        '/': (context) => const HomeScreen(),
-        '/login': (context) => const LoginScreen(),
-        '/signup': (context) => const SignupScreen(),
-      },
     );
   }
 }
