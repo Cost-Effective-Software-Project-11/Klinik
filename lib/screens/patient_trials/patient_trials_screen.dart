@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gp5/enums/question_enum.dart';
 import 'package:flutter_gp5/models/question_model.dart';
 import 'package:flutter_gp5/models/trial_model.dart';
-import 'package:flutter_gp5/screens/home/home_screen.dart';
+import 'package:flutter_gp5/screens/patient_trials/trial_detail_screen.dart';
 
 class PatientTrialsScreen extends StatefulWidget {
   const PatientTrialsScreen({super.key});
@@ -57,7 +57,10 @@ class _PatientTrialsScreenState extends State<PatientTrialsScreen> {
                         context,
                         MaterialPageRoute(
                           // This will redirect to a page where the selected trial will be started
-                          builder: (context) => const HomeScreen(),
+                          builder: (context) => TrialDetailScreen(
+                            trial: trial,
+                            userId: 'test',
+                          ),
                         ),
                       );
                     },
@@ -191,6 +194,17 @@ class _PatientTrialsScreenState extends State<PatientTrialsScreen> {
     TrialModel trial5 = TrialModel('5', 'Example',
         'This questionnaire is an Example.', [question_5_1, question_5_2]);
 
-    return [trial1, trial2, trial3, trial4, trial5];
+    return [
+      trial1,
+      trial2,
+      trial3,
+      trial4,
+      trial5,
+      trial1,
+      trial2,
+      trial3,
+      trial4,
+      trial5
+    ];
   }
 }
