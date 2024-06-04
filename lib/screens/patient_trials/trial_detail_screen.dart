@@ -77,7 +77,7 @@ class _TrialDetailScreenState extends State<TrialDetailScreen> {
   // Private method to submit the trial and navigate to the completion screen
   void _submitTrial() {
     final questionsAndAnswers =
-        widget.trial.questions.asMap().entries.map((entry) {
+        widget.trial.getAllQuestions.asMap().entries.map((entry) {
       final index = entry.key;
       final question = entry.value;
       final answer = _answers[index];
@@ -133,7 +133,7 @@ class _TrialDetailScreenState extends State<TrialDetailScreen> {
         ),
         const SizedBox(height: 16.0),
         Text(
-          widget.trial.description,
+          widget.trial.getDescription,
           style: const TextStyle(fontSize: 16.0),
         ),
         const SizedBox(height: 16.0),
@@ -149,18 +149,18 @@ class _TrialDetailScreenState extends State<TrialDetailScreen> {
 
   // Widget to display the current question
   Widget _buildQuestion() {
-    final question = widget.trial.questions[_currentQuestionIndex];
+    final question = widget.trial.getAllQuestions[_currentQuestionIndex];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         //Display the current question number and all questions count
         Text(
-          'Question ${_currentQuestionIndex + 1}/${widget.trial.questions.length}',
+          'Question ${_currentQuestionIndex + 1}/${widget.trial.getAllQuestions.length}',
           style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16.0),
         Text(
-          question.text,
+          question.getText,
           style: const TextStyle(fontSize: 16.0),
         ),
         const SizedBox(height: 16.0),
@@ -171,7 +171,7 @@ class _TrialDetailScreenState extends State<TrialDetailScreen> {
           child: ElevatedButton(
             onPressed: _nextQuestion,
             child: Text(
-                _currentQuestionIndex < widget.trial.questions.length - 1
+                _currentQuestionIndex < widget.trial.getAllQuestions.length - 1
                     ? 'Next Question'
                     : 'Submit'),
           ),
@@ -182,7 +182,7 @@ class _TrialDetailScreenState extends State<TrialDetailScreen> {
 
   // Widget to display the appropriate input widget based on the question type
   Widget _buildQuestionWidget(QuestionModel question) {
-    if (question.type == QuestionEnum.inputText) {
+    if (question.getQuestionType == QuestionEnum.inputText) {
       return TextField(
         controller: _textEditingController,
         keyboardAppearance: Brightness.dark,
@@ -191,9 +191,9 @@ class _TrialDetailScreenState extends State<TrialDetailScreen> {
         keyboardType: TextInputType.multiline,
         onChanged: (value) => _answerQuestion(value),
       );
-    } else if (question.type == QuestionEnum.radioButton) {
+    } else if (question.getQuestionType == QuestionEnum.radioButton) {
       return Column(
-        children: question.allAnswers
+        children: question.getAllAnswers
             .map((option) => RadioListTile<String>(
                   title: Text(option),
                   value: option,
@@ -204,9 +204,9 @@ class _TrialDetailScreenState extends State<TrialDetailScreen> {
                 ))
             .toList(),
       );
-    } else if (question.type == QuestionEnum.checkbox) {
+    } else if (question.getQuestionType == QuestionEnum.checkbox) {
       return Column(
-        children: question.allAnswers
+        children: question.getAllAnswers
             .map((option) => CheckboxListTile(
                   title: Text(option),
                   value: _answers[_currentQuestionIndex]?.contains(option) ??

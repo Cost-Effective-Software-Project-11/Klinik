@@ -31,7 +31,7 @@ class TrialUserModel {
     questionsAndAnswers.add(result);
   }
 
-// Method to convert a TrialModel instance to JSON
+// Method to convert a TrialUserModel instance to JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -41,7 +41,7 @@ class TrialUserModel {
     };
   }
 
-  // Method to create a TrialModel instance from JSON
+  // Method to create a TrialUserModel instance from JSON
   factory TrialUserModel.fromJson(Map<String, dynamic> json) {
     return TrialUserModel(
       json['id'],
