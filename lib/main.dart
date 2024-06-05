@@ -1,15 +1,11 @@
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gp5/screens/home/home_screen.dart';
-import 'package:flutter_gp5/screens/auth/login-screen.dart';
-import 'package:flutter_gp5/screens/auth/signup-screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gp5/authentication/authentication.dart';
-import 'package:flutter_gp5/authentication/bloc/authentication_bloc.dart';
 import 'package:user_repository/user_repository.dart';
-import 'package:flutter_gp5/screens/auth/login-screen.dart';
-import 'package:flutter_gp5/screens/auth/signup-screen.dart';
+import 'package:flutter_gp5/authentication/bloc/authentication_bloc.dart';
+import 'package:flutter_gp5/screens/home/home_screen.dart';
+import 'package:flutter_gp5/screens/auth/login/bloc/login_screen.dart';
+import 'package:flutter_gp5/screens/auth/register/bloc/signup_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,41 +16,44 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider<AuthenticationRepository>(
-      create: (context) => AuthenticationRepository(),
-      child: RepositoryProvider<UserRepository>(
-        create: (context) => UserRepository(),
-        child: BlocProvider<AuthenticationBloc>(
-          create: (context) => AuthenticationBloc(
-            authenticationRepository: context.read<AuthenticationRepository>(),
-            userRepository: context.read<UserRepository>(),
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<AuthenticationRepository>(
+          create: (context) => AuthenticationRepository(),
+        ),
+        RepositoryProvider<UserRepository>(
+          create: (context) => UserRepository(),
+        ),
+      ],
+      child: BlocProvider<AuthenticationBloc>(
+        create: (context) => createAuthenticationBloc(context),
+        child: MaterialApp(
+          title: 'GP5',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
           ),
-          child: MaterialApp(
-            title: 'GP5',
-            debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-              useMaterial3: true,
-            ),
-            home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-              builder: (context, state) {
-                // Decide initial route based on authentication state
-                String initialRoute = state.status == AuthenticationStatus.authenticated ? '/' : '/login';
-                return Navigator(
-                  initialRoute: initialRoute,
-                  onGenerateRoute: (RouteSettings settings) {
-                    switch (settings.name) {
-                      case '/':
-                        return MaterialPageRoute(builder: (_) => const HomeScreen());
-                      case '/login':
-                        return MaterialPageRoute(builder: (_) => const LoginScreen());
-                      case '/signup':
-                        return MaterialPageRoute(builder: (_) => const SignupScreen());
-                      default:
-                        return MaterialPageRoute(builder: (_) => const LoginScreen());
-                    }
-                  },
-                );
+          home: BlocListener<AuthenticationBloc, AuthenticationState>(
+            listener: (context, state) {
+              if (state.status == AuthenticationStatus.authenticated) {
+                Navigator.of(context).pushReplacementNamed('/');
+              } else {
+                Navigator.of(context).pushReplacementNamed('/login');
+              }
+            },
+            child: Navigator(
+              initialRoute: '/login',
+              onGenerateRoute: (RouteSettings settings) {
+                switch (settings.name) {
+                  case '/':
+                    return MaterialPageRoute(builder: (_) => const HomeScreen());
+                  case '/login':
+                    return MaterialPageRoute(builder: (_) => const LoginScreen());
+                  case '/signup':
+                    return MaterialPageRoute(builder: (_) => const SignupScreen());
+                  default:
+                    return MaterialPageRoute(builder: (_) => const LoginScreen());
+                }
               },
             ),
           ),
@@ -62,6 +61,13 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+}
+
+AuthenticationBloc createAuthenticationBloc(BuildContext context) {
+  return AuthenticationBloc(
+    authenticationRepository: context.read<AuthenticationRepository>(),
+    userRepository: context.read<UserRepository>(),
+  );
 }
 
 class MyHomePage extends StatefulWidget {
