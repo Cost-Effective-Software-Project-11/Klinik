@@ -18,7 +18,6 @@ class TrialModel {
   String get getName => name;
   String get getDescription => description;
   List<QuestionModel> get getAllQuestions => questions;
-  int get questionsCount => questions.length;
 
   //Setters
   set setId(String id) {
@@ -33,7 +32,7 @@ class TrialModel {
     this.description = description;
   }
 
-  set setSungleQuestion(QuestionModel question) {
+  set setSingleQuestion(QuestionModel question) {
     questions.add(question);
   }
 

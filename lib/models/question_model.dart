@@ -9,8 +9,8 @@ class QuestionModel {
 
   //Getters
   String get getText => text;
-  List<String> get allAnswers => answers;
-  QuestionEnum get questionType => type;
+  List<String> get getAllAnswers => answers;
+  QuestionEnum get getQuestionType => type;
 
   //Setters
   set setQuestionText(String text) {
@@ -18,7 +18,7 @@ class QuestionModel {
   }
 
   set setAnswer(String answer) {
-    allAnswers.add(answer);
+    getAllAnswers.add(answer);
   }
 
   set setAllAnswers(List<String> allAnswers) {
