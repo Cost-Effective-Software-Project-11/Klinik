@@ -36,7 +36,29 @@ class LoginForm extends StatelessWidget {
   }
 }
 
-class _UsernameInput extends StatelessWidget {
+class _UsernameInput extends StatefulWidget {
+  @override
+  _UsernameInputState createState() => _UsernameInputState();
+}
+
+class _UsernameInputState extends State<_UsernameInput> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final username = context.select((LoginState state) => state.username);
+    if (_controller.text != username.value) {
+      _controller.text = username.value;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
@@ -44,20 +66,48 @@ class _UsernameInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('loginForm_usernameInput_textField'),
+          controller: _controller,
           onChanged: (username) =>
               context.read<LoginBloc>().add(LoginUsernameChanged(username)),
           decoration: InputDecoration(
             labelText: 'username',
-            errorText:
-            state.username.displayError != null ? 'invalid username' : null,
+            errorText: state.username.displayError != null ? 'invalid username' : null,
           ),
         );
       },
     );
   }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 }
 
-class _PasswordInput extends StatelessWidget {
+class _PasswordInput extends StatefulWidget {
+  @override
+  _PasswordInputState createState() => _PasswordInputState();
+}
+
+class _PasswordInputState extends State<_PasswordInput> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final password = context.select((LoginState state) => state.password);
+    if (_controller.text != password.value) {
+      _controller.text = password.value;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
@@ -65,19 +115,26 @@ class _PasswordInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('loginForm_passwordInput_textField'),
+          controller: _controller,
           onChanged: (password) =>
               context.read<LoginBloc>().add(LoginPasswordChanged(password)),
           obscureText: true,
           decoration: InputDecoration(
             labelText: 'password',
-            errorText:
-            state.password.displayError != null ? 'invalid password' : null,
+            errorText: state.password.displayError != null ? 'invalid password' : null,
           ),
         );
       },
     );
   }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 }
+
 
 class _LoginButton extends StatelessWidget {
   @override
