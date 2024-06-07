@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:user_repository/user_repository.dart';
 import 'package:flutter_gp5/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_gp5/screens/home/home_screen.dart';
-import 'package:flutter_gp5/screens/auth/login/bloc/login_screen.dart';
-import 'package:flutter_gp5/screens/auth/register/bloc/signup_screen.dart';
+import 'package:flutter_gp5/screens/auth/login/login_screen.dart';
+import 'package:flutter_gp5/screens/auth/register/signup_screen.dart';
 
 void main() {
   runApp(const MyApp());
