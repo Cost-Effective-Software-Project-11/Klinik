@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gp5/screens/patient_trials/patient_trials_screen.dart';
 import 'package:flutter_gp5/screens/settings/settings_screen.dart';
 import 'package:flutter_gp5/screens/create_trials/create_trials_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; //localization file
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -12,9 +13,10 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Home Screen',
-          style: TextStyle(color: Colors.white),
+        title: Text(
+          //use localization
+          'Home Screen: ${AppLocalizations.of(context)!.title}',
+          style: const TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.teal.shade600,
         centerTitle: true,
@@ -97,7 +99,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-Widget _buildCreateTrialsButton(BuildContext context) {
+  Widget _buildCreateTrialsButton(BuildContext context) {
     return TextButton(
       onPressed: () {
         Navigator.push(
