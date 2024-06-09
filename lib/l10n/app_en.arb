@@ -1,5 +1,10 @@
 {
     "title": "GP5",
     "signup": "Signup",
-    "login": "Login"
+    "login": "Login",
+    "settingsTitle": "Settings",
+    "language": "Language",
+    "language_en": "English",
+    "language_bg": "Bulgarian",
+    "language_de": "German"
 }

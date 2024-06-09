@@ -81,13 +81,10 @@ class HomeScreen extends StatelessWidget {
   Widget _buildSettingsButton(BuildContext context) {
     return TextButton(
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const SettingsScreen()),
-        );
+        Navigator.pushNamed(context, '/settings');
       },
       child: Text(
-        'Settings',
+        AppLocalizations.of(context)!.settingsTitle,
         style: TextStyle(
           fontSize: 20,
           inherit: true,

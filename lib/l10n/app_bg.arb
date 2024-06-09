@@ -1,5 +1,10 @@
 {
     "title": "ГП5",
     "signup": "Регистрирай се",
-    "login": "Вход"
+    "login": "Вход",
+    "settingsTitle": "Настройки",
+    "language": "Език",
+    "language_en": "Английски",
+    "language_bg": "Български",
+    "language_de": "Немски"
 }
