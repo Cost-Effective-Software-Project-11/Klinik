@@ -3,8 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 
+import '../../../images/image_utils.dart';
 import '../../home/home_screen.dart';
 import 'bloc/login_bloc.dart';
+
+extension ContextExtension on BuildContext {
+  double setHeight(double percent) {
+    var screenHeight = MediaQuery.of(this).size.height;
+    return screenHeight * percent / 100;
+  }
+}
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -15,27 +23,6 @@ class LoginScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => LoginBloc(authenticationRepository: authenticationRepository),
       child: const _LoginScreen(),
-    );
-  }
-}
-
-class _LoginButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<LoginBloc, LoginState>(
-      builder: (context, state) {
-        return state.status.isInProgress
-            ? const CircularProgressIndicator()
-            : ElevatedButton(
-          key: const Key('loginForm_continue_raisedButton'),
-          onPressed: state.isValid
-              ? () {
-            context.read<LoginBloc>().add(const LoginSubmitted());
-          }
-              : null,
-          child: const Text('Login'),
-        );
-      },
     );
   }
 }
@@ -68,45 +55,45 @@ class _LoginScreenState extends State<_LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,  // Set background color as needed
-        elevation: 0,  // You can remove or adjust shadow
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 12.0),  // Adjust the padding as needed
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),  // Adjust the border radius for rounded edges
-              child: Image.asset(
-                'assets/images/logo.png',
-                height: 40,  // Adjust the size as needed
-              ),
-            ),
-          ),
-        ],
+        backgroundColor: Colors.white,
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: BlocListener<LoginBloc, LoginState>(
           listener: (context, state) {
-            if (state.status.isSuccess) { // Assuming you have an isSuccess status to check
-              Navigator.pushReplacement( // Use pushReplacement to avoid going back to login
+            if (state.status.isSuccess) {
+              Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
+                MaterialPageRoute(builder: (_) => const HomeScreen()),
               );
             } else if (state.status.isFailure) {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
-                ..showSnackBar(
-                  SnackBar(content: Text('Login Failed:')), // Customize with actual error
-                );
+                ..showSnackBar(SnackBar(content: Text('Login Failed')));
             }
           },
           child: Center(
             child: SingleChildScrollView(
-              child: _loginForm(),
+              child: Column(
+                children: [
+                  _logoWidget(context),
+                  _loginForm(),
+                ],
+              ),
             ),
           ),
         ),
+      ),
+    );
+  }
 
+  Widget _logoWidget(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: context.setHeight(5)),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8.0),
+        child: Image.asset(ImageUtils.logo, height: context.setHeight(10)),
       ),
     );
   }
@@ -117,25 +104,39 @@ class _LoginScreenState extends State<_LoginScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          const SizedBox(height: 20),
+          SizedBox(height: context.setHeight(2)),
           _usernameTextFormField(),
-          const SizedBox(height: 20),
+          SizedBox(height: context.setHeight(2)),
           _passwordTextFormField(),
-          const SizedBox(height: 20),
+          SizedBox(height: context.setHeight(2)),
           _forgotPassword(),
-          const SizedBox(height: 20),
-          _loginButton(),
-          const SizedBox(height: 20),
+          SizedBox(height: context.setHeight(2)),
+          _buildLoginButton(),
+          SizedBox(height: context.setHeight(2)),
           _signupRow(context),
         ],
       ),
     );
   }
 
+  Widget _buildLoginButton() {
+    return BlocBuilder<LoginBloc, LoginState>(
+      builder: (context, state) {
+        return state.status.isInProgress
+            ? const CircularProgressIndicator()
+            : ElevatedButton(
+          key: const Key('loginForm_continue_raisedButton'),
+          onPressed: state.isValid ? _submitForm : null,
+          child: const Text('Login'),
+        );
+      },
+    );
+  }
+
   TextFormField _usernameTextFormField() {
     return TextFormField(
-      controller: _usernameController, // Consider renaming this controller to _usernameController
-      focusNode: _usernameFocusNode, // Consider renaming this focusNode to _usernameFocusNode
+      controller: _usernameController,
+      focusNode: _usernameFocusNode,
       decoration: const InputDecoration(labelText: 'Username'),
       keyboardType: TextInputType.text,
       validator: (value) {
@@ -146,7 +147,6 @@ class _LoginScreenState extends State<_LoginScreen> {
       },
     );
   }
-
 
   TextFormField _passwordTextFormField() {
     return TextFormField(
@@ -176,14 +176,9 @@ class _LoginScreenState extends State<_LoginScreen> {
   Widget _forgotPassword() {
     return TextButton(
       onPressed: () {
-        // Navigation to forgot password screen
       },
       child: const Text('Forgot Password?'),
     );
-  }
-
-  Widget _loginButton() {
-    return _LoginButton();
   }
 
   Row _signupRow(BuildContext context) {
@@ -193,7 +188,6 @@ class _LoginScreenState extends State<_LoginScreen> {
         const Text("Don't have an account?"),
         TextButton(
           onPressed: () {
-            // Navigation to registration screen
           },
           child: const Text('Sign Up'),
         ),
@@ -207,4 +201,3 @@ class _LoginScreenState extends State<_LoginScreen> {
     }
   }
 }
-
