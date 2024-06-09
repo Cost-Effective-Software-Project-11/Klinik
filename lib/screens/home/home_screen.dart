@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gp5/screens/patient_trials/patient_trials_screen.dart';
-import 'package:flutter_gp5/screens/settings/settings_screen.dart';
 import 'package:flutter_gp5/screens/create_trials/create_trials_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; //localization file
 
