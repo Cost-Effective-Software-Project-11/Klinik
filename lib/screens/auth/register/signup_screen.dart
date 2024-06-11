@@ -49,7 +49,7 @@ class _SignupScreenState extends State<_SignupScreen> {
         padding: EdgeInsets.all(context.setHeight(2)),
         child: BlocListener<SignupBloc, SignupState>(
           listener: (context, state) {
-            if (state.status == FormzSubmissionStatus.success) {
+            if (state.status == Status.success) {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (_) => const HomeScreen()),
