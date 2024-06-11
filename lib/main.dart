@@ -57,7 +57,18 @@ class MyApp extends StatelessWidget {
               },
             ),
           ),
-        ),
+          builder: (context, child) {
+          return BlocListener<AuthenticationBloc, AuthenticationState>(
+            listener: (context, state) {
+            if (state.status == AuthenticationStatus.authenticated) {
+            Navigator.of(context).pushReplacementNamed('/');
+              } else if (state.status == AuthenticationStatus.unauthenticated) {
+                Navigator.of(context).pushReplacementNamed('/login');
+              }
+            },
+            child: child,
+          );
+        }),
       ),
     );
   }

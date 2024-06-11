@@ -5,6 +5,7 @@ import 'package:formz/formz.dart';
 
 import '../../../images/image_utils.dart';
 import '../../home/home_screen.dart';
+import '../register/signup_screen.dart';
 import 'bloc/login_bloc.dart';
 
 extension ContextExtension on BuildContext {
@@ -188,6 +189,11 @@ class _LoginScreenState extends State<_LoginScreen> {
         const Text("Don't have an account?"),
         TextButton(
           onPressed: () {
+            // Use Navigator to push to the SignupScreen
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SignupScreen()),
+            );
           },
           child: const Text('Sign Up'),
         ),
