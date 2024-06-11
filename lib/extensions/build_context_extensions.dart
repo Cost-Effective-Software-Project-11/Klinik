@@ -9,7 +9,7 @@ extension ContextExtention on BuildContext {
     return _width * decimalPercentage;
   }
 
-  double setHight(double percent) {
+  double setHeight(double percent) {
     final decimalPercentage = _getDecimalPercentage(percent);
     return _height * decimalPercentage;
   }
