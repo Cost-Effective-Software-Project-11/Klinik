@@ -1,7 +1,7 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_gp5/screens/auth/login/bloc/status_enum.dart';
+import 'package:flutter_gp5/screens/auth/enums/status_enum.dart';
 
 part 'login_event.dart';
 

@@ -1,7 +1,7 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gp5/screens/auth/login/bloc/status_enum.dart';
+import 'package:flutter_gp5/screens/auth/enums/status_enum.dart';
 
 import '../../../images/image_utils.dart';
 import '../../home/home_screen.dart';
@@ -184,7 +184,6 @@ class _LoginScreenState extends State<_LoginScreen> {
         const Text("Don't have an account?"),
         TextButton(
           onPressed: () {
-            // Use Navigator to push to the SignupScreen
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const SignupScreen()),

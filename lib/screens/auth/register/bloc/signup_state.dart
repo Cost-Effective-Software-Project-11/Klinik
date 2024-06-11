@@ -1,28 +1,28 @@
 part of 'signup_bloc.dart';
 
 class SignupState extends Equatable {
-  final FormzSubmissionStatus status;
-  final Username username;
-  final Email email;
-  final Password password;
-  final ConfirmPassword confirmPassword;  // You will need to define a ConfirmPassword input validation in Formz
+  final StatusEnum status;
+  final String username;
+  final String email;
+  final String password;
+  final String confirmPassword;
   final bool isValid;
 
   const SignupState({
-    this.status = FormzSubmissionStatus.initial,
-    this.username = const Username.pure(),
-    this.email = const Email.pure(),
-    this.password = const Password.pure(),
-    this.confirmPassword = const ConfirmPassword.pure(),
+    this.status = StatusEnum.initial,
+    this.username = '',
+    this.email = '',
+    this.password = '',
+    this.confirmPassword = '',
     this.isValid = false,
   });
 
   SignupState copyWith({
-    FormzSubmissionStatus? status,
-    Username? username,
-    Email? email,
-    Password? password,
-    ConfirmPassword? confirmPassword,
+    StatusEnum? status,
+    String? username,
+    String? email,
+    String? password,
+    String? confirmPassword,
     bool? isValid,
   }) {
     return SignupState(
