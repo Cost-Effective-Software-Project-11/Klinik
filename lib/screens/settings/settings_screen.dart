@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_gp5/screens/home/home_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   final Function(Locale) onLocaleChange;
@@ -54,7 +55,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
             ),
             const Divider(),
-            // Add other settings items here
+            //for testing
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  );
+                },
+                child: const Text('go to home')),
+            // Add other settings items here for user info
           ],
         ),
       ),
