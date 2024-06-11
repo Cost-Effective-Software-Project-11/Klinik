@@ -1,18 +1,12 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:formz/formz.dart';
+import 'package:flutter_gp5/screens/auth/login/bloc/status_enum.dart';
 
 import '../../../images/image_utils.dart';
 import '../../home/home_screen.dart';
 import 'bloc/login_bloc.dart';
-
-extension ContextExtension on BuildContext {
-  double setHeight(double percent) {
-    var screenHeight = MediaQuery.of(this).size.height;
-    return screenHeight * percent / 100;
-  }
-}
+import '../../../extensions/build_context_extensions.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -62,15 +56,15 @@ class _LoginScreenState extends State<_LoginScreen> {
         padding: const EdgeInsets.all(12),
         child: BlocListener<LoginBloc, LoginState>(
           listener: (context, state) {
-            if (state.status.isSuccess) {
+            if (state.status == StatusEnum.success) {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (_) => const HomeScreen()),
               );
-            } else if (state.status.isFailure) {
+            } else if (state.status == StatusEnum.failure) {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
-                ..showSnackBar(SnackBar(content: Text('Login Failed')));
+                ..showSnackBar(const SnackBar(content: Text('Login Failed')));
             }
           },
           child: Center(
@@ -122,11 +116,12 @@ class _LoginScreenState extends State<_LoginScreen> {
   Widget _buildLoginButton() {
     return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
-        return state.status.isInProgress
+        return StatusEnum.inProgress == state.status
             ? const CircularProgressIndicator()
             : ElevatedButton(
           key: const Key('loginForm_continue_raisedButton'),
-          onPressed: state.isValid ? _submitForm : null,
+          //onPressed: state.isValid ? _submitForm : null,
+          onPressed: _submitForm,
           child: const Text('Login'),
         );
       },
