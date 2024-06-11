@@ -1,10 +1,7 @@
 enum ConfirmPasswordValidationError { mismatch, empty }
 
 class ConfirmPassword {
-  final String originalPassword;
-
-  const ConfirmPassword.pure({this.originalPassword = ''}) : super.pure('');
-  const ConfirmPassword.dirty({required this.originalPassword, String value = ''}) : super.dirty(value);
+  late final String originalPassword;
 
   ConfirmPasswordValidationError? validator(String value) {
     if (value.isEmpty) {
