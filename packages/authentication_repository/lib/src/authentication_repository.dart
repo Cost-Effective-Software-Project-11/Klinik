@@ -17,23 +17,13 @@ class AuthenticationRepository {
   }) async {
     await Future.delayed(
       const Duration(milliseconds: 300),
-          () => _controller.add(AuthenticationStatus.authenticated),
+      () => _controller.add(AuthenticationStatus.authenticated),
     );
   }
 
-  Future<void> signUp({
-    required String username,
-    required String email,
-    required String password,
-  }) async {
-    // Simulate a network request or database call for user registration
-    await Future.delayed(
-        const Duration(milliseconds: 500),
-            () {
-          // handle various outcomes here
-          _controller.add(AuthenticationStatus.authenticated);
-        }
-    );
+  bool isLoggedIn() {
+    // Check if a stored token is available and not expired
+    return false;
   }
 
   void logOut() {
