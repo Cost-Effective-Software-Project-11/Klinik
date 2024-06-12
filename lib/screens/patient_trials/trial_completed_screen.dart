@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gp5/models/trial_user_model.dart';
+import 'package:flutter_gp5/screens/home/home_screen.dart';
 import 'package:flutter_gp5/screens/patient_trials/patient_trials_screen.dart';
 
 class TrialCompletedScreen extends StatelessWidget {
@@ -47,6 +48,14 @@ class TrialCompletedScreen extends StatelessWidget {
                   },
                   child: const Text('Go back to My Trials'),
                 )),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  );
+                },
+                child: const Text('go to home')),
           ],
         ),
       ),
