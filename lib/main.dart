@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gp5/screens/home/home_screen.dart';
 import 'package:flutter_gp5/screens/auth/login-screen.dart';
 import 'package:flutter_gp5/screens/auth/signup-screen.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_gp5/screens/settings/settings_screen.dart';
 
@@ -52,18 +51,9 @@ class _MyAppState extends State<MyApp> {
         }
         return null;
       },
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('en', ''), // English
-        Locale('bg', ''), // Bulgarian
-        Locale('de', ''), // German
-      ],
-      locale: _locale, // Apply the selected locale
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: _locale,
     );
   }
 }
