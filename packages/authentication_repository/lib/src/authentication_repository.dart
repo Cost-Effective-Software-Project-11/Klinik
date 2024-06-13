@@ -1,6 +1,6 @@
 import 'dart:async';
 
-enum _AuthenticationStatus { unknown, authenticated, unauthenticated }
+enum _AuthenticationStatus { authenticated, unauthenticated }
 
 class AuthenticationRepository {
   final _controller = StreamController<_AuthenticationStatus>();
