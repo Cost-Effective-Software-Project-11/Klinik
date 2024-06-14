@@ -1,0 +1,20 @@
+arb-dir: lib/locale/l10n
+
+template-arb-file: app_bg.arb
+
+output-dir: lib/generated
+
+use-deferred-loading: false
+
+output-localization-file: app_localizations.dart
+
+preferred-supported-locales:
+  - bg
+  - en
+  - de
+
+untranslated-messages-file: untranslated_messages.txt
+
+translate-missing-messages: true
+
+use-json-format: false
