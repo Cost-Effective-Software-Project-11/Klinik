@@ -20,9 +20,6 @@ class AuthenticationBloc
         super(const AuthenticationState.unknown()) {
     on<_AuthenticationStatusChanged>(_onAuthenticationStatusChanged);
     on<AuthenticationLogoutRequested>(_onAuthenticationLogoutRequested);
-    _authenticationStatusSubscription = _authenticationRepository.status.listen(
-          (status) => add(_AuthenticationStatusChanged(status)),
-    );
   }
 
   final AuthenticationRepository _authenticationRepository;
