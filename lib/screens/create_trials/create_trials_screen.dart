@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gp5/screens/create_trials/add_trial_screen.dart';
 import 'package:flutter_gp5/screens/create_trials/trial_config_screen.dart';
 
 class CreateTrialsScreen extends StatelessWidget {
@@ -54,7 +55,12 @@ class CreateTrialsScreen extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              // Navigate to the create trial screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AddTrialScreen(),
+                ),
+              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.cyan.shade200, 
