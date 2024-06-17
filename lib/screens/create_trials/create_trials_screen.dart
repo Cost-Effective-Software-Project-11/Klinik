@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gp5/screens/create_trials/trial_config_screen.dart';
 
 class CreateTrialsScreen extends StatelessWidget {
   const CreateTrialsScreen({super.key});
@@ -39,7 +40,12 @@ class CreateTrialsScreen extends StatelessWidget {
                       child: const Text('Generate PDF'),
                     ),
                     onTap: () {
-                      // Navigate to the trial details screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const TrialConfigScreen(),
+                        ),
+                      );
                     },
                   );
                 },
