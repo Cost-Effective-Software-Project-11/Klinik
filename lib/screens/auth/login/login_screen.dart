@@ -5,6 +5,7 @@ import 'package:flutter_gp5/enums/status_enum.dart';
 
 import '../../../utils/image_utils.dart';
 import '../../home/home_screen.dart';
+import '../signup/signup_screen.dart';
 import 'bloc/login_bloc.dart';
 import '../../../extensions/build_context_extensions.dart';
 
@@ -183,12 +184,17 @@ class _LoginScreenState extends State<_LoginScreen> {
         const Text("Don't have an account?"),
         TextButton(
           onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SignupScreen()),
+            );
           },
           child: const Text('Sign Up'),
         ),
       ],
     );
   }
+
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
