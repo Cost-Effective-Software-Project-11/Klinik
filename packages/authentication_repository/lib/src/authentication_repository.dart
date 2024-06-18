@@ -26,8 +26,10 @@ class AuthenticationRepository {
     required String email,
     required String password,
   }) async {
-    // API call to register the user
-    // Handle response and errors
+    await Future.delayed(
+        const Duration(milliseconds: 200),
+    () => _controller.add(_AuthenticationStatus.authenticated),
+    );
   }
 
   bool isLoggedIn() {
