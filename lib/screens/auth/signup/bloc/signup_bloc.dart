@@ -16,7 +16,6 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
   final AuthenticationRepository _authenticationRepository;
 
   Future<void> _onSubmitted(SignupSubmitted event, Emitter<SignupState> emit) async {
-    if (!state.isValid) return;
     emit(state.copyWith(status: StatusEnum.inProgress));
     try {
       await _authenticationRepository.signUp(
