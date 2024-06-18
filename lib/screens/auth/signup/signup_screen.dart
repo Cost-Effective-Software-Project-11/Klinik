@@ -34,6 +34,7 @@ class _SignupScreenState extends State<_SignupScreen> {
   final TextEditingController _confirmPasswordController = TextEditingController();
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _confirmPasswordFocusNode = FocusNode();
   bool _isPasswordVisible = false;
 
   @override
@@ -44,6 +45,7 @@ class _SignupScreenState extends State<_SignupScreen> {
     _confirmPasswordController.dispose();
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
+    _confirmPasswordFocusNode.dispose();
     super.dispose();
   }
 
@@ -154,6 +156,7 @@ class _SignupScreenState extends State<_SignupScreen> {
   TextFormField _confirmPasswordTextFormField() {
     return TextFormField(
       controller: _confirmPasswordController,
+      focusNode: _confirmPasswordFocusNode,
       obscureText: true,
       decoration: const InputDecoration(labelText: 'Confirm Password'),
       validator: (value) {
@@ -180,7 +183,7 @@ class _SignupScreenState extends State<_SignupScreen> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      context.read<SignupBloc>().add(SignupSubmitted());
+      context.read<SignupBloc>().add(const SignupSubmitted());
     }
   }
 }
