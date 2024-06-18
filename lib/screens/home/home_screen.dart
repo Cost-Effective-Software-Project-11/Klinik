@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gp5/locale/l10n/app_locale.dart';
 import 'package:flutter_gp5/screens/patient_trials/patient_trials_screen.dart';
 import 'package:flutter_gp5/screens/create_trials/create_trials_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; //localization file
+import 'package:flutter_gp5/screens/settings/settings_screen.dart'; //localization file
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -14,7 +15,7 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           //use localization
-          'Home Screen: ${AppLocalizations.of(context)!.title}',
+          'Home Screen: ${AppLocale.of(context)!.title}',
           style: const TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.teal.shade600,
@@ -80,10 +81,11 @@ class HomeScreen extends StatelessWidget {
   Widget _buildSettingsButton(BuildContext context) {
     return TextButton(
       onPressed: () {
-        Navigator.pushNamed(context, '/settings');
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const SettingsScreen()));
       },
       child: Text(
-        AppLocalizations.of(context)!.settingsTitle,
+        AppLocale.of(context)!.settingsTitle,
         style: TextStyle(
           fontSize: 20,
           inherit: true,

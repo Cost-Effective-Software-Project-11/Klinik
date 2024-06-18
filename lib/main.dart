@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gp5/locale/l10n/app_locale.dart';
 import 'package:flutter_gp5/screens/home/home_screen.dart';
 import 'package:flutter_gp5/screens/auth/login-screen.dart';
 import 'package:flutter_gp5/screens/auth/signup-screen.dart';
@@ -14,14 +15,19 @@ class MyApp extends StatefulWidget {
 
   @override
   State<MyApp> createState() => _MyAppState();
+
+  static Locale? locale = AppLocale.defaultSystemLocale;
+
+  static void setLocale(BuildContext context, Locale newLocale) {
+    _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
+    state?.setLocale(newLocale);
+  }
 }
 
 class _MyAppState extends State<MyApp> {
-  Locale _locale = const Locale('bg'); // Default language
-
-  void _setLocale(Locale locale) {
+  void setLocale(Locale locale) {
     setState(() {
-      _locale = locale;
+      MyApp.locale = locale;
     });
   }
 
@@ -44,16 +50,14 @@ class _MyAppState extends State<MyApp> {
       onGenerateRoute: (RouteSettings settings) {
         if (settings.name == '/settings') {
           return MaterialPageRoute(
-            builder: (context) => SettingsScreen(
-              onLocaleChange: _setLocale,
-            ),
+            builder: (context) => const SettingsScreen(),
           );
         }
         return null;
       },
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      locale: _locale,
+      locale: MyApp.locale,
     );
   }
 }

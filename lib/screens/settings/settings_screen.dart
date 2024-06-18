@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_gp5/locale/l10n/app_locale.dart';
+import 'package:flutter_gp5/main.dart';
 import 'package:flutter_gp5/screens/home/home_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
-  final Function(Locale) onLocaleChange;
-
-  const SettingsScreen({required this.onLocaleChange, super.key});
+  const SettingsScreen({super.key});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  Locale _selectedLocale = const Locale('en');
+  late String _selectedLanguageCode;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedLanguageCode = MyApp.locale!.languageCode;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
-
+    final localizations = AppLocale.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: Text(localizations.settingsTitle),
@@ -31,27 +35,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
               localizations.language,
             ),
             const SizedBox(height: 8),
-            DropdownButton<Locale>(
-              value: _selectedLocale,
+            DropdownButton<String>(
+              value: _selectedLanguageCode,
               items: const [
                 DropdownMenuItem(
-                  value: Locale('en'),
+                  value: 'en',
                   child: Text('English'),
                 ),
                 DropdownMenuItem(
-                  value: Locale('bg'),
+                  value: 'bg',
                   child: Text('Български'),
                 ),
                 DropdownMenuItem(
-                  value: Locale('de'),
+                  value: 'de',
                   child: Text('Deutsch'),
                 ),
               ],
-              onChanged: (Locale? newValue) {
+              onChanged: (newValue) {
                 setState(() {
-                  _selectedLocale = newValue!;
+                  _selectedLanguageCode = newValue!;
                 });
-                widget.onLocaleChange(_selectedLocale);
+                MyApp.setLocale(context, Locale(_selectedLanguageCode));
               },
             ),
             const Divider(),
