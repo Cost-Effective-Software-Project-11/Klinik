@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           title: 'GP5',
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
           ),
           initialRoute: '/',
