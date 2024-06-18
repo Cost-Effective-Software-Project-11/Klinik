@@ -83,7 +83,7 @@ class SplashScreen extends StatelessWidget {
                 Navigator.of(context).pushReplacementNamed('/login');
               });
             }
-            return SizedBox(); // This could be a splash image or your app's logo
+            return SizedBox();
           },
         ),
       ),
