@@ -1,7 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:flutter_gp5/screens/auth/enums/status_enum.dart';
+
+import '../../../../enums/status_enum.dart';
 
 part 'signup_event.dart';
 part 'signup_state.dart';
