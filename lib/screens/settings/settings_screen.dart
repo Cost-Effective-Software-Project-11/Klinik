@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
 import 'package:flutter_gp5/main.dart';
 import 'package:flutter_gp5/screens/home/home_screen.dart';
@@ -33,6 +34,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final localizations = AppLocale.of(context)!;
 
+    var _hight = context.setHeight(10);
+    var _width = context.setWidth(10);
+
     // List of supported languages
     final languages = [
       {'code': 'en', 'label': localizations.language_en, 'flag': 'en'},
@@ -48,14 +52,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 localizations.language,
                 style:
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 8),
+               SizedBox(height: _hight, width: _width),
               DropdownButton<String>(
                 value: _selectedLanguageCode,
                 onChanged: (String? newValue) {
