@@ -1,11 +1,10 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
 import 'package:flutter_gp5/main.dart';
 import 'package:flutter_gp5/screens/home/home_screen.dart';
-import 'package:country_flags/country_flags.dart';
+import 'package:flutter_gp5/screens/settings/supported_languages_dropdoown.dart';  // Import the new widget
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -34,14 +33,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final localizations = AppLocale.of(context)!;
 
-    var _hight = context.setHeight(10);
-    var _width = context.setWidth(10);
+    var height = context.setHeight(10);
+    var width = context.setWidth(10);
 
     // List of supported languages
-    final languages = [
-      {'code': 'en', 'label': localizations.language_en, 'flag': 'en'},
-      {'code': 'bg', 'label': localizations.language_bg, 'flag': 'bg'},
-      {'code': 'de', 'label': localizations.language_de, 'flag': 'de'},
+    final supportedLanguages = [
+      {'languageCode': 'en', 'languageName': localizations.language_en, 'countryCode': 'en'},
+      {'languageCode': 'bg', 'languageName': localizations.language_bg, 'countryCode': 'bg'},
+      {'languageCode': 'de', 'languageName': localizations.language_de, 'countryCode': 'de'},
     ];
 
     return Scaffold(
@@ -59,32 +58,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 style:
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-               SizedBox(height: _hight, width: _width),
-              DropdownButton<String>(
-                value: _selectedLanguageCode,
-                onChanged: (String? newValue) {
-                  if (newValue != null) {
-                    _changeLanguage(newValue);
-                  }
-                },
-                items: languages.map<DropdownMenuItem<String>>((language) {
-                  return DropdownMenuItem<String>(
-                    value: language['code'],
-                    child: Row(
-                      children: [
-                        CountryFlag.fromLanguageCode(
-                          language['flag']!,
-                          height: 24,
-                          width: 32,
-                          //shape: const RoundedRectangle(6),
-                          shape: const Circle(),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(language['label']!),
-                      ],
-                    ),
-                  );
-                }).toList(),
+              SizedBox(height: height, width: width),
+              SupportedLanguagesDropdown(
+                selectedLanguageCode: _selectedLanguageCode,
+                onChanged: _changeLanguage,
+                supportedLanguages: supportedLanguages,
               ),
             ],
           ),
