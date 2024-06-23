@@ -31,9 +31,9 @@ class LanguageDropdownButtonState extends State<LanguageDropdownButton> {
     final localizations = AppLocale.of(context)!;
 
     final supportedLanguages = [
-      {'languageCode': 'en', 'label': localizations.language_en, 'flag': 'en'},
-      {'languageCode': 'bg', 'label': localizations.language_bg, 'flag': 'bg'},
-      {'languageCode': 'de', 'label': localizations.language_de, 'flag': 'de'},
+      {'languageCode': 'en', 'label': localizations.language_en, 'countryCode': 'en'},
+      {'languageCode': 'bg', 'label': localizations.language_bg, 'countryCode': 'bg'},
+      {'languageCode': 'de', 'label': localizations.language_de, 'countryCode': 'de'},
     ];
 
     return DropdownButton<String>(
@@ -49,7 +49,7 @@ class LanguageDropdownButtonState extends State<LanguageDropdownButton> {
           child: Row(
             children: [
               CountryFlag.fromLanguageCode(
-                language['flag']!,
+                language['countryCode']!,
                 height: 24,
                 width: 32,
                 shape: const Circle(),
