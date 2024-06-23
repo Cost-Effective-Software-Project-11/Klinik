@@ -31,9 +31,9 @@ class LanguageDropdownButtonState extends State<LanguageDropdownButton> {
     final localizations = AppLocale.of(context)!;
 
     final supportedLanguages = [
-      {'code': 'en', 'label': localizations.language_en, 'flag': 'en'},
-      {'code': 'bg', 'label': localizations.language_bg, 'flag': 'bg'},
-      {'code': 'de', 'label': localizations.language_de, 'flag': 'de'},
+      {'languageCode': 'en', 'label': localizations.language_en, 'flag': 'en'},
+      {'languageCode': 'bg', 'label': localizations.language_bg, 'flag': 'bg'},
+      {'languageCode': 'de', 'label': localizations.language_de, 'flag': 'de'},
     ];
 
     return DropdownButton<String>(
@@ -45,7 +45,7 @@ class LanguageDropdownButtonState extends State<LanguageDropdownButton> {
       },
       items: supportedLanguages.map<DropdownMenuItem<String>>((language) {
         return DropdownMenuItem<String>(
-          value: language['code'],
+          value: language['languageCode'],
           child: Row(
             children: [
               CountryFlag.fromLanguageCode(
