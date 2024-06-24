@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
-import 'package:flutter_gp5/screens/patient_trials/patient_trials_screen.dart';
-import 'package:flutter_gp5/screens/settings/settings_screen.dart';
-import 'package:flutter_gp5/screens/create_trials/create_trials_screen.dart';
+import 'package:flutter_gp5/routes/app_routes.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -60,10 +58,7 @@ class HomeScreen extends StatelessWidget {
   Widget _buildTrialsButton(BuildContext context) {
     return TextButton(
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const PatientTrialsScreen()),
-        );
+        Navigator.pushNamed(context, AppRoutes.trials);
       },
       child: Text(
         'Trials',
@@ -81,8 +76,7 @@ class HomeScreen extends StatelessWidget {
   Widget _buildSettingsButton(BuildContext context) {
     return TextButton(
       onPressed: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const SettingsScreen()));
+        Navigator.pushNamed(context, AppRoutes.appSettings);
       },
       child: Text(
         AppLocale.of(context)!.settingsTitle,
@@ -100,10 +94,7 @@ class HomeScreen extends StatelessWidget {
   Widget _buildCreateTrialsButton(BuildContext context) {
     return TextButton(
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const CreateTrialsScreen()),
-        );
+        Navigator.pushNamed(context, AppRoutes.createTrials);
       },
       child: Text(
         'Create Trials',
@@ -118,7 +109,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-//Custom divider
+  // Custom divider
   Divider _customDivider({
     double thickness = 0.0,
     Color color = Colors.black,
