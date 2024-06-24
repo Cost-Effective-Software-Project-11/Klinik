@@ -2,11 +2,9 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
+import 'package:flutter_gp5/routes/app_routes.dart';
 import 'package:flutter_gp5/screens/auth/bloc/authentication_bloc.dart';
-import 'package:flutter_gp5/screens/auth/signup/signup_screen.dart';
 import 'package:user_repository/user_repository.dart';
-import 'package:flutter_gp5/screens/home/home_screen.dart';
-import 'package:flutter_gp5/screens/auth/login/login_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
@@ -55,20 +53,7 @@ class _MyAppState extends State<MyApp> {
             useMaterial3: true,
           ),
           initialRoute: '/',
-          onGenerateRoute: (settings) {
-            switch (settings.name) {
-              case '/':
-                return MaterialPageRoute(builder: (_) => const SplashScreen());
-              case '/home':
-                return MaterialPageRoute(builder: (_) => const HomeScreen());
-              case '/login':
-                return MaterialPageRoute(builder: (_) => const LoginScreen());
-              case '/signup':
-                return MaterialPageRoute(builder: (_) => const SignupScreen());
-              default:
-                return MaterialPageRoute(builder: (_) => const LoginScreen());
-            }
-          },
+          onGenerateRoute: AppRoutes.generateRoute,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           locale: MyApp.locale,
