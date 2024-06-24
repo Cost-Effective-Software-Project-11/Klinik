@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import '../../../enums/status_enum.dart';
-import '../../home/home_screen.dart';
+import '../../../routes/app_routes.dart';
 import 'bloc/signup_bloc.dart';
 
 class SignupScreen extends StatelessWidget {
@@ -61,10 +61,7 @@ class _SignupScreenState extends State<_SignupScreen> {
         child: BlocListener<SignupBloc, SignupState>(
           listener: (context, state) {
             if (state.status == StatusEnum.success) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => const HomeScreen()),
-              );
+              Navigator.pushReplacementNamed(context, AppRoutes.home);
             } else if (state.status == StatusEnum.failure) {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
