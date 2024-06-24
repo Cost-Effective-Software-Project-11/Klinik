@@ -52,7 +52,7 @@ class _MyAppState extends State<MyApp> {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
           ),
-          initialRoute: '/',
+          initialRoute: AppRoutes.splash,
           onGenerateRoute: AppRoutes.generateRoute,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
@@ -85,11 +85,11 @@ class SplashScreen extends StatelessWidget {
             }
             if (snapshot.data == true) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(context).pushReplacementNamed('/home');
+                Navigator.of(context).pushReplacementNamed(AppRoutes.home);
               });
             } else {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(context).pushReplacementNamed('/login');
+                Navigator.of(context).pushReplacementNamed(AppRoutes.login);
               });
             }
             return const SizedBox();
