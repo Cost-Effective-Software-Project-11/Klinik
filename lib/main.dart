@@ -2,11 +2,9 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
+import 'package:flutter_gp5/routes/app_routes.dart';
 import 'package:flutter_gp5/screens/auth/bloc/authentication_bloc.dart';
-import 'package:flutter_gp5/screens/auth/signup/signup_screen.dart';
 import 'package:user_repository/user_repository.dart';
-import 'package:flutter_gp5/screens/home/home_screen.dart';
-import 'package:flutter_gp5/screens/auth/login/login_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
@@ -54,21 +52,8 @@ class _MyAppState extends State<MyApp> {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
           ),
-          initialRoute: '/',
-          onGenerateRoute: (settings) {
-            switch (settings.name) {
-              case '/':
-                return MaterialPageRoute(builder: (_) => const SplashScreen());
-              case '/home':
-                return MaterialPageRoute(builder: (_) => const HomeScreen());
-              case '/login':
-                return MaterialPageRoute(builder: (_) => const LoginScreen());
-              case '/signup':
-                return MaterialPageRoute(builder: (_) => const SignupScreen());
-              default:
-                return MaterialPageRoute(builder: (_) => const LoginScreen());
-            }
-          },
+          initialRoute: AppRoutes.splash,
+          onGenerateRoute: AppRoutes.generateRoute,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           locale: MyApp.locale,
@@ -96,18 +81,18 @@ class SplashScreen extends StatelessWidget {
           future: _checkAuthentication(context),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
             if (snapshot.data == true) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(context).pushReplacementNamed('/home');
+                Navigator.of(context).pushReplacementNamed(AppRoutes.home);
               });
             } else {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(context).pushReplacementNamed('/login');
+                Navigator.of(context).pushReplacementNamed(AppRoutes.login);
               });
             }
-            return SizedBox(); // This could be a splash image or your app's logo
+            return const SizedBox();
           },
         ),
       ),
@@ -115,7 +100,7 @@ class SplashScreen extends StatelessWidget {
   }
 
   Future<bool> _checkAuthentication(BuildContext context) async {
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     var isLoggedIn = context.read<AuthenticationRepository>().isLoggedIn();
     return isLoggedIn;
   }

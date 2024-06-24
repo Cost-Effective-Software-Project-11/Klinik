@@ -2,12 +2,10 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/enums/status_enum.dart';
-
+import 'package:flutter_gp5/routes/app_routes.dart';
 import '../../../utils/image_utils.dart';
-import '../../home/home_screen.dart';
-import '../signup/signup_screen.dart';
-import 'bloc/login_bloc.dart';
 import '../../../extensions/build_context_extensions.dart';
+import 'bloc/login_bloc.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -58,10 +56,7 @@ class _LoginScreenState extends State<_LoginScreen> {
         child: BlocListener<LoginBloc, LoginState>(
           listener: (context, state) {
             if (state.status == StatusEnum.success) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => const HomeScreen()),
-              );
+              Navigator.pushReplacementNamed(context, AppRoutes.home);
             } else if (state.status == StatusEnum.failure) {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
@@ -184,17 +179,13 @@ class _LoginScreenState extends State<_LoginScreen> {
         const Text("Don't have an account?"),
         TextButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SignupScreen()),
-            );
+            Navigator.pushNamed(context, AppRoutes.signup);
           },
           child: const Text('Sign Up'),
         ),
       ],
     );
   }
-
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
