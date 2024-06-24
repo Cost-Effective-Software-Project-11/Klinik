@@ -1,15 +1,18 @@
 name: flutter_gp5
 description: "Project #11"
-publish_to: 'none'
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.4.0 <4.0.0'
+  sdk: ">=3.4.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.6
+  flutter_localizations:
+    sdk: flutter
+  intl: any
   flutter_svg: ^1.0.3
   authentication_repository:
     path: packages/authentication_repository
@@ -28,5 +31,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true
   assets:
     - assets/images/logo.png
