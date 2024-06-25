@@ -71,7 +71,7 @@ AuthenticationBloc createAuthenticationBloc(BuildContext context) {
 }
 
 class SplashScreen extends StatelessWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +81,7 @@ class SplashScreen extends StatelessWidget {
           future: _checkAuthentication(context),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
               return const CircularProgressIndicator();
             }
             if (snapshot.data == true) {
@@ -92,6 +93,7 @@ class SplashScreen extends StatelessWidget {
                 Navigator.of(context).pushReplacementNamed(AppRoutes.login);
               });
             }
+            return const SizedBox(); // This could be a splash image or your app's logo
             return const SizedBox();
           },
         ),
@@ -100,6 +102,7 @@ class SplashScreen extends StatelessWidget {
   }
 
   Future<bool> _checkAuthentication(BuildContext context) async {
+    await Future.delayed(const Duration(seconds: 1));
     await Future.delayed(const Duration(seconds: 1));
     var isLoggedIn = context.read<AuthenticationRepository>().isLoggedIn();
     return isLoggedIn;
