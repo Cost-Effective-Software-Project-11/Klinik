@@ -6,9 +6,15 @@ import 'package:flutter_gp5/routes/app_routes.dart';
 import 'package:flutter_gp5/screens/auth/bloc/authentication_bloc.dart';
 import 'package:user_repository/user_repository.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
   runApp(const MyApp());
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 }
 
 class MyApp extends StatefulWidget {
