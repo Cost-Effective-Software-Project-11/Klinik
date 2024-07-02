@@ -20,7 +20,7 @@ class SignupScreen extends StatelessWidget {
 }
 
 class _SignupScreen extends StatefulWidget {
-  const _SignupScreen({Key? key}) : super(key: key);
+  const _SignupScreen({super.key});
 
   @override
   State<_SignupScreen> createState() => _SignupScreenState();
