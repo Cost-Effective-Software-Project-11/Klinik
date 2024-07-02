@@ -51,25 +51,16 @@ class AuthenticationRepository {
     required String password,
   }) async {
     try {
-      // Query Firestore for the user by username.
+      // Step 1: Retrieve email associated with the username
       var querySnapshot = await _firestore
           .collection('users')
           .where('username', isEqualTo: username)
           .get();
 
-      if (querySnapshot.docs.isEmpty) {
-        throw Exception('No user found with this username');
-      }
-
       var userDoc = querySnapshot.docs.first;
       var email = userDoc['email'];
-      var storedPassword = userDoc['password'];
 
-      if (storedPassword != password) {
-        throw Exception('Incorrect password');
-      }
-
-      // Sign in with email and password.
+      // Step 2: Use Firebase Authentication to log in
       await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
       _controller.add(_AuthenticationStatus.authenticated);
     } catch (e) {
