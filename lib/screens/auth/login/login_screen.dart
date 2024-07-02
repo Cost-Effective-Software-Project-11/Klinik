@@ -21,7 +21,7 @@ class LoginScreen extends StatelessWidget {
 }
 
 class _LoginScreen extends StatefulWidget {
-  const _LoginScreen({super.key});
+  const _LoginScreen();
 
   @override
   State<_LoginScreen> createState() => _LoginScreenState();
