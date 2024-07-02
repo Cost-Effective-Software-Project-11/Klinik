@@ -4,8 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../enums/authentication_status_enum.dart';
+import '../../../models/user.dart';
 import '../../../repos/authentication/authentication_repository.dart';
-import '../../../repos/user/models/user.dart';
 import '../../../repos/user/user_repository.dart';
 
 part 'authentication_event.dart';

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:logger/logger.dart';
 
 import '../../enums/authentication_status_enum.dart';
 
@@ -12,13 +13,16 @@ class AuthenticationRepository {
   final FirebaseFirestore _firestore; // Instance of FirebaseFirestore.
   // StreamController to handle the authentication status updates.
   final StreamController<_AuthenticationStatus> _controller = StreamController<_AuthenticationStatus>();
+  final Logger _logger;
 
   // Constructor with optional parameters for FirebaseAuth and FirebaseFirestore.
   AuthenticationRepository({
     FirebaseAuth? firebaseAuth,
     FirebaseFirestore? firestore,
+    Logger? logger,
   })  : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-        _firestore = firestore ?? FirebaseFirestore.instance {
+        _firestore = firestore ?? FirebaseFirestore.instance,
+        _logger = logger ?? Logger(){
     // Listen to the auth state changes and update the stream accordingly.
     _firebaseAuth.authStateChanges().listen((user) {
       if (user != null) {
@@ -69,7 +73,7 @@ class AuthenticationRepository {
       await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
       _controller.add(_AuthenticationStatus.authenticated);
     } catch (e) {
-      print('Login error: $e');
+      _logger.e('Login error:', error: e);
       _controller.add(_AuthenticationStatus.unauthenticated);
       rethrow;
     }
@@ -95,7 +99,7 @@ class AuthenticationRepository {
       });
       _controller.add(_AuthenticationStatus.authenticated);
     } catch (e) {
-      print("Signup error: $e");
+      _logger.e('Signup error:', error: e);
       _controller.add(_AuthenticationStatus.unauthenticated);
       rethrow;
     }

@@ -6,7 +6,7 @@ import 'package:flutter_gp5/routes/app_routes.dart';
 import '../../enums/authentication_status_enum.dart';
 
 class SplashScreen extends StatelessWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
