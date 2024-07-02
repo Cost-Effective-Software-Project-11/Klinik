@@ -1,8 +1,8 @@
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/enums/status_enum.dart';
 import 'package:flutter_gp5/routes/app_routes.dart';
+import '../../../repos/authentication/authentication_repository.dart';
 import '../../../utils/image_utils.dart';
 import '../../../extensions/build_context_extensions.dart';
 import 'bloc/login_bloc.dart';

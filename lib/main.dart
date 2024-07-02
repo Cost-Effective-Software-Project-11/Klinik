@@ -1,13 +1,14 @@
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gp5/locale/l10n/app_locale.dart';
-import 'package:flutter_gp5/routes/app_routes.dart';
-import 'package:flutter_gp5/screens/auth/bloc/authentication_bloc.dart';
-import 'package:user_repository/user_repository.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
+
 import 'firebase_options.dart';
+import 'locale/l10n/app_locale.dart';
+import 'repos/authentication/authentication_repository.dart';
+import 'repos/user/user_repository.dart';
+import 'routes/app_routes.dart';
+import 'screens/auth/bloc/authentication_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +17,6 @@ void main() async {
   );
   runApp(const MyApp());
 }
-
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -75,40 +75,4 @@ AuthenticationBloc createAuthenticationBloc(BuildContext context) {
     authenticationRepository: context.read<AuthenticationRepository>(),
     userRepository: context.read<UserRepository>(),
   );
-}
-
-class SplashScreen extends StatelessWidget {
-  const SplashScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: FutureBuilder(
-          future: _checkAuthentication(context),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            }
-            if (snapshot.data == true) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(context).pushReplacementNamed(AppRoutes.home);
-              });
-            } else {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(context).pushReplacementNamed(AppRoutes.login);
-              });
-            }
-            return const SizedBox();
-          },
-        ),
-      ),
-    );
-  }
-
-  Future<bool> _checkAuthentication(BuildContext context) async {
-    await Future.delayed(const Duration(seconds: 1));
-    var isLoggedIn = context.read<AuthenticationRepository>().isLoggedIn();
-    return isLoggedIn;
-  }
 }
