@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/enums/status_enum.dart';
 import 'package:flutter_gp5/routes/app_routes.dart';
 import '../../../repos/authentication/authentication_repository.dart';
-import '../../../utils/image_utils.dart';
-import '../../../extensions/build_context_extensions.dart';
 import 'bloc/login_bloc.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -65,11 +64,21 @@ class _LoginScreenState extends State<_LoginScreen> {
           },
           child: Center(
             child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  _logoWidget(context),
-                  _loginForm(),
-                ],
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(height: context.setHeight(2)),
+                    _usernameTextFormField(),
+                    SizedBox(height: context.setHeight(2)),
+                    _passwordTextFormField(),
+                    SizedBox(height: context.setHeight(2)),
+                    _buildLoginButton(),
+                    SizedBox(height: context.setHeight(2)),
+                    _signupRow(context),
+                  ],
+                ),
               ),
             ),
           ),
@@ -78,52 +87,7 @@ class _LoginScreenState extends State<_LoginScreen> {
     );
   }
 
-  Widget _logoWidget(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: context.setHeight(5)),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8.0),
-        child: Image.asset(ImageUtils.logo, height: context.setHeight(10)),
-      ),
-    );
-  }
-
-  Form _loginForm() {
-    return Form(
-      key: _formKey,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          SizedBox(height: context.setHeight(2)),
-          _usernameTextFormField(),
-          SizedBox(height: context.setHeight(2)),
-          _passwordTextFormField(),
-          SizedBox(height: context.setHeight(2)),
-          _forgotPassword(),
-          SizedBox(height: context.setHeight(2)),
-          _buildLoginButton(),
-          SizedBox(height: context.setHeight(2)),
-          _signupRow(context),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLoginButton() {
-    return BlocBuilder<LoginBloc, LoginState>(
-      builder: (context, state) {
-        return state.status == StatusEnum.inProgress
-            ? const CircularProgressIndicator()
-            : ElevatedButton(
-          key: const Key('loginForm_continue_raisedButton'),
-          onPressed: _submitForm,
-          child: const Text('Login'),
-        );
-      },
-    );
-  }
-
-  TextFormField _usernameTextFormField() {
+  Widget _usernameTextFormField() {
     return TextFormField(
       controller: _usernameController,
       focusNode: _usernameFocusNode,
@@ -135,13 +99,10 @@ class _LoginScreenState extends State<_LoginScreen> {
         }
         return null;
       },
-      onChanged: (value) {
-        context.read<LoginBloc>().add(LoginUsernameChanged(value));
-      },
     );
   }
 
-  TextFormField _passwordTextFormField() {
+  Widget _passwordTextFormField() {
     return TextFormField(
       controller: _passwordController,
       focusNode: _passwordFocusNode,
@@ -163,17 +124,29 @@ class _LoginScreenState extends State<_LoginScreen> {
         }
         return null;
       },
-      onChanged: (value) {
-        context.read<LoginBloc>().add(LoginPasswordChanged(value));
+    );
+  }
+
+  Widget _buildLoginButton() {
+    return BlocBuilder<LoginBloc, LoginState>(
+      builder: (context, state) {
+        return state.status == StatusEnum.inProgress
+            ? const CircularProgressIndicator()
+            : ElevatedButton(
+          onPressed: _submitForm,
+          child: const Text('Login'),
+        );
       },
     );
   }
 
-  Widget _forgotPassword() {
-    return TextButton(
-      onPressed: () {},
-      child: const Text('Forgot Password?'),
-    );
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      context.read<LoginBloc>().add(LoginSubmitted(
+        username: _usernameController.text,
+        password: _passwordController.text,
+      ));
+    }
   }
 
   Row _signupRow(BuildContext context) {
@@ -189,11 +162,5 @@ class _LoginScreenState extends State<_LoginScreen> {
         ),
       ],
     );
-  }
-
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      context.read<LoginBloc>().add(const LoginSubmitted());
-    }
   }
 }
