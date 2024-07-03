@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_gp5/enums/status_enum.dart';
@@ -17,34 +16,24 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     required AuthenticationRepository authenticationRepository,
   })  : _authenticationRepository = authenticationRepository,
         super(const LoginState()) {
-    // Event handlers for username and password input and submission.
-    on<LoginUsernameChanged>(_onUsernameChanged);
-    on<LoginPasswordChanged>(_onPasswordChanged);
     on<LoginSubmitted>(_onSubmitted);
   }
 
-  /// Updates the state with the new username whenever the username is changed.
-  void _onUsernameChanged(LoginUsernameChanged event, Emitter<LoginState> emit) {
-    emit(state.copyWith(username: event.username));
-  }
-
-  /// Updates the state with the new password whenever the password is changed.
-  void _onPasswordChanged(LoginPasswordChanged event, Emitter<LoginState> emit) {
-    emit(state.copyWith(password: event.password));
-  }
-
   /// Handles the login submission, attempts login through the authentication repository,
-  /// and emits states based on the outcome.
+  /// and resets state after handling results.
   Future<void> _onSubmitted(LoginSubmitted event, Emitter<LoginState> emit) async {
     emit(state.copyWith(status: StatusEnum.inProgress)); // Indicate that login is in progress
+
     try {
       await _authenticationRepository.logIn(
-        username: state.username,
-        password: state.password,
+        username: event.username,
+        password: event.password,
       );
       emit(state.copyWith(status: StatusEnum.success)); // Emit success state if login succeeds
+      emit(const LoginState()); // Reset state after login success
     } catch (_) {
       emit(state.copyWith(status: StatusEnum.failure)); // Emit failure state on exception
+      emit(const LoginState()); // Reset state after handling error
     }
   }
 }
