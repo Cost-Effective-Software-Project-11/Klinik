@@ -26,10 +26,10 @@ class LanguageDropdownButtonState extends State<LanguageDropdownButton> {
     MyApp.setLocale(context, Locale(_selectedLanguageCode));
   }
 
+  final supportedLanguages = Language.supportedLanguages();
+
   @override
   Widget build(BuildContext context) {
-    final supportedLanguages = Language.supportedLanguages(context);
-
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,

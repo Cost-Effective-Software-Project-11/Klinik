@@ -12,21 +12,12 @@ class Language {
     required this.countryCode,
   });
 
-  static List<Language> supportedLanguages(BuildContext context) {
-    final localizations = AppLocale.of(context)!;
+  static List<Language> supportedLanguages() {
+    //final localizations = AppLocale.of(context)!;
     return [
-      Language(
-          languageCode: 'en',
-          label: localizations.language_en,
-          countryCode: 'en'),
-      Language(
-          languageCode: 'bg',
-          label: localizations.language_bg,
-          countryCode: 'bg'),
-      Language(
-          languageCode: 'de',
-          label: localizations.language_de,
-          countryCode: 'de'),
+      Language(languageCode: 'en', label: 'English', countryCode: 'en'),
+      Language(languageCode: 'bg', label: 'Български', countryCode: 'bg'),
+      Language(languageCode: 'de', label: 'Deutsch', countryCode: 'de'),
     ];
   }
 }
