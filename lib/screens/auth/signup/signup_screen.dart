@@ -1,8 +1,8 @@
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import '../../../enums/status_enum.dart';
+import '../../../repos/authentication/authentication_repository.dart';
 import '../../../routes/app_routes.dart';
 import 'bloc/signup_bloc.dart';
 
@@ -20,7 +20,7 @@ class SignupScreen extends StatelessWidget {
 }
 
 class _SignupScreen extends StatefulWidget {
-  const _SignupScreen({Key? key}) : super(key: key);
+  const _SignupScreen();
 
   @override
   State<_SignupScreen> createState() => _SignupScreenState();
@@ -32,6 +32,7 @@ class _SignupScreenState extends State<_SignupScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
+  final FocusNode _usernameFocusNode = FocusNode();
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
   final FocusNode _confirmPasswordFocusNode = FocusNode();
@@ -43,6 +44,7 @@ class _SignupScreenState extends State<_SignupScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _usernameFocusNode.dispose();
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
     _confirmPasswordFocusNode.dispose();
@@ -99,6 +101,7 @@ class _SignupScreenState extends State<_SignupScreen> {
   Widget _usernameTextFormField() {
     return TextFormField(
       controller: _usernameController,
+      focusNode: _usernameFocusNode,
       decoration: const InputDecoration(labelText: 'Username'),
       keyboardType: TextInputType.text,
       validator: (value) {
@@ -180,7 +183,11 @@ class _SignupScreenState extends State<_SignupScreen> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      context.read<SignupBloc>().add(const SignupSubmitted());
+      context.read<SignupBloc>().add(SignupSubmitted(
+        username: _usernameController.text,
+        email: _emailController.text,
+        password: _passwordController.text,
+      ));
     }
   }
 }

@@ -3,10 +3,10 @@ import 'package:flutter_gp5/screens/home/home_screen.dart';
 import 'package:flutter_gp5/screens/auth/login/login_screen.dart';
 import 'package:flutter_gp5/screens/auth/signup/signup_screen.dart';
 
-import '../main.dart';
 import '../screens/create_trials/create_trials_screen.dart';
 import '../screens/patient_trials/patient_trials_screen.dart';
 import '../screens/settings/settings_screen.dart';
+import '../screens/splash/splash_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
