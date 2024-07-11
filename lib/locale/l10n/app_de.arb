@@ -8,5 +8,10 @@
     "language_bg": "Bulgarisch",
     "language_de": "Deutsch",
     "email": "Email",
-    "emailTextError": "Bitte geben Sie eine E-Mail ein!"
+    "emailTextError": "Bitte geben Sie eine E-Mail ein!",
+    "email_placeholder": "Geben sie ihre E-Mail Adresse ein",
+    "password": "Passwort",
+    "password_placeholder": "Geben Sie Ihr Passwort ein",
+    "passwordTextError": "Das Passwort muss mindestens aus 6 Zeichen bestehen",
+    "forgotPasswordText": "Passwort vergessen?"
 }

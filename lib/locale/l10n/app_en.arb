@@ -8,5 +8,10 @@
     "language_bg": "Bulgarian",
     "language_de": "German",
     "email": "Email",
-    "emailTextError": "Please enter an email!"
+    "emailTextError": "Please enter an email!",
+    "email_placeholder": "Enter your email",
+    "password": "Password",
+    "password_placeholder": "Enter your password",
+    "passwordTextError": "Password must be at least 6 characters",
+    "forgotPasswordText": "Forgot Password?"
 }

@@ -4,6 +4,7 @@ import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/enums/status_enum.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
 import 'package:flutter_gp5/routes/app_routes.dart';
+import 'package:flutter_gp5/screens/home/home_screen.dart';
 import '../../../repos/authentication/authentication_repository.dart';
 import 'bloc/login_bloc.dart';
 
@@ -36,6 +37,7 @@ class _LoginScreenState extends State<_LoginScreen> {
   final FocusNode _usernameFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
   bool _isPasswordVisible = false;
+  bool _isForgotPasswordVisible = false;
 
   @override
   void dispose() {
@@ -100,6 +102,7 @@ class _LoginScreenState extends State<_LoginScreen> {
                           _emailTextFormField(),
                           SizedBox(height: context.setHeight(2)),
                           _passwordTextFormField(),
+                          _forgotPasswordButton(context),
                           SizedBox(height: context.setHeight(2)),
                           _buildLoginButton(),
                           SizedBox(height: context.setHeight(2)),
@@ -118,6 +121,8 @@ class _LoginScreenState extends State<_LoginScreen> {
       controller: _usernameController,
       focusNode: _usernameFocusNode,
       decoration: InputDecoration(
+        prefixIcon: const Icon(Icons.email_rounded),
+        hintText: AppLocale.of(context)!.email_placeholder,
         labelText: AppLocale.of(context)!.email,
         enabledBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.only(
@@ -175,7 +180,47 @@ class _LoginScreenState extends State<_LoginScreen> {
       focusNode: _passwordFocusNode,
       obscureText: !_isPasswordVisible,
       decoration: InputDecoration(
-        labelText: 'Password',
+        prefixIcon: const Icon(Icons.lock),
+        hintText: AppLocale.of(context)!.password_placeholder,
+        labelText: AppLocale.of(context)!.password,
+        enabledBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20)),
+            borderSide: BorderSide(color: Colors.grey)),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20)),
+          borderSide: BorderSide(
+            color: Colors.blue,
+          ),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+            bottomLeft: Radius.circular(20),
+            bottomRight: Radius.circular(20),
+          ),
+          borderSide: BorderSide(
+            color: Colors.red,
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
+            ),
+            borderSide: BorderSide(
+              color: Colors.red,
+            )),
         suffixIcon: IconButton(
           icon: Icon(
               _isPasswordVisible ? Icons.visibility : Icons.visibility_off),
@@ -188,11 +233,42 @@ class _LoginScreenState extends State<_LoginScreen> {
       ),
       validator: (value) {
         if (value == null || value.isEmpty || value.length < 6) {
-          return 'Password must be at least 6 characters';
+          setState(() {
+            _isForgotPasswordVisible = true;
+          });
+          return AppLocale.of(context)!.passwordTextError;
         }
         return null;
       },
     );
+  }
+
+  Widget _forgotPasswordButton(BuildContext context) {
+    return Visibility(
+        visible: _isForgotPasswordVisible,
+        child: Container(
+          margin: const EdgeInsets.only(top: 5.0),
+          child: SizedBox(
+            width: context.setWidth(80),
+            child: InkWell(
+              onTap: () {
+                // Navigate to the ForgotPasswordPage
+              },
+              child: Text(
+                AppLocale.of(context)!.forgotPasswordText,
+                textAlign: TextAlign.right,
+                style: const TextStyle(
+                  color: Color(0xFF6750A4),
+                  fontSize: 14,
+                  fontFamily: 'Roboto',
+                  fontWeight: FontWeight.w500,
+                  height: 0.10,
+                  letterSpacing: 0.25,
+                ),
+              ),
+            ),
+          ),
+        ));
   }
 
   Widget _buildLoginButton() {

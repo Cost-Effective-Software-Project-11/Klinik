@@ -8,5 +8,10 @@
     "language_bg": "Български",
     "language_de": "Немски",
     "email": "Имейл",
-    "emailTextError": "Моля, въведете имейл!"
+    "emailTextError": "Моля, въведете имейл!",
+    "email_placeholder": "Въведете своя имейл",
+    "password": "Парола",
+    "password_placeholder": "Въведете паролата си",
+    "passwordTextError": "Паролата трябва да е поне 6 знака",
+    "forgotPasswordText": "Забравена парола?"
 }
