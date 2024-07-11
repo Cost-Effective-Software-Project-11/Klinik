@@ -6,5 +6,7 @@
     "language": "Sprache",
     "language_en": "Englisch",
     "language_bg": "Bulgarisch",
-    "language_de": "Deutsch"
+    "language_de": "Deutsch",
+    "email": "Email",
+    "emailTextError": "Bitte geben Sie eine E-Mail ein!"
 }
