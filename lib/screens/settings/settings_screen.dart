@@ -3,6 +3,7 @@ import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
 import 'package:flutter_gp5/screens/home/home_screen.dart';
 import 'package:flutter_gp5/screens/settings/language_dropdown_button.dart';  
+import 'package:flutter_gp5/custom_circular_progress_indicator.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -12,6 +13,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocale.of(context)!;
@@ -38,6 +40,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
           const Divider(),
+                      const AnimatedCustomCircularProgressIndicator(),
+                    //CustomCircularProgressIndicator(progress: _progress),
+                              const Divider(),
           ElevatedButton(
             onPressed: () {
               Navigator.push(
