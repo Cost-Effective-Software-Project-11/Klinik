@@ -13,5 +13,7 @@
     "password": "Password",
     "password_placeholder": "Enter your password",
     "passwordTextError": "Password must be at least 6 characters",
-    "forgotPasswordText": "Forgot Password?"
+    "forgotPasswordText": "Forgot Password?",
+    "remember_me": "Remember me",
+    "login_google": "Login with Google"
 }

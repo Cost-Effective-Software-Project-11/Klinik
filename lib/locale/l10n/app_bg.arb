@@ -13,5 +13,7 @@
     "password": "Парола",
     "password_placeholder": "Въведете паролата си",
     "passwordTextError": "Паролата трябва да е поне 6 знака",
-    "forgotPasswordText": "Забравена парола?"
+    "forgotPasswordText": "Забравена парола?",
+    "remember_me": "Запомни ме",
+    "login_google": "Влезте с Google"
 }

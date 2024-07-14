@@ -4,9 +4,9 @@ import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/enums/status_enum.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
 import 'package:flutter_gp5/routes/app_routes.dart';
-import 'package:flutter_gp5/screens/home/home_screen.dart';
 import '../../../repos/authentication/authentication_repository.dart';
 import 'bloc/login_bloc.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -38,6 +38,7 @@ class _LoginScreenState extends State<_LoginScreen> {
   final FocusNode _passwordFocusNode = FocusNode();
   bool _isPasswordVisible = false;
   bool _isForgotPasswordVisible = false;
+  bool _rememberMe = false;
 
   @override
   void dispose() {
@@ -104,7 +105,13 @@ class _LoginScreenState extends State<_LoginScreen> {
                           _passwordTextFormField(),
                           _forgotPasswordButton(context),
                           SizedBox(height: context.setHeight(2)),
+                          _rememberMeField(),
+                          SizedBox(height: context.setHeight(2)),
                           _buildLoginButton(),
+                          SizedBox(height: context.setHeight(2)),
+                          _lineDivider(),
+                          SizedBox(height: context.setHeight(2)),
+                          _buildGogleLoginButton(),
                           SizedBox(height: context.setHeight(2)),
                           _signupRow(context),
                         ],
@@ -276,9 +283,103 @@ class _LoginScreenState extends State<_LoginScreen> {
       builder: (context, state) {
         return state.status == StatusEnum.inProgress
             ? const CircularProgressIndicator()
-            : ElevatedButton(
-                onPressed: _submitForm,
-                child: const Text('Login'),
+            // ignore: sized_box_for_whitespace
+            : Container(
+                width: context.setWidth(100),
+                height: context.setHeight(6),
+                child: ElevatedButton(
+                  onPressed: _submitForm,
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF6750A4),
+                      textStyle: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w500,
+                        height: 1.2,
+                        letterSpacing: 0.10,
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 15)),
+                  child: Text(
+                    AppLocale.of(context)!.login,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              );
+      },
+    );
+  }
+
+  Widget _lineDivider() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          width: context.setWidth(42),
+          decoration: const ShapeDecoration(
+            shape: RoundedRectangleBorder(
+              side: BorderSide(
+                width: 2,
+                strokeAlign: BorderSide.strokeAlignCenter,
+                color: Color(0x661D1B20),
+              ),
+            ),
+          ),
+        ),
+        const Text('OR'),
+        Container(
+          width: context.setWidth(42),
+          decoration: const ShapeDecoration(
+            shape: RoundedRectangleBorder(
+              side: BorderSide(
+                width: 2,
+                strokeAlign: BorderSide.strokeAlignCenter,
+                color: Color(0x661D1B20),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGogleLoginButton() {
+    return BlocBuilder<LoginBloc, LoginState>(
+      builder: (context, state) {
+        return state.status == StatusEnum.inProgress
+            ? const CircularProgressIndicator()
+            // ignore: sized_box_for_whitespace
+            : Container(
+                width: context.setWidth(100),
+                height: context.setHeight(6),
+                child: ElevatedButton(
+                  iconAlignment: IconAlignment.start,
+                  onPressed: _submitGoogleForm,
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF6750A4),
+                      textStyle: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w500,
+                        height: 1.2,
+                        letterSpacing: 0.10,
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 15)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        MdiIcons.google,
+                      ),
+                      Text(
+                        AppLocale.of(context)!.login_google,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
               );
       },
     );
@@ -291,6 +392,10 @@ class _LoginScreenState extends State<_LoginScreen> {
             password: _passwordController.text,
           ));
     }
+  }
+
+  void _submitGoogleForm() {
+    //Google login
   }
 
   Row _signupRow(BuildContext context) {
@@ -306,5 +411,27 @@ class _LoginScreenState extends State<_LoginScreen> {
         ),
       ],
     );
+  }
+
+  Widget _rememberMeField() {
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Checkbox(
+        value: _rememberMe,
+        onChanged: (bool? value) {
+          setState(() {
+            _rememberMe = value!;
+          });
+        },
+      ),
+      Text(AppLocale.of(context)!.remember_me,
+          style: const TextStyle(
+            color: Color(0xFF1D1B20),
+            fontSize: 14,
+            fontFamily: 'Roboto',
+            fontWeight: FontWeight.w400,
+            height: 1.4,
+            letterSpacing: 0.25,
+          ))
+    ]);
   }
 }
