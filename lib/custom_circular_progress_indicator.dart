@@ -15,24 +15,25 @@ class DynamicCircularProgressPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint backgroundPaint  = Paint()
-      ..color = color.withOpacity(0.05)
+    Paint backgroundPaint = Paint()
+      ..color = color.withOpacity(0.02)
       ..strokeWidth = strokeWidth
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
-      Paint progressPaint = Paint()
+    Paint progressPaint = Paint()
       ..shader = LinearGradient(
-        colors: [color, color.withOpacity(0.2)], // Gradient color effect
-      ).createShader(Rect.fromCircle(center: size.center(Offset.zero), radius: size.width / 2))
+        colors: [color, color.withOpacity(0.1)], // Gradient color effect
+      ).createShader(Rect.fromCircle(
+          center: size.center(Offset.zero), radius: size.width / 2))
       ..strokeWidth = strokeWidth
       ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;  
+      ..strokeCap = StrokeCap.round;
 
     Offset center = size.center(Offset.zero);
     double radius = size.width / 2;
 
-     canvas.drawCircle(center, radius, backgroundPaint);
+    canvas.drawCircle(center, radius, backgroundPaint);
 
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
@@ -79,12 +80,15 @@ class _DynamicCircularProgressIndicatorState
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(milliseconds: 1300),
     )..repeat();
-    
-    _rotationAnimation = Tween<double>(begin: 0.0, end: 2 * 3.141592653589793238).animate(_controller);
-    
-    _sweepAnimation = Tween<double>(begin: 0.2, end: 1.5 * 3.141592653589793238).animate(
+
+    _rotationAnimation =
+        Tween<double>(begin: 0.0, end: 2 * 3.141592653589793238)
+            .animate(_controller);
+
+    _sweepAnimation =
+        Tween<double>(begin: 0.2, end: 1.5 * 3.141592653589793238).animate(
       CurvedAnimation(
         parent: _controller,
         curve: const Interval(0.0, 0.5, curve: Curves.easeInOut),
