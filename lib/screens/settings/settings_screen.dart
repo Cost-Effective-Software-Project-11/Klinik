@@ -14,6 +14,8 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
 
+
+
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocale.of(context)!;
@@ -40,8 +42,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
           const Divider(),
-                      const AnimatedCustomCircularProgressIndicator(),
-                    //CustomCircularProgressIndicator(progress: _progress),
+                    const DynamicCircularProgressIndicator(),
+                                                  const Divider(),
+                    const CircularProgressIndicator(),
                               const Divider(),
           ElevatedButton(
             onPressed: () {

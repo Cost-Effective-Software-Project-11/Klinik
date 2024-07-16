@@ -1,11 +1,60 @@
 import 'package:flutter/material.dart';
 
-class AnimatedCustomCircularProgressIndicator extends StatefulWidget {
+class DynamicCircularProgressPainter extends CustomPainter {
+  final double startAngle;
+  final double sweepAngle;
+  final Color color;
+  final double strokeWidth;
+
+  DynamicCircularProgressPainter({
+    required this.startAngle,
+    required this.sweepAngle,
+    required this.color,
+    this.strokeWidth = 8.0,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint backgroundPaint  = Paint()
+      ..color = color.withOpacity(0.05)
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+      Paint progressPaint = Paint()
+      ..shader = LinearGradient(
+        colors: [color, color.withOpacity(0.2)], // Gradient color effect
+      ).createShader(Rect.fromCircle(center: size.center(Offset.zero), radius: size.width / 2))
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;  
+
+    Offset center = size.center(Offset.zero);
+    double radius = size.width / 2;
+
+     canvas.drawCircle(center, radius, backgroundPaint);
+
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      startAngle,
+      sweepAngle,
+      false,
+      progressPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+class DynamicCircularProgressIndicator extends StatefulWidget {
   final double size;
   final Color color;
   final double strokeWidth;
 
-  const AnimatedCustomCircularProgressIndicator({
+  const DynamicCircularProgressIndicator({
     super.key,
     this.size = 48.0,
     this.color = const Color(0xFF6750A4),
@@ -13,20 +62,35 @@ class AnimatedCustomCircularProgressIndicator extends StatefulWidget {
   });
 
   @override
-  _AnimatedCustomCircularProgressIndicatorState createState() => _AnimatedCustomCircularProgressIndicatorState();
+  // ignore: library_private_types_in_public_api
+  _DynamicCircularProgressIndicatorState createState() =>
+      _DynamicCircularProgressIndicatorState();
 }
 
-class _AnimatedCustomCircularProgressIndicatorState extends State<AnimatedCustomCircularProgressIndicator>
+class _DynamicCircularProgressIndicatorState
+    extends State<DynamicCircularProgressIndicator>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  late Animation<double> _rotationAnimation;
+  late Animation<double> _sweepAnimation;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 1),
     )..repeat();
+    
+    _rotationAnimation = Tween<double>(begin: 0.0, end: 2 * 3.141592653589793238).animate(_controller);
+    
+    _sweepAnimation = Tween<double>(begin: 0.2, end: 1.5 * 3.141592653589793238).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.5, curve: Curves.easeInOut),
+        reverseCurve: const Interval(0.5, 1.0, curve: Curves.easeInOut),
+      ),
+    );
   }
 
   @override
@@ -44,8 +108,9 @@ class _AnimatedCustomCircularProgressIndicatorState extends State<AnimatedCustom
         animation: _controller,
         builder: (context, child) {
           return CustomPaint(
-            painter: _CircularProgressPainter(
-              startAngle: _controller.value * 2 * 3.141592653589793238,
+            painter: DynamicCircularProgressPainter(
+              startAngle: _rotationAnimation.value,
+              sweepAngle: _sweepAnimation.value,
               color: widget.color,
               strokeWidth: widget.strokeWidth,
             ),
@@ -53,55 +118,5 @@ class _AnimatedCustomCircularProgressIndicatorState extends State<AnimatedCustom
         },
       ),
     );
-  }
-}
-
-class _CircularProgressPainter extends CustomPainter {
-  final double startAngle;
-  final Color color;
-  final double strokeWidth;
-
-  _CircularProgressPainter({
-    required this.startAngle,
-    required this.color,
-    required this.strokeWidth,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint backgroundPaint = Paint()
-      ..color = color.withOpacity(0.03)
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    Paint progressPaint = Paint()
-      ..shader = LinearGradient(
-        colors: [color, color.withOpacity(0.1)],
-      ).createShader(Rect.fromCircle(center: size.center(Offset.zero), radius: size.width / 2))
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    Offset center = size.center(Offset.zero);
-    double radius = size.width / 2;
-
-    // Draw the background circle
-    canvas.drawCircle(center, radius, backgroundPaint);
-
-    // Draw the progress arc
-    double sweepAngle = 3.141592653589793238 * 1.5; // Constant sweep angle for 3/4 of the circle
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      sweepAngle,
-      false,
-      progressPaint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
   }
 }
