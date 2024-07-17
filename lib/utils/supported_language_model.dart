@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_gp5/locale/l10n/app_locale.dart';
-
 class Language {
   final String languageCode;
   final String label;
@@ -13,7 +10,6 @@ class Language {
   });
 
   static List<Language> supportedLanguages() {
-    //final localizations = AppLocale.of(context)!;
     return [
       Language(languageCode: 'en', label: 'English', countryCode: 'en'),
       Language(languageCode: 'bg', label: 'Български', countryCode: 'bg'),
