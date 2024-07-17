@@ -345,43 +345,32 @@ class _LoginScreenState extends State<_LoginScreen> {
   }
 
   Widget _buildGogleLoginButton() {
-    return BlocBuilder<LoginBloc, LoginState>(
-      builder: (context, state) {
-        return state.status == StatusEnum.inProgress
-            ? const CircularProgressIndicator()
-            // ignore: sized_box_for_whitespace
-            : Container(
-                width: context.setWidth(100),
-                height: context.setHeight(6),
-                child: ElevatedButton(
-                  iconAlignment: IconAlignment.start,
-                  onPressed: _submitGoogleForm,
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF6750A4),
-                      textStyle: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w500,
-                        height: 1.2,
-                        letterSpacing: 0.10,
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 15)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        MdiIcons.google,
-                      ),
-                      Text(
-                        AppLocale.of(context)!.login_google,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-      },
+    return ElevatedButton(
+      iconAlignment: IconAlignment.start,
+      onPressed: _submitGoogleForm,
+      style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF6750A4),
+          textStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: 14,
+            fontFamily: 'Roboto',
+            fontWeight: FontWeight.w500,
+            height: 1.2,
+            letterSpacing: 0.10,
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 15)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            MdiIcons.google,
+          ),
+          Text(
+            AppLocale.of(context)!.login_google,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ],
+      ),
     );
   }
 
