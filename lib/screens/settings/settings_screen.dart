@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
 import 'package:flutter_gp5/screens/home/home_screen.dart';
-import 'package:flutter_gp5/screens/settings/language_dropdown_button.dart';  
+import 'package:flutter_gp5/screens/settings/language_dropdown_button.dart';
+import 'package:flutter_gp5/widgets/custom_circular_progress_indicator.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -31,12 +32,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               Text(
                 localizations.language,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: height, width: width),
-              const LanguageDropdownButton(), 
+              const LanguageDropdownButton(),
             ],
           ),
+          const Divider(),
+          const CustomCircularProgressIndicator(),
           const Divider(),
           ElevatedButton(
             onPressed: () {
