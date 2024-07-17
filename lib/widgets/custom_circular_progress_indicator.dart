@@ -50,12 +50,12 @@ class DynamicCircularProgressPainter extends CustomPainter {
   }
 }
 
-class DynamicCircularProgressIndicator extends StatefulWidget {
+class CustomCircularProgressIndicator extends StatefulWidget {
   final double size;
   final Color color;
   final double strokeWidth;
 
-  const DynamicCircularProgressIndicator({
+  const CustomCircularProgressIndicator({
     super.key,
     this.size = 48.0,
     this.color = const Color(0xFF6750A4),
@@ -69,7 +69,7 @@ class DynamicCircularProgressIndicator extends StatefulWidget {
 }
 
 class _DynamicCircularProgressIndicatorState
-    extends State<DynamicCircularProgressIndicator>
+    extends State<CustomCircularProgressIndicator>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _rotationAnimation;

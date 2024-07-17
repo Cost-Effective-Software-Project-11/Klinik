@@ -3,7 +3,7 @@ import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
 import 'package:flutter_gp5/screens/home/home_screen.dart';
 import 'package:flutter_gp5/screens/settings/language_dropdown_button.dart';
-import 'package:flutter_gp5/custom_circular_progress_indicator.dart';
+import 'package:flutter_gp5/widgets/custom_circular_progress_indicator.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -40,7 +40,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
           const Divider(),
-          const DynamicCircularProgressIndicator(),
+          const CustomCircularProgressIndicator(),
           const Divider(),
           ElevatedButton(
             onPressed: () {
