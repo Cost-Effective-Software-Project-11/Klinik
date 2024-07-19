@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../utils/image_utils.dart';
+import '../../routes/app_routes.dart';
+import '../../utils/image_utils.dart';
 
-class LoginScreen2 extends StatelessWidget {
-  const LoginScreen2({super.key});
+class StartingScreen extends StatelessWidget {
+  const StartingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +23,51 @@ class LoginScreen2 extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              width: 148,
-              height: 148,
+              width: 500,
+              height: 230,
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(ImageUtils.logo),
-                  fit: BoxFit.fill,
+                  image: AssetImage(ImageUtils.logo4),
+                  fit: BoxFit.contain,
                 ),
               ),
             ),
-            const SizedBox(height: 48),
+            const Text(
+              'Lets get started!',
+              style: TextStyle(
+                color: Color(0xFF231F20),
+                fontSize: 24,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 30),
+            Container(
+              width: 304,
+              height: 52,
+              clipBehavior: Clip.antiAlias,
+              decoration: ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  side: const BorderSide(width: 3, color: Color(0xFF6750A4)),
+                  borderRadius: BorderRadius.circular(100),
+                ),
+              ),
+              child: MaterialButton(
+                onPressed: () => Navigator.of(context).pushNamed(AppRoutes.login),
+                child: const Center(
+                  child: Text(
+                    'Login',
+                    style: TextStyle(
+                      color: Color(0xFF6750A4),
+                      fontSize: 14,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
             Container(
               width: 304,
               height: 52,
@@ -58,28 +94,6 @@ class LoginScreen2 extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            Container(
-              width: 304,
-              height: 52,
-              clipBehavior: Clip.antiAlias,
-              decoration: ShapeDecoration(
-                shape: RoundedRectangleBorder(
-                  side: const BorderSide(width: 3, color: Color(0xFF6750A4)),
-                  borderRadius: BorderRadius.circular(100),
-                ),
-              ),
-              child: const Center(
-                child: Text(
-                  'Login',
-                  style: TextStyle(
-                    color: Color(0xFF6750A4),
-                    fontSize: 14,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),
@@ -129,13 +143,13 @@ void showRegisterAsDialog(BuildContext context) {
               ),
               const SizedBox(height: 24),
               buildOptionButton(context, 'Patient', () {
-                // Handle Patient Registration
                 Navigator.of(context).pop();
+                Navigator.of(context).pushNamed(AppRoutes.signupPatient);
               }),
               const SizedBox(height: 16),
               buildOptionButton(context, 'Doctor', () {
-                // Handle Doctor Registration
                 Navigator.of(context). pop();
+                Navigator.of(context).pushNamed(AppRoutes.signupDoctor);
               }),
               const SizedBox(height: 24),
             ],
