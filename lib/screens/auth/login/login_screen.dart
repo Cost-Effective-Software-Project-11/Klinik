@@ -32,9 +32,9 @@ class _LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<_LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final FocusNode _usernameFocusNode = FocusNode();
+  final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
   bool _isPasswordVisible = false;
   bool _isForgotPasswordVisible = false;
@@ -42,9 +42,9 @@ class _LoginScreenState extends State<_LoginScreen> {
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
-    _usernameFocusNode.dispose();
+    _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
     super.dispose();
   }
@@ -125,8 +125,8 @@ class _LoginScreenState extends State<_LoginScreen> {
 
   Widget _emailTextFormField() {
     return TextFormField(
-      controller: _usernameController,
-      focusNode: _usernameFocusNode,
+      controller: _emailController,
+      focusNode: _emailFocusNode,
       decoration: InputDecoration(
         prefixIcon: const Icon(Icons.email_rounded),
         hintText: AppLocale.of(context)!.email_placeholder,
@@ -377,7 +377,7 @@ class _LoginScreenState extends State<_LoginScreen> {
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       context.read<LoginBloc>().add(LoginSubmitted(
-            username: _usernameController.text,
+            email: _emailController.text,
             password: _passwordController.text,
           ));
     }

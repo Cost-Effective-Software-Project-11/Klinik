@@ -29,9 +29,13 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
 
     try {
       await _authenticationRepository.signUp(
-        username: event.username,
         email: event.email,
         password: event.password,
+        name: event.name,
+        phone: event.phone,
+        specialty: event.specialty,
+        type: event.type,
+        workplace: event.workplace,
       );
       emit(state.copyWith(status: StatusEnum.success)); // Emit success if signup is successful
     } catch (_) {

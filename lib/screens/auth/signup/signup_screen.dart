@@ -182,12 +182,6 @@ class _SignupScreenState extends State<_SignupScreen> {
   }
 
   void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      context.read<SignupBloc>().add(SignupSubmitted(
-        username: _usernameController.text,
-        email: _emailController.text,
-        password: _passwordController.text,
-      ));
     }
   }
-}
+

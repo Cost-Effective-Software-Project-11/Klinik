@@ -26,7 +26,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     try {
       await _authenticationRepository.logIn(
-        username: event.username,
+        email: event.email,
         password: event.password,
       );
       emit(state.copyWith(status: StatusEnum.success)); // Emit success state if login succeeds
