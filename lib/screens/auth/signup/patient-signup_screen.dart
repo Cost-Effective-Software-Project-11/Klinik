@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 
 import '../../../enums/status_enum.dart';
 import '../../../repos/authentication/authentication_repository.dart';
@@ -94,14 +95,14 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
             ),
             child: Center(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.only(top: 60, bottom: 60),
+                padding: EdgeInsets.only(top: context.setHeight(5), bottom: context.setHeight(5)),
                 child: Form(
                   key: _formKey,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       _buildSignUpForm(context),
-                      _termsAndPrivacyPolicy(),
+                      _termsAndPrivacyPolicy(context),
                       _buildSignUpButton(),
                       _buildOrSeparator(),
                       _buildGoogleSignUpButton(),
@@ -117,11 +118,11 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
 
   Widget _buildSignUpForm(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: EdgeInsets.symmetric(horizontal: context.setWidth(2.5), vertical: context.setHeight(1)),
       child: Column(
         children: [
           _backButton(context),
-          const SizedBox(height: 20),
+          SizedBox(height: context.setHeight(4)),
           _buildInputField(context, 'Name', Icons.account_circle, 'Enter your name', false, _nameController),
           _buildInputField(context, 'Email', IconlyBold.message, 'Enter your email', false, _emailController),
           _buildInputField(context, 'Phone', IconlyBold.calling, 'Enter your phone', false, _phoneController),
@@ -137,21 +138,21 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         IconButton(
-          icon: const Icon(Icons.navigate_before, color: Color(0xFF1D1B20), size: 30),
+          icon: Icon(Icons.navigate_before, color: const Color(0xFF1D1B20), size: context.setWidth(8)),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        const Text(
+        Text(
           'Patient Sign Up',
           style: TextStyle(
-            color: Color(0xFF1D1B20),
-            fontSize: 22,
+            color: const Color(0xFF1D1B20),
+            fontSize: context.setWidth(6),
             fontWeight: FontWeight.w400,
           ),
         ),
-        const Opacity(
+        Opacity(
           opacity: 0,
           child: IconButton(
-            icon: Icon(Icons.navigate_before, size: 30),
+            icon: Icon(Icons.navigate_before, size: context.setWidth(8)),
             onPressed: null,
           ),
         ),
@@ -177,7 +178,7 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
             Container(
               width: 368,
               height: 58,
-              margin: const EdgeInsets.only(left: 8, right: 8, top: 8),
+              margin: EdgeInsets.only(top: context.setHeight(1)),
               decoration: ShapeDecoration(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
@@ -188,9 +189,9 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
               child: Row(
                 children: [
                   Container(
-                    margin: const EdgeInsets.only(left: 12),
+                    margin: EdgeInsets.only(left: context.setWidth(3)),
                     alignment: Alignment.centerLeft,
-                    child: Icon(icon, color: const Color(0xFF49454F)),
+                    child: Icon(icon, color: const Color(0xFF49454F), size: context.setWidth(6)),
                   ),
                   Expanded(
                     child: TextFormField(
@@ -198,9 +199,9 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
                       obscureText: isPassword ? (label == "Password" ? !_passwordVisible : !_confirmPasswordVisible) : false,
                       decoration: InputDecoration(
                         hintText: placeholder,
-                        hintStyle: const TextStyle(color: Color(0x6649454F), fontSize: 16),
+                        hintStyle: TextStyle(color: const Color(0x6649454F), fontSize: context.setWidth(4)),
                         border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                        contentPadding: EdgeInsets.symmetric(vertical: context.setHeight(2), horizontal: context.setWidth(3)),
                         suffixIcon: isPassword ? IconButton(
                           icon: Icon(
                               (label == "Password" ? _passwordVisible : _confirmPasswordVisible)
@@ -218,16 +219,16 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
               ),
             ),
             Positioned(
-              top: 0,
-              left: 16,
+              top: context.setHeight(-1.2),
+              left: context.setWidth(4),
               child: Container(
-                padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+                padding: EdgeInsets.all(context.setWidth(1.6)),
                 color: Theme.of(context).scaffoldBackgroundColor,
                 child: Text(
                   label,
                   style: TextStyle(
                     color: const Color(0xFF49454F),
-                    fontSize: 12,
+                    fontSize: context.setWidth(3.5),
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   ),
                 ),
@@ -236,10 +237,10 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
           ],
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 20, top: 5),
+          padding: EdgeInsets.only(left: context.setWidth(5), top: context.setHeight(0.3)),
           child: Text(
             controller.value.text.isEmpty || _validateField(controller.value.text, label) == null ? "" : _validateField(controller.value.text, label)!,
-            style: const TextStyle(color: Colors.red, fontSize: 12),
+            style: TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
           ),
         ),
       ],
@@ -294,10 +295,10 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
     return null;
   }
 
-  Widget _termsAndPrivacyPolicy() {
+  Widget _termsAndPrivacyPolicy(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: context.setWidth(10), vertical: context.setHeight(1)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -308,6 +309,7 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
               onChanged: (bool? value) {
                 setState(() {
                   _isTermsAccepted = value ?? false;
+                  _updateSubmitButtonState(); // Call this function to immediately update the button state
                 });
               },
               activeColor: const Color(0xFF6750A4),
@@ -320,14 +322,15 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
             child: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                style: const TextStyle(color: Colors.black, fontSize: 14),
+                style: TextStyle(color: Colors.black, fontSize: context.setWidth(3.5)),
                 children: [
                   const TextSpan(text: 'I agree to the '),
                   TextSpan(
                     text: 'Terms of Service',
-                    style: const TextStyle(
+                    style: TextStyle(
                       decoration: TextDecoration.underline,
-                      color: Color(0xFF6750A4),
+                      color: const Color(0xFF6750A4),
+                      fontSize: context.setWidth(3.5),
                     ),
                     recognizer: TapGestureRecognizer()..onTap = () {
                     },
@@ -335,9 +338,10 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
                   const TextSpan(text: ' and '),
                   TextSpan(
                     text: 'Privacy Policy',
-                    style: const TextStyle(
+                    style: TextStyle(
                       decoration: TextDecoration.underline,
-                      color: Color(0xFF6750A4),
+                      color: const Color(0xFF6750A4),
+                      fontSize: context.setWidth(3.5),
                     ),
                     recognizer: TapGestureRecognizer()..onTap = () {
                     },
@@ -365,9 +369,12 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
     Color buttonColor = _isFormFilled ? const Color(0xFF6750A4) : Colors.grey;
 
     return Container(
-      width: 304,
-      height: 52,
-      margin: const EdgeInsets.only(top: 20, bottom: 10),
+      width: context.setWidth(80),
+      height: context.setHeight(6.5),
+      margin: EdgeInsets.only(
+          top: context.setHeight(2.5),
+          bottom: context.setHeight(1.25)
+      ),
       decoration: BoxDecoration(
         color: buttonColor,
         borderRadius: BorderRadius.circular(100),
@@ -380,11 +387,11 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
           ),
         ),
         onPressed: _isFormFilled ? _submitForm : null,
-        child: const Text(
+        child: Text(
           'Sign Up',
           style: TextStyle(
             color: Colors.white,
-            fontSize: 14,
+            fontSize: context.setWidth(3.5),
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -394,23 +401,23 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
 
   Widget _buildOrSeparator() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: EdgeInsets.symmetric(vertical: context.setHeight(1.25)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Container(width: 140, height: 1, color: const Color(0x661D1B20)),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
+          Container(width: context.setWidth(35), height: 1, color: const Color(0x661D1B20)),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: context.setWidth(2)),
             child: Text(
               'OR',
               style: TextStyle(
-                color: Color(0x661D1B20),
-                fontSize: 16,
+                color: const Color(0x661D1B20),
+                fontSize: context.setWidth(4),
                 fontWeight: FontWeight.w400,
               ),
             ),
           ),
-          Container(width: 140, height: 1, color: const Color(0x661D1B20)),
+          Container(width: context.setWidth(35), height: 1, color: const Color(0x661D1B20)),
         ],
       ),
     );
@@ -418,9 +425,9 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
 
   Widget _buildGoogleSignUpButton() {
     return Container(
-      width: 304,
-      height: 52,
-      margin: const EdgeInsets.only(top: 10, bottom: 20),
+      width: context.setWidth(80),
+      height: context.setHeight(6.5),
+      margin: EdgeInsets.only(top: context.setHeight(1.25), bottom: context.setHeight(2.5)),
       decoration: BoxDecoration(
         color: const Color(0xFF6750A4),
         borderRadius: BorderRadius.circular(100),
@@ -429,8 +436,8 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Container(
-            width: 24,
-            height: 24,
+            width: context.setWidth(6),
+            height: context.setHeight(3),
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(ImageUtils.googleLogo),
@@ -438,12 +445,12 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
               ),
             ),
           ),
-          const SizedBox(width: 10),
-          const Text(
+          SizedBox(width: context.setWidth(2.5)),
+          Text(
             'Sign up with Google',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 14,
+              fontSize: context.setWidth(3.5),
               fontFamily: 'Roboto',
               fontWeight: FontWeight.w500,
             ),
@@ -455,12 +462,12 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
 
   Widget _loginPrompt(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 16),
+      padding: EdgeInsets.only(top: context.setHeight(2)),
       child: RichText(
         text: TextSpan(
-          style: const TextStyle(
-              color: Color(0xFF1D1B20),
-              fontSize: 14,
+          style: TextStyle(
+              color: const Color(0xFF1D1B20),
+              fontSize: context.setWidth(3.5),
               fontFamily: 'Roboto'
           ),
           children: <TextSpan>[
