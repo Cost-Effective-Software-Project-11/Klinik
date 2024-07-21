@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gp5/screens/home/home_screen.dart';
 import 'package:flutter_gp5/screens/auth/login/login_screen.dart';
-import 'package:flutter_gp5/screens/auth/signup/signup_screen.dart';
 
 import '../screens/auth/signup/doctor-signup_screen.dart';
 import '../screens/auth/signup/patient-signup_screen.dart';
@@ -16,7 +15,6 @@ class AppRoutes {
   static const String home = '/home';
   static const String start = '/starting';
   static const String login = '/login';
-  static const String signup = '/signup';
   static const String trials = '/trials';
   static const String appSettings = '/settings';
   static const String createTrials = '/create_trials';
@@ -33,8 +31,6 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const StartingScreen());
       case login:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
-      case signup:
-        return MaterialPageRoute(builder: (_) => const SignupScreen());
       case trials:
         return MaterialPageRoute(builder: (_) => const PatientTrialsScreen());
       case appSettings:
