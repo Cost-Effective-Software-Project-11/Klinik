@@ -4,6 +4,7 @@ import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/enums/status_enum.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
 import 'package:flutter_gp5/routes/app_routes.dart';
+import 'package:flutter_gp5/screens/auth/password/password_reset.dart';
 import '../../../repos/authentication/authentication_repository.dart';
 import 'bloc/login_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -255,22 +256,26 @@ class _LoginScreenState extends State<_LoginScreen> {
         visible: _isForgotPasswordVisible,
         child: Container(
           margin: const EdgeInsets.only(top: 5.0),
-          child: SizedBox(
-            width: context.setWidth(80),
-            child: InkWell(
-              onTap: () {
-                // Navigate to the ForgotPasswordPage
-              },
-              child: Text(
-                AppLocale.of(context)!.forgotPasswordText,
-                textAlign: TextAlign.right,
-                style: const TextStyle(
-                  color: Color(0xFF6750A4),
-                  fontSize: 14,
-                  fontFamily: 'Roboto',
-                  fontWeight: FontWeight.w500,
-                  height: 0.10,
-                  letterSpacing: 0.25,
+          child: InkWell(
+            onTap: () => {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const ResetPassword()))
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: SizedBox(
+                width: context.setWidth(80),
+                child: Text(
+                  AppLocale.of(context)!.forgotPasswordText,
+                  textAlign: TextAlign.right,
+                  style: const TextStyle(
+                    color: Color(0xFF6750A4),
+                    fontSize: 14,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w500,
+                    height: 0.10,
+                    letterSpacing: 0.25,
+                  ),
                 ),
               ),
             ),

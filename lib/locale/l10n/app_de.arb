@@ -15,5 +15,12 @@
     "passwordTextError": "Das Passwort muss mindestens aus 6 Zeichen bestehen",
     "forgotPasswordText": "Passwort vergessen?",
     "remember_me": "Erinnere dich an mich",
-    "login_google": "Melden Sie sich mit Google an"
+    "login_google": "Melden Sie sich mit Google an",
+    "password_reset": "Passwort zurücksetzen",
+    "password_text_1": "Sie können sich nicht an Ihr Passwort erinnern?",
+    "password_text_2": "Geben Sie unten Ihre E-Mail-Adresse oder Telefonnummer ein und wir senden Ihnen einen Aktivierungscode",
+    "phone": "Telefon",
+    "phone_placeholder": "Geben Sie Ihr Telefon ein",
+    "phoneTextError": "Geben Sie eine gültige Telefonnummer ein",
+    "sendCode": "Code senden"
 }

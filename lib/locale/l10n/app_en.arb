@@ -15,5 +15,12 @@
     "passwordTextError": "Password must be at least 6 characters",
     "forgotPasswordText": "Forgot Password?",
     "remember_me": "Remember me",
-    "login_google": "Login with Google"
+    "login_google": "Login with Google",
+    "password_reset": "Password reset",
+    "password_text_1": "Can’t remember your password?",
+    "password_text_2": "Enter your email or phone number below and we will send you an activation code",
+    "phone": "Phone",
+    "phone_placeholder": "Enter your phone",
+    "phoneTextError": "Enter a valid phone number",
+    "sendCode": "Send code"
 }

@@ -1,0 +1,351 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_gp5/extensions/build_context_extensions.dart';
+import 'package:flutter_gp5/locale/l10n/app_locale.dart';
+import 'package:flutter_gp5/screens/auth/password/password_reset_code.dart';
+
+class ResetPassword extends StatefulWidget {
+  const ResetPassword({super.key});
+
+  @override
+  State<ResetPassword> createState() => _ResetPasswordState();
+}
+
+class _ResetPasswordState extends State<ResetPassword> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _phoneFocusNode = FocusNode();
+  bool _isButtonDisabled = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.addListener(_validateInputs);
+    _phoneController.addListener(_validateInputs);
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _phoneController.dispose();
+    _emailFocusNode.dispose();
+    _phoneFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _validateInputs() {
+    setState(() {
+      _isButtonDisabled =
+          _emailController.text.isEmpty && _phoneController.text.isEmpty;
+    });
+  }
+
+  Future<void> _submitForm() async {
+    String email = _emailController.text.trim();
+    String phone = _phoneController.text.trim();
+    if (email.isNotEmpty) {
+      await _sendCodeToEmail(email);
+    }
+    if (phone.isNotEmpty) {
+      await _sendCodeToPhone(phone);
+    }
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => const ResetPasswordCode()));
+  }
+
+  Future<void> _sendCodeToEmail(String email) async {
+    try {
+      // Use FirebaseAuth to send verification code
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      // Logic for sending a 4-digit code can be implemented here
+    } catch (e) {
+      // Handle error
+      print("Failed to send code to email: $e");
+    }
+  }
+
+  Future<void> _sendCodeToPhone(String phone) async {
+    try {
+      // Use FirebaseAuth to send SMS verification code
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: phone,
+        verificationCompleted: (PhoneAuthCredential credential) {},
+        verificationFailed: (FirebaseAuthException e) {
+          // Handle error
+          print("Failed to send code to phone: $e");
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          // Store the verification ID and resend token for later use
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {},
+      );
+    } catch (e) {
+      // Handle error
+      print("Failed to send code to phone: $e");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String passwordReset = AppLocale.of(context)!.password_reset;
+    String passwordText1 = AppLocale.of(context)!.password_text_1;
+    String passwordText2 = AppLocale.of(context)!.password_text_2;
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
+        centerTitle: true,
+        elevation: 0,
+        title: Text(
+          passwordReset,
+          style: const TextStyle(
+            color: Color(0xFF1D1B20),
+            fontSize: 22,
+            fontFamily: 'Roboto',
+            fontWeight: FontWeight.w400,
+            height: 1.2,
+          ),
+        ),
+      ),
+      body: Container(
+        width: context.setWidth(100),
+        height: context.setHeight(100),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment(0.34, -0.94),
+            end: Alignment(-0.34, 0.94),
+            colors: [Color(0x7FFEF7FF), Color(0xFFD5EAE9), Color(0xFFA1D2CE)],
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Form(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: context.setHeight(5)),
+              SizedBox(
+                width: context.setWidth(80),
+                child: Text(
+                  passwordText1,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w500,
+                    height: 1.2,
+                    letterSpacing: 0.15,
+                  ),
+                  textAlign: TextAlign.justify,
+                ),
+              ),
+              SizedBox(height: context.setHeight(5)),
+              SizedBox(
+                width: context.setWidth(80),
+                child: Text(
+                  passwordText2,
+                  maxLines: 3,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w400,
+                    height: 1.2,
+                    letterSpacing: 0.25,
+                  ),
+                  textAlign: TextAlign.justify,
+                ),
+              ),
+              SizedBox(height: context.setHeight(5)),
+              _emailTextFormField(),
+              SizedBox(height: context.setHeight(2)),
+              _lineDivider(),
+              SizedBox(height: context.setHeight(2)),
+              _phoneTextFormField(),
+              SizedBox(height: context.setHeight(5)),
+              _buildSendCodeButton()
+            ],
+          )),
+        ),
+      ),
+    );
+  }
+
+  Widget _emailTextFormField() {
+    return SizedBox(
+      width: context.setWidth(80),
+      child: TextFormField(
+        controller: _emailController,
+        focusNode: _emailFocusNode,
+        decoration: InputDecoration(
+          prefixIcon: const Icon(Icons.email_rounded),
+          hintText: AppLocale.of(context)!.email_placeholder,
+          labelText: AppLocale.of(context)!.email,
+          enabledBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20)),
+              borderSide: BorderSide(color: Colors.grey)),
+          focusedBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20)),
+            borderSide: BorderSide(
+              color: Colors.blue,
+            ),
+          ),
+          errorBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
+            ),
+            borderSide: BorderSide(
+              color: Colors.red,
+            ),
+          ),
+          focusedErrorBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
+            ),
+            borderSide: BorderSide(
+              color: Colors.red,
+            ),
+          ),
+        ),
+        keyboardType: TextInputType.emailAddress,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return AppLocale.of(context)!.emailTextError;
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Widget _lineDivider() {
+    return SizedBox(
+      width: context.setWidth(80),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            width: context.setWidth(35),
+            decoration: const ShapeDecoration(
+              shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  width: 2,
+                  strokeAlign: BorderSide.strokeAlignCenter,
+                  color: Color(0x661D1B20),
+                ),
+              ),
+            ),
+          ),
+          const Text('OR'),
+          Container(
+            width: context.setWidth(35),
+            decoration: const ShapeDecoration(
+              shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  width: 2,
+                  strokeAlign: BorderSide.strokeAlignCenter,
+                  color: Color(0x661D1B20),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _phoneTextFormField() {
+    return SizedBox(
+      width: context.setWidth(80),
+      child: TextFormField(
+        controller: _phoneController,
+        focusNode: _phoneFocusNode,
+        decoration: InputDecoration(
+          prefixIcon: const Icon(Icons.phone_in_talk),
+          hintText: AppLocale.of(context)!.phone_placeholder,
+          labelText: AppLocale.of(context)!.phone,
+          enabledBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20)),
+              borderSide: BorderSide(color: Colors.grey)),
+          focusedBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20)),
+            borderSide: BorderSide(
+              color: Colors.blue,
+            ),
+          ),
+          errorBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
+            ),
+            borderSide: BorderSide(
+              color: Colors.red,
+            ),
+          ),
+          focusedErrorBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
+            ),
+            borderSide: BorderSide(
+              color: Colors.red,
+            ),
+          ),
+        ),
+        keyboardType: TextInputType.phone,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return AppLocale.of(context)!.phoneTextError;
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Widget _buildSendCodeButton() {
+    return SizedBox(
+      width: context.setWidth(80),
+      height: context.setHeight(6),
+      child: ElevatedButton(
+        onPressed: _isButtonDisabled ? null : _submitForm,
+        style: ElevatedButton.styleFrom(
+          backgroundColor:
+              _isButtonDisabled ? Colors.grey : const Color(0xFF6750A4),
+          padding: const EdgeInsets.symmetric(vertical: 15),
+        ),
+        child: Text(
+          AppLocale.of(context)!.sendCode,
+          style: const TextStyle(color: Colors.white),
+        ),
+      ),
+    );
+  }
+}

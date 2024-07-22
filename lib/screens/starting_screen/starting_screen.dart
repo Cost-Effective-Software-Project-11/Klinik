@@ -53,7 +53,8 @@ class StartingScreen extends StatelessWidget {
                 ),
               ),
               child: MaterialButton(
-                onPressed: () => Navigator.of(context).pushNamed(AppRoutes.login),
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(AppRoutes.login),
                 child: const Center(
                   child: Text(
                     'Login',
@@ -94,13 +95,34 @@ class StartingScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
+            Container(
+              width: 304,
+              height: 52,
+              clipBehavior: Clip.antiAlias,
+              decoration: ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  side: const BorderSide(width: 3, color: Color(0xFF6750A4)),
+                  borderRadius: BorderRadius.circular(100),
+                ),
+              ),
+              child: const Center(
+                child: Text(
+                  'Login',
+                  style: TextStyle(
+                    color: Color(0xFF6750A4),
+                    fontSize: 14,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
-
 
 void showRegisterAsDialog(BuildContext context) {
   showDialog(
@@ -124,7 +146,8 @@ void showRegisterAsDialog(BuildContext context) {
             children: [
               Container(
                 height: 72,
-                padding: const EdgeInsets.only(top: 24, left: 24, right: 24, bottom: 16),
+                padding: const EdgeInsets.only(
+                    top: 24, left: 24, right: 24, bottom: 16),
                 decoration: const BoxDecoration(
                   border: Border(
                     bottom: BorderSide(width: 1, color: Colors.black),
@@ -148,8 +171,8 @@ void showRegisterAsDialog(BuildContext context) {
               }),
               const SizedBox(height: 16),
               buildOptionButton(context, 'Doctor', () {
-                Navigator.of(context). pop();
-                Navigator.of(context).pushNamed(AppRoutes.signupDoctor);
+                // Handle Doctor Registration
+                Navigator.of(context).pop();
               }),
               const SizedBox(height: 24),
             ],
@@ -160,7 +183,8 @@ void showRegisterAsDialog(BuildContext context) {
   );
 }
 
-Widget buildOptionButton(BuildContext context, String title, VoidCallback onPressed) {
+Widget buildOptionButton(
+    BuildContext context, String title, VoidCallback onPressed) {
   return Container(
     width: 200,
     height: 52,
