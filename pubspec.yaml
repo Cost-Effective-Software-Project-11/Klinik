@@ -13,6 +13,7 @@ dependencies:
   firebase_core: ^2.4.1
   firebase_auth: ^4.17.7
   cloud_firestore: ^4.1.0
+  iconly: ^1.0.1
   logger: ^2.3.0
   uuid: ^3.0.0
   flutter_localizations:
@@ -23,6 +24,7 @@ dependencies:
   equatable: ^2.0.3
   flutter_bloc: ^8.1.1
   country_flags: ^3.0.0
+  material_design_icons_flutter: ^7.0.7296
 
 dev_dependencies:
   flutter_test:
@@ -36,3 +38,8 @@ flutter:
   generate: true
   assets:
     - assets/images/logo.png
+    - assets/images/google-logo.png
+    - assets/images/klinik-logo-01.png
+    - assets/images/klinik-logo-02.png
+    - assets/images/klinik-logo-03.png
+    - assets/images/klinik-logo-04.png

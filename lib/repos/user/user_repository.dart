@@ -16,7 +16,7 @@ class UserRepository {
   // Asynchronous method to fetch a user by ID, returning a nullable User
   Future<User?> getUser(String id) async {
     try {
-      final doc = await _firestore.collection('users').doc(id).get();
+      final doc = await _firestore.collection('users2').doc(id).get();
       if (doc.exists && doc.data() != null) {
         // Safely parse the user using the refactored fromMap method
         return User.fromMap(doc.data());

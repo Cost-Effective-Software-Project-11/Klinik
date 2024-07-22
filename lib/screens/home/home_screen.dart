@@ -19,7 +19,7 @@ class HomeScreen extends StatelessWidget {
             icon: Icon(Icons.logout),
             onPressed: () async {
               await context.read<AuthenticationRepository>().logOut();
-              Navigator.pushReplacementNamed(context, AppRoutes.login);
+              Navigator.pushReplacementNamed(context, AppRoutes.start);
             },
           ),
         ],

@@ -47,21 +47,11 @@ class AuthenticationRepository {
 
   // Method to log in a user using a username and password.
   Future<void> logIn({
-    required String username,
+    required String email,
     required String password,
   }) async {
     try {
-      // Step 1: Retrieve email associated with the username
-      var querySnapshot = await _firestore
-          .collection('users')
-          .where('username', isEqualTo: username)
-          .get();
-
-      var userDoc = querySnapshot.docs.first;
-      var email = userDoc['email'];
-
-      // Step 2: Use Firebase Authentication to log in
-      await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+    await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
       _controller.add(_AuthenticationStatus.authenticated);
     } catch (e) {
       _logger.e('Login error:', error: e);
@@ -72,21 +62,30 @@ class AuthenticationRepository {
 
   // Method to sign up a new user.
   Future<void> signUp({
-    required String username,
     required String email,
     required String password,
+    required String name,
+    required String phone,
+    required String specialty,
+    required String type,
+    required String workplace,
   }) async {
     try {
-      // Create user with email and password.
+      // Step 1: Create user with email and password.
       UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      // Store user information in Firestore.
-      await _firestore.collection('users').doc(userCredential.user!.uid).set({
-        'username': username,
+
+      // Step 2: Store user information in Firestore in the 'users2' collection.
+      await _firestore.collection('users2').doc(userCredential.user!.uid).set({
         'email': email,
         'password': password,
+        'name': name,
+        'phone': phone,
+        'speciality': specialty,
+        'type': type,
+        'workplace': workplace,
       });
       _controller.add(_AuthenticationStatus.authenticated);
     } catch (e) {
