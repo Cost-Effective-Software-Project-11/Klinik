@@ -15,5 +15,12 @@
     "passwordTextError": "Паролата трябва да е поне 6 знака",
     "forgotPasswordText": "Забравена парола?",
     "remember_me": "Запомни ме",
-    "login_google": "Влезте с Google"
+    "login_google": "Влезте с Google",
+    "password_reset": "Нулиране на парола",
+    "password_text_1": "Не можете да си спомните паролата си?",
+    "password_text_2": "Въведете вашия имейл или телефонен номер по-долу и ние ще ви изпратим код за активиране",
+    "phone": "Телефонен номер",
+    "phone_placeholder": "Въведете телефона си",
+    "phoneTextError": "Въведете валиден телефонен номер",
+    "sendCode": "Изпрати код"
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gp5/screens/auth/login/login_screen.dart';
 
 import '../../../utils/image_utils.dart';
 
@@ -68,14 +69,20 @@ class LoginScreen2 extends StatelessWidget {
                   borderRadius: BorderRadius.circular(100),
                 ),
               ),
-              child: const Center(
-                child: Text(
-                  'Login',
-                  style: TextStyle(
-                    color: Color(0xFF6750A4),
-                    fontSize: 14,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w500,
+              child: InkWell(
+                onTap: () => {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const LoginScreen()))
+                },
+                child: const Center(
+                  child: Text(
+                    'Login',
+                    style: TextStyle(
+                      color: Color(0xFF6750A4),
+                      fontSize: 14,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ),
@@ -86,7 +93,6 @@ class LoginScreen2 extends StatelessWidget {
     );
   }
 }
-
 
 void showRegisterAsDialog(BuildContext context) {
   showDialog(
@@ -110,7 +116,8 @@ void showRegisterAsDialog(BuildContext context) {
             children: [
               Container(
                 height: 72,
-                padding: const EdgeInsets.only(top: 24, left: 24, right: 24, bottom: 16),
+                padding: const EdgeInsets.only(
+                    top: 24, left: 24, right: 24, bottom: 16),
                 decoration: const BoxDecoration(
                   border: Border(
                     bottom: BorderSide(width: 1, color: Colors.black),
@@ -135,7 +142,7 @@ void showRegisterAsDialog(BuildContext context) {
               const SizedBox(height: 16),
               buildOptionButton(context, 'Doctor', () {
                 // Handle Doctor Registration
-                Navigator.of(context). pop();
+                Navigator.of(context).pop();
               }),
               const SizedBox(height: 24),
             ],
@@ -146,7 +153,8 @@ void showRegisterAsDialog(BuildContext context) {
   );
 }
 
-Widget buildOptionButton(BuildContext context, String title, VoidCallback onPressed) {
+Widget buildOptionButton(
+    BuildContext context, String title, VoidCallback onPressed) {
   return Container(
     width: 200,
     height: 52,
