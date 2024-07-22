@@ -20,7 +20,7 @@ class SplashScreen extends StatelessWidget {
               break;
             case AuthenticationStatus.unauthenticated:
             // Navigate to login screen if unauthenticated
-              Navigator.of(context).pushReplacementNamed(AppRoutes.login);
+              Navigator.of(context).pushReplacementNamed(AppRoutes.start);
               break;
             default:
             // Optional: Handle unknown state, perhaps stay on the splash screen
