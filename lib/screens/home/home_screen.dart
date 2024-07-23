@@ -1,119 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gp5/routes/app_routes.dart';
 
-import '../../repos/authentication/authentication_repository.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar:
+          true, // To ensure the body extends behind the app bar
       appBar: AppBar(
-        title: Text('Home Screen'),
-        backgroundColor: Colors.teal.shade600,
-        centerTitle: true,
-        elevation: 4.00,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () async {
-              await context.read<AuthenticationRepository>().logOut();
-              Navigator.pushReplacementNamed(context, AppRoutes.start);
-            },
-          ),
-        ],
+        title: const Text('Home'),
+        backgroundColor: Colors.transparent, // Make the app bar transparent
+        elevation: 0, // Remove the app bar shadow
+        centerTitle: true, // Center the title
+        automaticallyImplyLeading: false, // Remove the back button
       ),
       body: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black, width: 1.0),
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/home.png'), // Path to your image
+            fit: BoxFit.cover,
+          ),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildTrialsButton(context),
-            _customDivider(thickness: 2.0),
-            _buildCreateTrialsButton(context),
-            _customDivider(thickness: 2.0),
-            const Text("Help", textAlign: TextAlign.center),
-            _customDivider(thickness: 2.0),
-            _buildSettingsButton(context),
-            _customDivider(thickness: 2.0),
-            const Text("Info", textAlign: TextAlign.center),
-          ],
+        child: const Center(
+          child: Text(
+            'There are no doctors available yet',
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 24,
+              color: Colors.grey, // Text color
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
       ),
-    );
-  }
-
-  Widget _buildTrialsButton(BuildContext context) {
-    return TextButton(
-      onPressed: () {
-        Navigator.pushNamed(context, AppRoutes.trials);
-      },
-      child: Text(
-        'Trials',
-        style: TextStyle(
-          fontSize: 20,
-          inherit: true,
-          fontWeight: FontWeight.bold,
-          color: Colors.deepPurple.shade900,
-        ),
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-
-  Widget _buildSettingsButton(BuildContext context) {
-    return TextButton(
-      onPressed: () {
-        Navigator.pushNamed(context, AppRoutes.appSettings);
-      },
-      child: Text(
-        'Settings',
-        style: TextStyle(
-          fontSize: 20,
-          inherit: true,
-          fontWeight: FontWeight.bold,
-          color: Colors.green.shade900,
-        ),
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-
-  Widget _buildCreateTrialsButton(BuildContext context) {
-    return TextButton(
-      onPressed: () {
-        Navigator.pushNamed(context, AppRoutes.createTrials);
-      },
-      child: Text(
-        'Create Trials',
-        style: TextStyle(
-          fontSize: 20,
-          inherit: true,
-          fontWeight: FontWeight.bold,
-          color: Colors.deepPurple.shade900,
-        ),
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-
-  Divider _customDivider({
-    double thickness = 0.0,
-    Color color = Colors.black,
-    double indent = 0.0,
-    double endIndent = 0.0,
-    double height = 0.0,
-  }) {
-    return Divider(
-      thickness: thickness,
-      color: color,
-      indent: indent,
-      endIndent: endIndent,
-      height: height,
     );
   }
 }
