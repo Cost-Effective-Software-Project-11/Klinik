@@ -53,7 +53,7 @@ class _LoginScreenState extends State<_LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
+          backgroundColor: Colors.transparent,
           centerTitle: true,
           elevation: 0,
           title: Text(AppLocale.of(context)!.login,
