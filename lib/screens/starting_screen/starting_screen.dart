@@ -47,8 +47,8 @@ class StartingScreen extends StatelessWidget {
               height: 52,
               clipBehavior: Clip.antiAlias,
               decoration: ShapeDecoration(
+                color: const Color(0xFF6750A4),
                 shape: RoundedRectangleBorder(
-                  side: const BorderSide(width: 3, color: Color(0xFF6750A4)),
                   borderRadius: BorderRadius.circular(100),
                 ),
               ),
@@ -58,7 +58,7 @@ class StartingScreen extends StatelessWidget {
                   child: Text(
                     'Login',
                     style: TextStyle(
-                      color: Color(0xFF6750A4),
+                      color: Colors.white,
                       fontSize: 14,
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w500,
@@ -73,9 +73,9 @@ class StartingScreen extends StatelessWidget {
               height: 52,
               clipBehavior: Clip.antiAlias,
               decoration: ShapeDecoration(
-                color: const Color(0xFF6750A4),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(100),
+                  side: const BorderSide(width: 3, color: Color(0xFF6750A4)),
                 ),
               ),
               child: MaterialButton(
@@ -84,7 +84,7 @@ class StartingScreen extends StatelessWidget {
                   child: Text(
                     'Sign up',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Color(0xFF6750A4),
                       fontSize: 14,
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w500,
@@ -100,7 +100,6 @@ class StartingScreen extends StatelessWidget {
     );
   }
 }
-
 
 void showRegisterAsDialog(BuildContext context) {
   showDialog(
