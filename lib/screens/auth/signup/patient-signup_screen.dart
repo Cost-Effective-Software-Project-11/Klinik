@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 
 import '../../../enums/status_enum.dart';
+import '../../../locale/l10n/app_locale.dart';
 import '../../../repos/authentication/authentication_repository.dart';
 import '../../../routes/app_routes.dart';
 import '../../../utils/image_utils.dart';
@@ -75,7 +76,7 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
             Navigator.pushReplacementNamed(context, AppRoutes.home);
           } else if (state.status == StatusEnum.failure) {
             ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Signup Failed'))
+                SnackBar(content: Text(AppLocale.of(context)!.signupfailure))
             );
           }
         },
@@ -123,11 +124,11 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
         children: [
           _backButton(context),
           SizedBox(height: context.setHeight(4)),
-          _buildInputField(context, 'Name', Icons.account_circle, 'Enter your name', false, _nameController),
-          _buildInputField(context, 'Email', IconlyBold.message, 'Enter your email', false, _emailController),
-          _buildInputField(context, 'Phone', IconlyBold.calling, 'Enter your phone', false, _phoneController),
-          _buildInputField(context, 'Password', IconlyBold.lock, 'Enter your password', true, _passwordController, _togglePasswordVisibility),
-          _buildInputField(context, 'Confirm Password', IconlyBold.unlock, 'Confirm your password', true, _confirmPasswordController, _toggleConfirmPasswordVisibility),
+          _buildInputField(context, AppLocale.of(context)!.name, Icons.account_circle, AppLocale.of(context)!.enterYourName, false, _nameController),
+          _buildInputField(context, AppLocale.of(context)!.email, IconlyBold.message, AppLocale.of(context)!.email_placeholder, false, _emailController),
+          _buildInputField(context, AppLocale.of(context)!.phone, IconlyBold.calling, AppLocale.of(context)!.enterYourPhone, false, _phoneController),
+          _buildInputField(context, AppLocale.of(context)!.password, IconlyBold.lock, AppLocale.of(context)!.password_placeholder, true, _passwordController, _togglePasswordVisibility),
+          _buildInputField(context, AppLocale.of(context)!.confirm_password, IconlyBold.unlock, AppLocale.of(context)!.confirmYourPassword, true, _confirmPasswordController, _toggleConfirmPasswordVisibility),
         ],
       ),
     );
@@ -142,10 +143,10 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         Text(
-          'Patient Sign Up',
+          AppLocale.of(context)!.patientSignUpTitle,
           style: TextStyle(
             color: const Color(0xFF1D1B20),
-            fontSize: context.setWidth(6),
+            fontSize: context.setWidth(5),
             fontWeight: FontWeight.w400,
           ),
         ),
@@ -282,8 +283,8 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
         }
         break;
       case 'Password':
-        if (value.length < 8) {
-          return 'Password must be at least 8 characters long';
+        if (value.length < 6) {
+          return 'Password must be at least 6 characters long';
         }
         break;
       case 'Confirm Password':
@@ -324,9 +325,9 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
               text: TextSpan(
                 style: TextStyle(color: Colors.black, fontSize: context.setWidth(3.5)),
                 children: [
-                  const TextSpan(text: 'I agree to the '),
+                  TextSpan(text: '${AppLocale.of(context)!.agreeToTerms} '),
                   TextSpan(
-                    text: 'Terms of Service',
+                    text: '${AppLocale.of(context)!.termsOfService} ',
                     style: TextStyle(
                       color: const Color(0xFF6750A4),
                       fontSize: context.setWidth(3.5),
@@ -335,9 +336,9 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
                       _showTermsDialog(context);
                     },
                   ),
-                  const TextSpan(text: ' and '),
+                  TextSpan(text: '${AppLocale.of(context)!.and} '),
                   TextSpan(
-                    text: 'Privacy Policy',
+                    text: '${AppLocale.of(context)!.privacyPolicy} ',
                     style: TextStyle(
                       color: const Color(0xFF6750A4),
                       fontSize: context.setWidth(3.5),
@@ -370,7 +371,7 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Terms of Service'),
+          title: Text(AppLocale.of(context)!.termsOfService),
           content: Container(
             width: context.setWidth(80),
             height: context.setHeight(25),
@@ -380,15 +381,15 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
               radius: const Radius.circular(10),
               child: Padding(
               padding: EdgeInsets.only(right: context.setWidth(2)),
-              child: const SingleChildScrollView(
+              child: SingleChildScrollView(
                 child: ListBody(
                   children: <Widget>[
-                    Text('By signing up, you agree to the following terms:'),
-                    Text('1. Confidentiality: All personal and medical information is stored securely and will not be shared without your consent.'),
-                    Text('2. Service Limitations: While we strive to provide accurate medical information, our services do not replace professional medical advice.'),
-                    Text('3. Compliance: You agree to comply with local regulations and not use our services for unlawful purposes.'),
-                    Text('4. Consent: You consent to receive occasional emails related to your account and health management.'),
-                    Text('Please read our complete Terms of Service to understand your rights and obligations.'),
+                    Text(AppLocale.of(context)!.signupAgreement),
+                    Text(AppLocale.of(context)!.termsConfidentiality),
+                    Text(AppLocale.of(context)!.termsServiceLimitations),
+                    Text(AppLocale.of(context)!.termsCompliance),
+                    Text(AppLocale.of(context)!.termsConsent),
+                    Text(AppLocale.of(context)!.termsReadComplete),
                   ],
                 ),
               ),
@@ -409,7 +410,7 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Close'),
+              child: Text(AppLocale.of(context)!.close),
             ),
             OutlinedButton(
               style: OutlinedButton.styleFrom(
@@ -425,7 +426,7 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
                 Navigator.of(context).pop();
                 _showPrivacyPolicyDialog(context);
               },
-              child: const Text('Next'),
+              child: Text(AppLocale.of(context)!.next),
             ),
           ],
         );
@@ -438,7 +439,7 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Privacy Policy'),
+          title: Text(AppLocale.of(context)!.privacyPolicy),
           content: Container(
             width: context.setWidth(80),
             height: context.setHeight(25),
@@ -448,16 +449,16 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
               radius: const Radius.circular(10),
               child: Padding(
               padding: EdgeInsets.only(right: context.setWidth(2)),
-              child: const SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
                 child: ListBody(
                   children: <Widget>[
-                    Text('Your privacy is critically important to us.'),
-                    Text('We have a few fundamental principles:'),
-                    Text('• We don’t ask you for personal information unless we truly need it.'),
-                    Text('• We don’t share your personal information except to comply with the law, develop our products, or protect our rights.'),
-                    Text('• We don’t store personal information on our servers unless required for the on-going operation of one of our services.'),
-                    Text('Please review our complete Privacy Policy to understand how we handle your data.'),
+                    Text(AppLocale.of(context)!.privacyIsImportant),
+                    Text(AppLocale.of(context)!.privacyPrinciples),
+                    Text(AppLocale.of(context)!.privacyNeedInfo),
+                    Text(AppLocale.of(context)!.privacyShareInfo),
+                    Text(AppLocale.of(context)!.privacyStoreInfo),
+                    Text(AppLocale.of(context)!.privacyReview),
                   ],
                 ),
               ),
@@ -478,7 +479,7 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Close'),
+              child: Text(AppLocale.of(context)!.close),
             ),
             OutlinedButton(
               style: OutlinedButton.styleFrom(
@@ -499,7 +500,7 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
                   });
                 }
               },
-              child: const Text('Accept'),
+              child: Text(AppLocale.of(context)!.accept),
             ),
           ],
         );
@@ -530,7 +531,7 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
         ),
         onPressed: _isFormFilled ? _submitForm : null,
         child: Text(
-          'Sign Up',
+          AppLocale.of(context)!.signup,
           style: TextStyle(
             color: Colors.white,
             fontSize: context.setWidth(3.5),
@@ -551,7 +552,7 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: context.setWidth(2)),
             child: Text(
-              'OR',
+              AppLocale.of(context)!.or,
               style: TextStyle(
                 color: const Color(0x661D1B20),
                 fontSize: context.setWidth(4),
@@ -589,7 +590,7 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
           ),
           SizedBox(width: context.setWidth(2.5)),
           Text(
-            'Sign up with Google',
+            AppLocale.of(context)!.signUpWithGoogle,
             style: TextStyle(
               color: Colors.white,
               fontSize: context.setWidth(3.5),
@@ -613,9 +614,9 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
               fontFamily: 'Roboto'
           ),
           children: <TextSpan>[
-            const TextSpan(text: 'Already have an account? '),
+            TextSpan(text: '${AppLocale.of(context)!.alreadyHaveAccount} '),
             TextSpan(
-              text: 'Login',
+              text: AppLocale.of(context)!.login,
               style: const TextStyle(
                 color: Color(0xFF6750A4),
               ),
