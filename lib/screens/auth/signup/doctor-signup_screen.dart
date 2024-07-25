@@ -185,7 +185,7 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
           children: [
             Container(
               width: context.setWidth(90),
-              height: context.setHeight(6.5),
+              height: 60,
               margin: EdgeInsets.only(top: context.setHeight(1)),
               decoration: ShapeDecoration(
                 shape: RoundedRectangleBorder(
@@ -346,22 +346,22 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
                   TextSpan(
                     text: 'Terms of Service',
                     style: TextStyle(
-                      decoration: TextDecoration.underline,
                       color: const Color(0xFF6750A4),
                       fontSize: context.setWidth(3.5),
                     ),
                     recognizer: TapGestureRecognizer()..onTap = () {
+                      _showTermsDialog(context);
                     },
                   ),
                   const TextSpan(text: ' and '),
                   TextSpan(
                     text: 'Privacy Policy',
                     style: TextStyle(
-                      decoration: TextDecoration.underline,
                       color: const Color(0xFF6750A4),
                       fontSize: context.setWidth(3.5),
                     ),
                     recognizer: TapGestureRecognizer()..onTap = () {
+                      _showPrivacyPolicyDialog(context);
                     },
                   ),
                 ],
@@ -383,12 +383,154 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
     );
   }
 
+  void _showTermsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Terms of Service'),
+          content: Container(
+            width: context.setWidth(80),
+            height: context.setHeight(25),
+            child: Scrollbar(
+              thumbVisibility: true,
+              thickness: 4.0,
+              radius: const Radius.circular(10),
+              child: Padding(
+                padding: EdgeInsets.only(right: context.setWidth(2)),
+                child: const SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      Text('By signing up, you agree to the following terms:'),
+                      Text('1. Confidentiality: All personal and medical information is stored securely and will not be shared without your consent.'),
+                      Text('2. Service Limitations: While we strive to provide accurate medical information, our services do not replace professional medical advice.'),
+                      Text('3. Compliance: You agree to comply with local regulations and not use our services for unlawful purposes.'),
+                      Text('4. Consent: You consent to receive occasional emails related to your account and health management.'),
+                      Text('Please read our complete Terms of Service to understand your rights and obligations.'),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF6750A4),
+                backgroundColor: Colors.white,
+                side: BorderSide(color: Colors.black, width: context.setWidth(0.2)),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: const Color(0xFF6750A4),
+                side: BorderSide(color: const Color(0xFF6750A4), width: context.setWidth(0.2)),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _showPrivacyPolicyDialog(context);
+              },
+              child: const Text('Next'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showPrivacyPolicyDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Privacy Policy'),
+          content: Container(
+            width: context.setWidth(80),
+            height: context.setHeight(25),
+            child: Scrollbar(
+              thumbVisibility: true,
+              thickness: 4.0,
+              radius: const Radius.circular(10),
+              child: Padding(
+                padding: EdgeInsets.only(right: context.setWidth(2)),
+                child: const SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  child: ListBody(
+                    children: <Widget>[
+                      Text('Your privacy is critically important to us.'),
+                      Text('We have a few fundamental principles:'),
+                      Text('• We don’t ask you for personal information unless we truly need it.'),
+                      Text('• We don’t share your personal information except to comply with the law, develop our products, or protect our rights.'),
+                      Text('• We don’t store personal information on our servers unless required for the on-going operation of one of our services.'),
+                      Text('Please review our complete Privacy Policy to understand how we handle your data.'),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF6750A4),
+                backgroundColor: Colors.white,
+                side: BorderSide(color: Colors.black, width: context.setWidth(0.2)),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: const Color(0xFF6750A4),
+                side: BorderSide(color: const Color(0xFF6750A4), width: context.setWidth(0.2)),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (!_isTermsAccepted) {
+                  setState(() {
+                    _isTermsAccepted = true;
+                    _updateSubmitButtonState();
+                  });
+                }
+              },
+              child: const Text('Accept'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildSignUpButton(BuildContext context) {
     Color buttonColor = _isFormFilled ? const Color(0xFF6750A4) : Colors.grey;
 
     return Container(
       width: context.setWidth(80),
-      height: context.setHeight(6.5),
+      height: 60,
       margin: EdgeInsets.only(
           top: context.setHeight(2.5),
           bottom: context.setHeight(1.25)
@@ -452,7 +594,7 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
   Widget _buildGoogleSignUpButton(BuildContext context) {
     return Container(
       width: context.setWidth(80),
-      height: context.setHeight(6.5),
+      height: 60,
       margin: EdgeInsets.only(top: context.setHeight(1.25), bottom: context.setHeight(2.5)),
       decoration: BoxDecoration(
         color: const Color(0xFF6750A4),
