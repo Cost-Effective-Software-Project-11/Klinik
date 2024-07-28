@@ -22,5 +22,10 @@
     "phone": "Phone",
     "phone_placeholder": "Enter your phone",
     "phoneTextError": "Enter a valid phone number",
-    "sendCode": "Send code"
+    "sendCode": "Send code",
+    "code_text_1": "Enter the verification code",
+    "code_text_2": "We’ve sent a verification code to ",
+    "code_text_3": ", enter it below",
+    "code_text_4": "didn’t get the code? ",
+    "code_text_5": "Resend code"
 }

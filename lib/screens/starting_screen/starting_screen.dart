@@ -96,34 +96,34 @@ class StartingScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            Container(
-              width: 304,
-              height: 52,
-              clipBehavior: Clip.antiAlias,
-              decoration: ShapeDecoration(
-                shape: RoundedRectangleBorder(
-                  side: const BorderSide(width: 3, color: Color(0xFF6750A4)),
-                  borderRadius: BorderRadius.circular(100),
-                ),
-              ),
-              child: InkWell(
-                onTap: () => {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const LoginScreen()))
-                },
-                child: const Center(
-                  child: Text(
-                    'Login',
-                    style: TextStyle(
-                      color: Color(0xFF6750A4),
-                      fontSize: 14,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            // Container(
+            //   width: 304,
+            //   height: 52,
+            //   clipBehavior: Clip.antiAlias,
+            //   decoration: ShapeDecoration(
+            //     shape: RoundedRectangleBorder(
+            //       side: const BorderSide(width: 3, color: Color(0xFF6750A4)),
+            //       borderRadius: BorderRadius.circular(100),
+            //     ),
+            //   ),
+            //   child: InkWell(
+            //     onTap: () => {
+            //       Navigator.of(context).push(
+            //           MaterialPageRoute(builder: (_) => const LoginScreen()))
+            //     },
+            //     child: const Center(
+            //       child: Text(
+            //         'Login',
+            //         style: TextStyle(
+            //           color: Color(0xFF6750A4),
+            //           fontSize: 14,
+            //           fontFamily: 'Roboto',
+            //           fontWeight: FontWeight.w500,
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

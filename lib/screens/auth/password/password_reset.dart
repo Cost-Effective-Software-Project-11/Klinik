@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
 import 'package:flutter_gp5/screens/auth/password/password_reset_code.dart';
+import 'package:flutter_gp5/utils/code_generator.dart';
 
 class ResetPassword extends StatefulWidget {
   const ResetPassword({super.key});
@@ -42,38 +43,36 @@ class _ResetPasswordState extends State<ResetPassword> {
   }
 
   Future<void> _submitForm() async {
-    String email = _emailController.text.trim();
-    String phone = _phoneController.text.trim();
-    if (email.isNotEmpty) {
-      await _sendCodeToEmail(email);
+    String userEmail = _emailController.text.trim();
+    String userPhone = _phoneController.text.trim();
+    String generatedCode = CodeGenerator().generateCode();
+    print(generatedCode);
+    if (userEmail.isNotEmpty) {
+      await _sendCodeToEmail(userEmail, generatedCode);
     }
-    if (phone.isNotEmpty) {
-      await _sendCodeToPhone(phone);
+    if (userPhone.isNotEmpty) {
+      await _sendCodeToPhone(userPhone, generatedCode);
     }
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (_) => const ResetPasswordCode()));
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => ResetPasswordCode(
+              email: userEmail,
+              code: generatedCode,
+            )));
   }
 
-  Future<void> _sendCodeToEmail(String email) async {
+  Future<void> _sendCodeToEmail(String email, String code) async {
     try {
-      // Use FirebaseAuth to send verification code
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-      // Logic for sending a 4-digit code can be implemented here
-    } catch (e) {
-      // Handle error
-      print("Failed to send code to email: $e");
-    }
+    } catch (e) {}
   }
 
-  Future<void> _sendCodeToPhone(String phone) async {
+  Future<void> _sendCodeToPhone(String phone, String code) async {
     try {
-      // Use FirebaseAuth to send SMS verification code
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phone,
         verificationCompleted: (PhoneAuthCredential credential) {},
         verificationFailed: (FirebaseAuthException e) {
           // Handle error
-          print("Failed to send code to phone: $e");
         },
         codeSent: (String verificationId, int? resendToken) {
           // Store the verification ID and resend token for later use
@@ -82,7 +81,6 @@ class _ResetPasswordState extends State<ResetPassword> {
       );
     } catch (e) {
       // Handle error
-      print("Failed to send code to phone: $e");
     }
   }
 
