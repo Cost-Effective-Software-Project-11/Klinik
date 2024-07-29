@@ -5,6 +5,7 @@ import 'package:flutter_gp5/enums/status_enum.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
 import 'package:flutter_gp5/routes/app_routes.dart';
 import '../../../repos/authentication/authentication_repository.dart';
+import '../../starting_screen/starting_screen.dart';
 import 'bloc/login_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -53,7 +54,7 @@ class _LoginScreenState extends State<_LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
+          backgroundColor: Colors.transparent,
           centerTitle: true,
           elevation: 0,
           title: Text(AppLocale.of(context)!.login,
@@ -393,9 +394,7 @@ class _LoginScreenState extends State<_LoginScreen> {
       children: <Widget>[
         const Text("Don't have an account?"),
         TextButton(
-          onPressed: () {
-            Navigator.pushNamed(context, AppRoutes.start);
-          },
+          onPressed: () => showRegisterAsDialog(context),
           child: const Text('Sign Up'),
         ),
       ],

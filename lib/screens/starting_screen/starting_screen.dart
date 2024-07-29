@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../locale/l10n/app_locale.dart';
 import '../../routes/app_routes.dart';
 import '../../utils/image_utils.dart';
 
@@ -32,9 +33,8 @@ class StartingScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const Text(
-              'Lets get started!',
-              style: TextStyle(
+            Text(AppLocale.of(context)!.letsGetStarted,
+              style: const TextStyle(
                 color: Color(0xFF231F20),
                 fontSize: 24,
                 fontFamily: 'Roboto',
@@ -47,18 +47,17 @@ class StartingScreen extends StatelessWidget {
               height: 52,
               clipBehavior: Clip.antiAlias,
               decoration: ShapeDecoration(
+                color: const Color(0xFF6750A4),
                 shape: RoundedRectangleBorder(
-                  side: const BorderSide(width: 3, color: Color(0xFF6750A4)),
                   borderRadius: BorderRadius.circular(100),
                 ),
               ),
               child: MaterialButton(
                 onPressed: () => Navigator.of(context).pushNamed(AppRoutes.login),
-                child: const Center(
-                  child: Text(
-                    'Login',
-                    style: TextStyle(
-                      color: Color(0xFF6750A4),
+                child: Center(
+                  child: Text(AppLocale.of(context)!.login,
+                    style: const TextStyle(
+                      color: Colors.white,
                       fontSize: 14,
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w500,
@@ -73,18 +72,17 @@ class StartingScreen extends StatelessWidget {
               height: 52,
               clipBehavior: Clip.antiAlias,
               decoration: ShapeDecoration(
-                color: const Color(0xFF6750A4),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(100),
+                  side: const BorderSide(width: 3, color: Color(0xFF6750A4)),
                 ),
               ),
               child: MaterialButton(
                 onPressed: () => showRegisterAsDialog(context),
-                child: const Center(
-                  child: Text(
-                    'Sign up',
-                    style: TextStyle(
-                      color: Colors.white,
+                child: Center(
+                  child: Text(AppLocale.of(context)!.signup,
+                    style: const TextStyle(
+                      color: Color(0xFF6750A4),
                       fontSize: 14,
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w500,
@@ -100,7 +98,6 @@ class StartingScreen extends StatelessWidget {
     );
   }
 }
-
 
 void showRegisterAsDialog(BuildContext context) {
   showDialog(
@@ -130,10 +127,9 @@ void showRegisterAsDialog(BuildContext context) {
                     bottom: BorderSide(width: 1, color: Colors.black),
                   ),
                 ),
-                child: const Text(
-                  'Register as',
+                child: Text(AppLocale.of(context)!.registerAs,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Color(0xFF1D1B20),
                     fontSize: 24,
                     fontFamily: 'Roboto',
@@ -142,12 +138,12 @@ void showRegisterAsDialog(BuildContext context) {
                 ),
               ),
               const SizedBox(height: 24),
-              buildOptionButton(context, 'Patient', () {
+              buildOptionButton(context, AppLocale.of(context)!.patient, () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pushNamed(AppRoutes.signupPatient);
               }),
               const SizedBox(height: 16),
-              buildOptionButton(context, 'Doctor', () {
+              buildOptionButton(context, AppLocale.of(context)!.doctor, () {
                 Navigator.of(context). pop();
                 Navigator.of(context).pushNamed(AppRoutes.signupDoctor);
               }),
