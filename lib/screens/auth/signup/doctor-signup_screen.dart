@@ -88,9 +88,9 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
         },
         child: Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(context.setHeight(9)),
+            preferredSize: Size.fromHeight(context.setHeight(10)),
             child: Padding(
-              padding: EdgeInsets.only(top: context.setHeight(4)),
+              padding: EdgeInsets.only(top: context.setHeight(4), bottom: context.setHeight(2)),
               child: AppBar(
                 leading: IconButton(
                   icon: Icon(Icons.navigate_before, color: const Color(0xFF1D1B20), size: context.setWidth(8)),
@@ -105,6 +105,7 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
                   ),
                 ),
                 backgroundColor: Colors.transparent,
+                surfaceTintColor: Colors.white,
                 elevation: 0,
                 centerTitle: true,
                 actions: <Widget>[
