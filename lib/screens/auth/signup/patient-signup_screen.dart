@@ -81,6 +81,38 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
           }
         },
         child: Scaffold(
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(context.setHeight(9)),
+            child: Padding(
+              padding: EdgeInsets.only(top: context.setHeight(4)),
+              child: AppBar(
+                leading: IconButton(
+                  icon: Icon(Icons.navigate_before, color: const Color(0xFF1D1B20), size: context.setWidth(8)),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                title: Text(
+                  AppLocale.of(context)!.patientSignUpTitle,
+                  style: TextStyle(
+                    color: const Color(0xFF1D1B20),
+                    fontSize: context.setWidth(5),
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                centerTitle: true,
+                actions: <Widget>[
+                  Opacity(
+                    opacity: 0,
+                    child: IconButton(
+                      icon: Icon(Icons.navigate_before, size: context.setWidth(8)),
+                      onPressed: null,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           body: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -114,7 +146,8 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
               ),
             ),
           ),
-        ));
+        )
+    );
   }
 
   Widget _buildSignUpForm(BuildContext context) {
@@ -122,8 +155,6 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
       padding: EdgeInsets.symmetric(horizontal: context.setWidth(2.5), vertical: context.setHeight(1)),
       child: Column(
         children: [
-          _backButton(context),
-          SizedBox(height: context.setHeight(4)),
           _buildInputField(context, AppLocale.of(context)!.name, Icons.account_circle, AppLocale.of(context)!.enterYourName, false, _nameController),
           _buildInputField(context, AppLocale.of(context)!.email, IconlyBold.message, AppLocale.of(context)!.email_placeholder, false, _emailController),
           _buildInputField(context, AppLocale.of(context)!.phone, IconlyBold.calling, AppLocale.of(context)!.enterYourPhone, false, _phoneController),
@@ -131,33 +162,6 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
           _buildInputField(context, AppLocale.of(context)!.confirm_password, IconlyBold.unlock, AppLocale.of(context)!.confirmYourPassword, true, _confirmPasswordController, _toggleConfirmPasswordVisibility),
         ],
       ),
-    );
-  }
-
-  Widget _backButton(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        IconButton(
-          icon: Icon(Icons.navigate_before, color: const Color(0xFF1D1B20), size: context.setWidth(8)),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        Text(
-          AppLocale.of(context)!.patientSignUpTitle,
-          style: TextStyle(
-            color: const Color(0xFF1D1B20),
-            fontSize: context.setWidth(5),
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-        Opacity(
-          opacity: 0,
-          child: IconButton(
-            icon: Icon(Icons.navigate_before, size: context.setWidth(8)),
-            onPressed: null,
-          ),
-        ),
-      ],
     );
   }
 
