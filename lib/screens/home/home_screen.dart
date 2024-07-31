@@ -6,28 +6,26 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar:
-          true, // To ensure the body extends behind the app bar
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: const Text('Home'),
-        backgroundColor: Colors.transparent, // Make the app bar transparent
-        elevation: 0, // Remove the app bar shadow
-        centerTitle: true, // Center the title
-        automaticallyImplyLeading: false, // Remove the back button
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        automaticallyImplyLeading: false,
       ),
       body: Stack(
         children: [
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image:
-                    AssetImage('assets/images/home.png'), // Path to your image
+                image: AssetImage('assets/images/home.png'),
                 fit: BoxFit.cover,
               ),
             ),
           ),
           Positioned(
-            top: kToolbarHeight + 16, // Position below the app bar
+            top: kToolbarHeight + 16,
             left: 16,
             right: 16,
             child: Column(
@@ -66,42 +64,20 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                Container(
-                    //нещо не  промени дизайна май
-                    width: 156,
-                    height: 40,
-                    padding: const EdgeInsets.only(
-                      top: 10,
-                      left: 24,
-                      right: 16,
-                      bottom: 10,
-                    )), // Space between search bar and chips
+                const SizedBox(height: 16),
                 Row(
-                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ActionChip(
                       label: const Row(
                         children: [
-                          Text(
-                            'Specialization',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w500,
-                              height: 0.10,
-                              letterSpacing: 0.10,
-                            ),
-                          ),
+                          Text('Specialization'),
                           SizedBox(width: 4),
                           Icon(Icons.add, size: 16, color: Colors.white),
                         ],
                       ),
                       onPressed: () {
-                        // Handle action for Location
+                        // Handle action for Specialization
                       },
                       backgroundColor: Colors.purple,
                       labelStyle: const TextStyle(color: Colors.white),
@@ -111,22 +87,11 @@ class HomeScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    const SizedBox(width: 8), // Space between chips
+                    const SizedBox(width: 8),
                     ActionChip(
                       label: const Row(
                         children: [
-                          Text(
-                            'Location',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w500,
-                              height: 0.10,
-                              letterSpacing: 0.10,
-                            ),
-                          ),
+                          Text('Location'),
                           SizedBox(width: 4),
                           Icon(Icons.add, size: 16, color: Colors.white),
                         ],
@@ -145,6 +110,64 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
               ],
+            ),
+          ),
+          Positioned(
+            top: kToolbarHeight + 120, // Adjust based on your needs
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: ListView.builder(
+              itemCount: 4, // Adjust based on your data
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const ListTile(
+                      contentPadding: EdgeInsets.all(8),
+                      leading: CircleAvatar(
+                        backgroundImage: AssetImage(
+                            'assets/images/doctor.png'), // Replace with your image
+                        radius: 30,
+                      ),
+                      title: Text(
+                        'Dr Todor Todorov',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Neurology, Otoneurology, Sport medicine'),
+                          SizedBox(height: 4),
+                          Row(
+                            children: [
+                              Icon(Icons.star, color: Colors.amber, size: 16),
+                              Icon(Icons.star, color: Colors.amber, size: 16),
+                              Icon(Icons.star, color: Colors.amber, size: 16),
+                              Icon(Icons.star, color: Colors.amber, size: 16),
+                              Icon(Icons.star, color: Colors.amber, size: 16),
+                              SizedBox(width: 4),
+                              Text('(12)'),
+                            ],
+                          ),
+                        ],
+                      ),
+                      trailing: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Sofia'),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ],
