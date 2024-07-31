@@ -8,6 +8,8 @@ import '../../../models/user.dart';
 import '../../../repos/authentication/authentication_repository.dart';
 import '../../../repos/user/user_repository.dart';
 
+import '../../../enums/authentication_status_enum.dart';
+
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
