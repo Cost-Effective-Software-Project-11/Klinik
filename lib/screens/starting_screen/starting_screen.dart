@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gp5/screens/auth/login/login_screen.dart';
 
 import '../../routes/app_routes.dart';
 import '../../utils/image_utils.dart';
