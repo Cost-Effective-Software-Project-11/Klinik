@@ -5,6 +5,7 @@ import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
 import 'package:flutter_gp5/screens/auth/password/password_reset_code.dart';
 import 'package:flutter_gp5/utils/code_generator.dart';
+import 'dart:io';
 
 class ResetPassword extends StatefulWidget {
   const ResetPassword({super.key});
@@ -71,15 +72,16 @@ class _ResetPasswordState extends State<ResetPassword> {
   }
 
   Future<void> _sendCodeToPhone(String phone, String code) async {
+    if (!Platform.isAndroid) {
+      return;
+    }
     try {
       await _telephony.sendSms(
         to: phone,
         message: 'Your verification code is: $code',
       );
-      print("sended");
     } catch (e) {
       // Handle error
-      print("not sended");
     }
   }
 
