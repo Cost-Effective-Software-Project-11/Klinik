@@ -18,7 +18,7 @@
     "login_google": "Melden Sie sich mit Google an",
     "password_reset": "Passwort zurücksetzen",
     "password_text_1": "Sie können sich nicht an Ihr Passwort erinnern?",
-    "password_text_2": "Geben Sie unten Ihre E-Mail-Adresse oder Telefonnummer ein und wir senden Ihnen einen Aktivierungscode",
+    "password_text_2": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Ändern Ihres Passworts",
     "phone": "Telefon",
     "phone_placeholder": "Geben Sie Ihr Telefon ein",
     "phoneTextError": "Geben Sie eine gültige Telefonnummer ein",
@@ -27,5 +27,6 @@
     "code_text_2": "Wir haben einen Bestätigungscode an gesendet ",
     "code_text_3": ", Geben Sie es unten ein",
     "code_text_4": "Hast du den Code nicht bekommen? ",
-    "code_text_5": "Code erneut senden"
+    "code_text_5": "Code erneut senden",
+    "unexpected_error": "Unerwarteter Fehler! Versuchen Sie es erneut!"
 }

@@ -18,7 +18,7 @@
     "login_google": "Login with Google",
     "password_reset": "Password reset",
     "password_text_1": "Can’t remember your password?",
-    "password_text_2": "Enter your email or phone number below and we will send you an activation code",
+    "password_text_2": "Enter your email and we'll send you a link to change your password",
     "phone": "Phone",
     "phone_placeholder": "Enter your phone",
     "phoneTextError": "Enter a valid phone number",
@@ -27,5 +27,6 @@
     "code_text_2": "We’ve sent a verification code to ",
     "code_text_3": ", enter it below",
     "code_text_4": "didn’t get the code? ",
-    "code_text_5": "Resend code"
+    "code_text_5": "Resend code",
+    "unexpected_error": "Unexpected error! Try again!"
 }
