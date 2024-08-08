@@ -8,7 +8,7 @@
     "language_bg": "Bulgarisch",
     "language_de": "Deutsch",
     "email": "Email",
-    "emailTextError": "Bitte geben Sie eine E-Mail ein!",
+    "emailTextError": "Bitte geben Sie eine gültige Email-Adresse ein!",
     "email_placeholder": "Geben sie ihre E-Mail Adresse ein",
     "password": "Passwort",
     "password_placeholder": "Geben Sie Ihr Passwort ein",
@@ -22,11 +22,12 @@
     "phone": "Telefon",
     "phone_placeholder": "Geben Sie Ihr Telefon ein",
     "phoneTextError": "Geben Sie eine gültige Telefonnummer ein",
-    "sendCode": "Code senden",
+    "sendEmail": "Email senden",
     "code_text_1": "Geben Sie den Bestätigungscode ein",
     "code_text_2": "Wir haben einen Bestätigungscode an gesendet ",
     "code_text_3": ", Geben Sie es unten ein",
     "code_text_4": "Hast du den Code nicht bekommen? ",
     "code_text_5": "Code erneut senden",
-    "unexpected_error": "Unerwarteter Fehler! Versuchen Sie es erneut!"
+    "unexpected_error": "Unerwarteter Fehler! Versuchen Sie es erneut!",
+    "emailSented": "Die E-Mail wurde erfolgreich gesendet"
 }

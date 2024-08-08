@@ -8,7 +8,7 @@
     "language_bg": "Bulgarian",
     "language_de": "German",
     "email": "Email",
-    "emailTextError": "Please enter an email!",
+    "emailTextError": "Please enter a valid email!",
     "email_placeholder": "Enter your email",
     "password": "Password",
     "password_placeholder": "Enter your password",
@@ -22,11 +22,12 @@
     "phone": "Phone",
     "phone_placeholder": "Enter your phone",
     "phoneTextError": "Enter a valid phone number",
-    "sendCode": "Send code",
+    "sendEmail": "Send Email",
     "code_text_1": "Enter the verification code",
     "code_text_2": "We’ve sent a verification code to ",
     "code_text_3": ", enter it below",
     "code_text_4": "didn’t get the code? ",
     "code_text_5": "Resend code",
-    "unexpected_error": "Unexpected error! Try again!"
+    "unexpected_error": "Unexpected error! Try again!",
+    "emailSented": "The email has been sent successfully"
 }
