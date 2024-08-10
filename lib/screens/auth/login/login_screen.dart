@@ -16,7 +16,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authenticationRepository =
-    RepositoryProvider.of<AuthenticationRepository>(context);
+        RepositoryProvider.of<AuthenticationRepository>(context);
     return BlocProvider(
       create: (context) =>
           LoginBloc(authenticationRepository: authenticationRepository),
@@ -52,9 +52,8 @@ class _LoginScreenState extends State<_LoginScreen> {
 
   void _updateSubmitButtonState() {
     setState(() {
-      _isFormFilled =
-          _validateField(_emailController.text, 'Email') == null &&
-              _validateField(_passwordController.text, 'Password') == null;
+      _isFormFilled = _validateField(_emailController.text, 'Email') == null &&
+          _validateField(_passwordController.text, 'Password') == null;
     });
   }
 
@@ -74,13 +73,21 @@ class _LoginScreenState extends State<_LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(context.setHeight(16)),
+          preferredSize: Size.fromHeight(context.setHeight(7)),
           child: Padding(
-            padding: EdgeInsets.only(top: context.setHeight(8), bottom: context.setHeight(2)),
+            padding: EdgeInsets.only(
+                top: context.setHeight(1), bottom: context.setHeight(1)),
             child: AppBar(
               leading: IconButton(
-                icon: Icon(Icons.navigate_before, color: const Color(0xFF1D1B20), size: context.setWidth(8)),
-                onPressed: () => Navigator.of(context).pop(),
+                icon: Icon(Icons.navigate_before,
+                    color: const Color(0xFF1D1B20), size: context.setWidth(8)),
+                onPressed: () {
+                  // Unfocus to dismiss the keyboard
+                  FocusManager.instance.primaryFocus?.unfocus();
+
+                  // Navigate back
+                  Navigator.of(context).pop();
+                },
               ),
               title: Text(
                 AppLocale.of(context)!.login,
@@ -98,7 +105,8 @@ class _LoginScreenState extends State<_LoginScreen> {
                 Opacity(
                   opacity: 0,
                   child: IconButton(
-                    icon: Icon(Icons.navigate_before, size: context.setWidth(8)),
+                    icon:
+                        Icon(Icons.navigate_before, size: context.setWidth(8)),
                     onPressed: null,
                   ),
                 ),
@@ -137,7 +145,9 @@ class _LoginScreenState extends State<_LoginScreen> {
                 },
                 child: Center(
                   child: SingleChildScrollView(
-                    padding: EdgeInsets.only(top: context.setHeight(5), bottom: context.setHeight(5)),
+                    padding: EdgeInsets.only(
+                        top: context.setHeight(5),
+                        bottom: context.setHeight(5)),
                     child: Form(
                       key: _formKey,
                       child: Column(
@@ -161,25 +171,43 @@ class _LoginScreenState extends State<_LoginScreen> {
 
   Widget _buildSignUpForm(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: context.setWidth(2.5), vertical: context.setHeight(1)),
+      padding: EdgeInsets.symmetric(
+          horizontal: context.setWidth(2.5), vertical: context.setHeight(1)),
       child: Column(
         children: [
-          _buildInputField(context, AppLocale.of(context)!.email, IconlyBold.message, AppLocale.of(context)!.email_placeholder, false, _emailController),
-          _buildInputField(context, AppLocale.of(context)!.password, IconlyBold.lock, AppLocale.of(context)!.password_placeholder, true, _passwordController, _togglePasswordVisibility)
+          _buildInputField(
+            context,
+            AppLocale.of(context)!.email,
+            IconlyBold.message,
+            AppLocale.of(context)!.email_placeholder,
+            false,
+            _emailController,
+            keyboardType: TextInputType.emailAddress,
+          ),
+          _buildInputField(
+            context,
+            AppLocale.of(context)!.password,
+            IconlyBold.lock,
+            AppLocale.of(context)!.password_placeholder,
+            true,
+            _passwordController,
+            toggleVisibility: _togglePasswordVisibility,
+          )
         ],
       ),
     );
   }
 
   Widget _buildInputField(
-      BuildContext context,
-      String label,
-      IconData icon,
-      String placeholder,
-      bool isPassword,
-      TextEditingController controller,
-      [VoidCallback? toggleVisibility]
-      ) {
+    BuildContext context,
+    String label,
+    IconData icon,
+    String placeholder,
+    bool isPassword,
+    TextEditingController controller, {
+    VoidCallback? toggleVisibility,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -202,28 +230,37 @@ class _LoginScreenState extends State<_LoginScreen> {
                   Container(
                     margin: EdgeInsets.only(left: context.setWidth(3)),
                     alignment: Alignment.centerLeft,
-                    child: Icon(icon, color: const Color(0xFF49454F), size: context.setWidth(6)),
+                    child: Icon(icon,
+                        color: const Color(0xFF49454F),
+                        size: context.setWidth(6)),
                   ),
                   Expanded(
                     child: TextFormField(
                       controller: controller,
                       obscureText: isPassword && !_passwordVisible,
+                      keyboardType: keyboardType,
                       decoration: InputDecoration(
                         hintText: placeholder,
-                        hintStyle: TextStyle(color: const Color(0x6649454F), fontSize: context.setWidth(4)),
+                        hintStyle: TextStyle(
+                            color: const Color(0x6649454F),
+                            fontSize: context.setWidth(4)),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(vertical: context.setHeight(2), horizontal: context.setWidth(3)),
-                        suffixIcon: isPassword ? IconButton(
-                          icon: Icon(
-                              _passwordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off),
-                          onPressed: toggleVisibility,
-                          color: const Color(0xFF49454F),
-                        ) : null,
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: context.setHeight(2),
+                            horizontal: context.setWidth(3)),
+                        suffixIcon: isPassword
+                            ? IconButton(
+                                icon: Icon(_passwordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: toggleVisibility,
+                                color: const Color(0xFF49454F),
+                              )
+                            : null,
                       ),
                       textAlign: TextAlign.left,
                       validator: (value) => _validateField(value, label),
+
                     ),
                   ),
                 ],
@@ -248,10 +285,15 @@ class _LoginScreenState extends State<_LoginScreen> {
           ],
         ),
         Padding(
-          padding: EdgeInsets.only(left: context.setWidth(5), top: context.setHeight(0.3)),
+          padding: EdgeInsets.only(
+              left: context.setWidth(5), top: context.setHeight(0.3)),
           child: Text(
-            controller.value.text.isEmpty || _validateField(controller.value.text, label) == null ? "" : _validateField(controller.value.text, label)!,
-            style: TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
+            controller.value.text.isEmpty ||
+                    _validateField(controller.value.text, label) == null
+                ? ""
+                : _validateField(controller.value.text, label)!,
+            style:
+                TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
           ),
         ),
       ],
@@ -271,7 +313,8 @@ class _LoginScreenState extends State<_LoginScreen> {
 
     switch (fieldName) {
       case 'Email':
-        final emailRegex = RegExp(r'^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$');
+        final emailRegex =
+            RegExp(r'^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$');
         if (!emailRegex.hasMatch(value)) {
           return 'Enter a valid email address';
         }
@@ -289,8 +332,8 @@ class _LoginScreenState extends State<_LoginScreen> {
     return Visibility(
         visible: _isForgotPasswordVisible,
         child: Container(
-        child: Transform.translate(
-        offset: Offset(0, -context.setHeight(2)),
+            child: Transform.translate(
+          offset: Offset(0, -context.setHeight(2)),
           child: SizedBox(
             width: context.setWidth(80),
             child: InkWell(
@@ -311,9 +354,7 @@ class _LoginScreenState extends State<_LoginScreen> {
               ),
             ),
           ),
-        )
-        )
-    );
+        )));
   }
 
   Widget _buildLoginButton() {
@@ -323,9 +364,7 @@ class _LoginScreenState extends State<_LoginScreen> {
       width: context.setWidth(80),
       height: 60,
       margin: EdgeInsets.only(
-          top: context.setHeight(2.5),
-          bottom: context.setHeight(1.25)
-      ),
+          top: context.setHeight(2.5), bottom: context.setHeight(1.25)),
       decoration: BoxDecoration(
         color: buttonColor,
         borderRadius: BorderRadius.circular(100),
@@ -337,7 +376,13 @@ class _LoginScreenState extends State<_LoginScreen> {
             borderRadius: BorderRadius.circular(100),
           ),
         ),
-        onPressed: _isFormFilled ? _submitForm : null,
+        onPressed: _isFormFilled
+            ? () {
+                // Dismiss the keyboard
+                FocusManager.instance.primaryFocus?.unfocus();
+                _submitForm();
+              }
+            : null,
         child: Text(
           AppLocale.of(context)!.login,
           style: TextStyle(
@@ -386,7 +431,8 @@ class _LoginScreenState extends State<_LoginScreen> {
     return Container(
       width: context.setWidth(80),
       height: 60,
-      margin: EdgeInsets.only(top: context.setHeight(1.25), bottom: context.setHeight(2.5)),
+      margin: EdgeInsets.only(
+          top: context.setHeight(1.25), bottom: context.setHeight(2.5)),
       decoration: BoxDecoration(
         color: const Color(0xFF6750A4),
         borderRadius: BorderRadius.circular(context.setHeight(6.5)),
@@ -422,9 +468,9 @@ class _LoginScreenState extends State<_LoginScreen> {
   void _submitForm() {
     if (_formKey.currentState!.validate() && _isFormFilled) {
       context.read<LoginBloc>().add(LoginSubmitted(
-        email: _emailController.text,
-        password: _passwordController.text,
-      ));
+            email: _emailController.text,
+            password: _passwordController.text,
+          ));
     }
   }
 
