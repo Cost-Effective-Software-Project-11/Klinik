@@ -88,6 +88,7 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
                 leading: IconButton(
                   icon: Icon(Icons.navigate_before, color: const Color(0xFF1D1B20), size: context.setWidth(8)),
                   onPressed: () => Navigator.of(context).pop(),
+
                 ),
                 title: Text(
                   AppLocale.of(context)!.patientSignUpTitle,
@@ -153,11 +154,48 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
       padding: EdgeInsets.symmetric(horizontal: context.setWidth(2.5), vertical: context.setHeight(1)),
       child: Column(
         children: [
-          _buildInputField(context, AppLocale.of(context)!.name, Icons.account_circle, AppLocale.of(context)!.enterYourName, false, _nameController),
-          _buildInputField(context, AppLocale.of(context)!.email, IconlyBold.message, AppLocale.of(context)!.email_placeholder, false, _emailController),
-          _buildInputField(context, AppLocale.of(context)!.phone, IconlyBold.calling, AppLocale.of(context)!.enterYourPhone, false, _phoneController),
-          _buildInputField(context, AppLocale.of(context)!.password, IconlyBold.lock, AppLocale.of(context)!.password_placeholder, true, _passwordController, _togglePasswordVisibility),
-          _buildInputField(context, AppLocale.of(context)!.confirm_password, IconlyBold.unlock, AppLocale.of(context)!.confirmYourPassword, true, _confirmPasswordController, _toggleConfirmPasswordVisibility),
+          _buildInputField(
+              context,
+              AppLocale.of(context)!.name,
+              Icons.account_circle,
+              AppLocale.of(context)!.enterYourName,
+              false,
+              _nameController,
+              keyboardType: TextInputType.name
+          ),
+          _buildInputField(
+              context, AppLocale.of(context)!.email,
+              IconlyBold.message,
+              AppLocale.of(context)!.email_placeholder,
+              false,
+              _emailController,
+            keyboardType: TextInputType.emailAddress
+          ),
+          _buildInputField(
+              context,
+              AppLocale.of(context)!.phone,
+              IconlyBold.calling,
+              AppLocale.of(context)!.enterYourPhone,
+              false,
+              _phoneController,
+            keyboardType: TextInputType.phone
+          ),
+          _buildInputField(
+              context,
+              AppLocale.of(context)!.password,
+              IconlyBold.lock,
+              AppLocale.of(context)!.password_placeholder,
+              true, _passwordController,
+              toggleVisibility: _togglePasswordVisibility
+          ),
+          _buildInputField(
+              context,
+              AppLocale.of(context)!.confirm_password,
+              IconlyBold.unlock, AppLocale.of(context)!.confirmYourPassword,
+              true,
+              _confirmPasswordController,
+              toggleVisibility: _toggleConfirmPasswordVisibility
+          ),
         ],
       ),
     );
@@ -169,8 +207,10 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
       IconData icon,
       String placeholder,
       bool isPassword,
-      TextEditingController controller,
-      [VoidCallback? toggleVisibility]
+      TextEditingController controller, {
+        VoidCallback? toggleVisibility,
+        TextInputType keyboardType = TextInputType.text,
+      }
       ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,6 +256,10 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
                       ),
                       textAlign: TextAlign.left,
                       validator: (value) => _validateField(value, label),
+                      // Dismiss the keyboard on tap or submission
+                      onFieldSubmitted: (value) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                      },
                     ),
                   ),
                 ],
@@ -531,7 +575,13 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
             borderRadius: BorderRadius.circular(100),
           ),
         ),
-        onPressed: _isFormFilled ? _submitForm : null,
+        onPressed: _isFormFilled
+            ? () {
+          // Dismiss the keyboard
+          FocusManager.instance.primaryFocus?.unfocus();
+          _submitForm();
+        }
+            : null,
         child: Text(
           AppLocale.of(context)!.signup,
           style: TextStyle(

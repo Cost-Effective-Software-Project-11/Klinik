@@ -158,13 +158,66 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
       padding: EdgeInsets.symmetric(horizontal: context.setWidth(2.5), vertical: context.setHeight(1)),
       child: Column(
         children: [
-          _buildInputField(context, AppLocale.of(context)!.name, Icons.account_circle, AppLocale.of(context)!.enterYourName, false, _nameController),
-          _buildInputField(context, AppLocale.of(context)!.email, IconlyBold.message, AppLocale.of(context)!.email_placeholder, false, _emailController),
-          _buildInputField(context, AppLocale.of(context)!.specialty, IconlyBold.document, AppLocale.of(context)!.enterYourSpecialty, false, _specialtyController),
-          _buildInputField(context, AppLocale.of(context)!.workplace, IconlyBold.bag_2, AppLocale.of(context)!.enterYourWorkplace, false, _workplaceController),
-          _buildInputField(context, AppLocale.of(context)!.phone, IconlyBold.calling, AppLocale.of(context)!.enterYourPhone, false, _phoneController),
-          _buildInputField(context, AppLocale.of(context)!.password, IconlyBold.lock, AppLocale.of(context)!.password_placeholder, true, _passwordController, _togglePasswordVisibility),
-          _buildInputField(context, AppLocale.of(context)!.confirm_password, IconlyBold.unlock, AppLocale.of(context)!.confirmYourPassword, true, _confirmPasswordController, _toggleConfirmPasswordVisibility),
+          _buildInputField(
+              context,
+              AppLocale.of(context)!.name,
+              Icons.account_circle,
+              AppLocale.of(context)!.enterYourName,
+              false,
+              _nameController,
+          keyboardType: TextInputType.name
+          ),
+          _buildInputField(
+              context, AppLocale.of(context)!.email,
+              IconlyBold.message,
+              AppLocale.of(context)!.email_placeholder,
+              false,
+              _emailController,
+              keyboardType: TextInputType.emailAddress
+          ),
+          _buildInputField(
+              context,
+              AppLocale.of(context)!.specialty,
+              IconlyBold.document,
+              AppLocale.of(context)!.enterYourSpecialty,
+              false,
+              _specialtyController,
+            keyboardType: TextInputType.text
+          ),
+          _buildInputField(
+              context,
+              AppLocale.of(context)!.workplace,
+              IconlyBold.bag_2,
+              AppLocale.of(context)!.enterYourWorkplace,
+              false,
+              _workplaceController,
+              keyboardType: TextInputType.text
+          ),
+          _buildInputField(
+              context,
+              AppLocale.of(context)!.phone,
+              IconlyBold.calling,
+              AppLocale.of(context)!.enterYourPhone,
+              false,
+              _phoneController,
+              keyboardType: TextInputType.phone
+          ),
+          _buildInputField(
+              context,
+              AppLocale.of(context)!.password,
+              IconlyBold.lock,
+              AppLocale.of(context)!.password_placeholder,
+              true, _passwordController,
+              toggleVisibility: _togglePasswordVisibility
+          ),
+          _buildInputField(
+              context,
+              AppLocale.of(context)!.confirm_password,
+              IconlyBold.unlock,
+              AppLocale.of(context)!.confirmYourPassword,
+              true,
+              _confirmPasswordController,
+              toggleVisibility: _toggleConfirmPasswordVisibility),
         ],
       ),
     );
@@ -176,8 +229,10 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
       IconData icon,
       String placeholder,
       bool isPassword,
-      TextEditingController controller,
-      [VoidCallback? toggleVisibility]
+      TextEditingController controller, {
+        VoidCallback? toggleVisibility,
+        TextInputType keyboardType = TextInputType.text,
+      }
       ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -223,6 +278,10 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
                       ),
                       textAlign: TextAlign.left,
                       validator: (value) => _validateField(value, label),
+                      // Dismiss the keyboard on tap or submission
+                      onFieldSubmitted: (value) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                      },
                     ),
                   ),
                 ],
