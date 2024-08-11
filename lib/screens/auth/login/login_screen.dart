@@ -262,7 +262,6 @@ class _LoginScreenState extends State<_LoginScreen> {
                       validator: (value) => _validateField(value, label),
 
                       // Dismiss the keyboard on tap or submission
-
                       onFieldSubmitted: (value) {
                         FocusManager.instance.primaryFocus?.unfocus();
                       },

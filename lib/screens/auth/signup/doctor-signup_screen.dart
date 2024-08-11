@@ -7,7 +7,6 @@ import '../../../enums/status_enum.dart';
 import '../../../locale/l10n/app_locale.dart';
 import '../../../repos/authentication/authentication_repository.dart';
 import '../../../routes/app_routes.dart';
-import '../../../utils/image_utils.dart';
 import 'package:iconly/iconly.dart';
 
 import 'bloc/signup_bloc.dart';
@@ -88,9 +87,9 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
         },
         child: Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(context.setHeight(10)),
+            preferredSize: Size.fromHeight(context.setHeight(7)),
             child: Padding(
-              padding: EdgeInsets.only(top: context.setHeight(4), bottom: context.setHeight(2)),
+              padding: EdgeInsets.only(top: context.setHeight(1), bottom: context.setHeight(1)),
               child: AppBar(
                 leading: IconButton(
                   icon: Icon(Icons.navigate_before, color: const Color(0xFF1D1B20), size: context.setWidth(8)),
@@ -144,8 +143,6 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
                       _buildSignUpForm(context),
                       _termsAndPrivacyPolicy(context),
                       _buildSignUpButton(context),
-                      _buildOrSeparator(context),
-                      _buildGoogleSignUpButton(context),
                       _loginPrompt(context),
                     ],
                   ),
@@ -560,75 +557,6 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
             fontWeight: FontWeight.w500,
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildOrSeparator(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: context.setHeight(1.25)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            width: context.setWidth(35),
-            height: 1,
-            color: const Color(0x661D1B20),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: context.setWidth(2)),
-            child: Text(
-              AppLocale.of(context)!.or,
-              style: TextStyle(
-                color: const Color(0x661D1B20),
-                fontSize: context.setWidth(4),
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ),
-          Container(
-            width: context.setWidth(35),
-            height: 1,
-            color: const Color(0x661D1B20),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildGoogleSignUpButton(BuildContext context) {
-    return Container(
-      width: context.setWidth(80),
-      height: 60,
-      margin: EdgeInsets.only(top: context.setHeight(1.25), bottom: context.setHeight(2.5)),
-      decoration: BoxDecoration(
-        color: const Color(0xFF6750A4),
-        borderRadius: BorderRadius.circular(context.setHeight(6.5)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            width: context.setWidth(6),
-            height: context.setHeight(3),
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(ImageUtils.googleLogo),
-                fit: BoxFit.fill,
-              ),
-            ),
-          ),
-          SizedBox(width: context.setWidth(2.5)),
-          Text(
-            AppLocale.of(context)!.signUpWithGoogle,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: context.setWidth(3.5),
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
       ),
     );
   }
