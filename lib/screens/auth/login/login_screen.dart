@@ -199,15 +199,15 @@ class _LoginScreenState extends State<_LoginScreen> {
   }
 
   Widget _buildInputField(
-    BuildContext context,
-    String label,
-    IconData icon,
-    String placeholder,
-    bool isPassword,
-    TextEditingController controller, {
-    VoidCallback? toggleVisibility,
-    TextInputType keyboardType = TextInputType.text,
-  }) {
+      BuildContext context,
+      String label,
+      IconData icon,
+      String placeholder,
+      bool isPassword,
+      TextEditingController controller, {
+        VoidCallback? toggleVisibility,
+        TextInputType keyboardType = TextInputType.text,
+      }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -250,17 +250,22 @@ class _LoginScreenState extends State<_LoginScreen> {
                             horizontal: context.setWidth(3)),
                         suffixIcon: isPassword
                             ? IconButton(
-                                icon: Icon(_passwordVisible
-                                    ? Icons.visibility
-                                    : Icons.visibility_off),
-                                onPressed: toggleVisibility,
-                                color: const Color(0xFF49454F),
-                              )
+                          icon: Icon(_passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off),
+                          onPressed: toggleVisibility,
+                          color: const Color(0xFF49454F),
+                        )
                             : null,
                       ),
                       textAlign: TextAlign.left,
                       validator: (value) => _validateField(value, label),
 
+                      // Dismiss the keyboard on tap or submission
+
+                      onFieldSubmitted: (value) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                      },
                     ),
                   ),
                 ],
@@ -289,11 +294,11 @@ class _LoginScreenState extends State<_LoginScreen> {
               left: context.setWidth(5), top: context.setHeight(0.3)),
           child: Text(
             controller.value.text.isEmpty ||
-                    _validateField(controller.value.text, label) == null
+                _validateField(controller.value.text, label) == null
                 ? ""
                 : _validateField(controller.value.text, label)!,
             style:
-                TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
+            TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
           ),
         ),
       ],
