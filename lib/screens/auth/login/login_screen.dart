@@ -309,7 +309,7 @@ class _LoginScreenState extends State<_LoginScreen> {
 
   Widget _forgotPasswordButton(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 5.0),
+      margin: const EdgeInsets.only(top: 2.0),
       child: InkWell(
         onTap: () => {
           Navigator.of(context)

@@ -1,4 +1,4 @@
-part of 'email_bloc.dart';
+part of 'password_reset_bloc.dart';
 
 abstract class EmailEvent extends Equatable {
   const EmailEvent();

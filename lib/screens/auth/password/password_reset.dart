@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/screens/auth/login/login_screen.dart';
-import 'package:flutter_gp5/screens/auth/password/bloc/email_bloc.dart';
+import 'package:flutter_gp5/screens/auth/password/bloc/password_reset_bloc.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ResetPassword extends StatefulWidget {
   const ResetPassword({super.key});
@@ -20,27 +19,6 @@ class _ResetPasswordState extends State<ResetPassword> {
   final TextEditingController _emailController = TextEditingController();
   final FocusNode _emailFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
-
-  Future<bool> _checkIfEmailExists(String email) async {
-    try {
-      var querySnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .where('email', isEqualTo: email)
-          .get();
-
-      if (querySnapshot.docs.isEmpty) {
-        querySnapshot = await FirebaseFirestore.instance
-            .collection('users2')
-            .where('email', isEqualTo: email)
-            .get();
-      }
-      print("is not empty:");
-      print(querySnapshot.docs.isNotEmpty);
-      return querySnapshot.docs.isNotEmpty;
-    } catch (e) {
-      return false;
-    }
-  }
 
   @override
   void dispose() {
@@ -212,9 +190,10 @@ class _ResetPasswordState extends State<ResetPassword> {
               backgroundColor: Colors.green,
             ),
           );
-
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const LoginScreen()));
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+          );
         } else if (state is EmailSentFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -225,7 +204,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         }
       },
       builder: (context, state) {
-        if (state is EmailSending) {
+        if (state is EmailLoading) {
           return const CircularProgressIndicator();
         }
 
@@ -236,15 +215,19 @@ class _ResetPasswordState extends State<ResetPassword> {
             onPressed: () async {
               if (_formKey.currentState?.validate() == true) {
                 final email = _emailController.text.trim();
-                bool flag = await _checkIfEmailExists(email);
 
-                if (flag) {
+                bool emailExists =
+                    await context.read<EmailBloc>().checkIfEmailExists(email);
+
+                if (emailExists) {
                   context.read<EmailBloc>().add(SendEmailEvent(email));
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(text),
-                    backgroundColor: Colors.red,
-                  ));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(text),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
                 }
               }
             },
