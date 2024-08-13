@@ -77,8 +77,8 @@ class AuthenticationRepository {
         password: password,
       );
 
-      // Step 2: Store user information in Firestore in the 'users2' collection.
-      await _firestore.collection('users2').doc(userCredential.user!.uid).set({
+      // Step 2: Store user information in Firestore in the 'users' collection.
+      await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'email': email,
         'password': password,
         'name': name,
