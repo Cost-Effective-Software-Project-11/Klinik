@@ -4,6 +4,7 @@ import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/utils/image_utils.dart';
 import 'package:intl/intl.dart';
 
+import '../../locale/l10n/app_locale.dart';
 import '../../models/user.dart';
 import '../../repos/user/user_repository.dart';
 import '../../widgets/custom_circular_progress_indicator.dart';
@@ -33,51 +34,42 @@ class _ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(ImageUtils.chatBackgroundPhoto),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Scaffold(
-        bottomNavigationBar: buildNavigationBar(context),
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          scrolledUnderElevation: 0,
-          backgroundColor: Colors.transparent,
-          centerTitle: true,
-          title: const Text(
-            'Messages',
-            style: TextStyle(fontWeight: FontWeight.bold),
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(ImageUtils.chatBackgroundPhoto),
+            fit: BoxFit.cover,
           ),
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            BlocBuilder<ChatBloc, ChatStates>(builder: (context, state) {
-              if (state is UsersLoadingState) {
-                return const SizedBox();
-              } else if (state is UsersLoadedState) {
-                List<User> users = state.myData;
-                return buildRecentsTextWithAvatars(context, users);
-              } else {
-                return const Center(child: Text('No data available'));
-              }
-            }),
-            BlocBuilder<ChatBloc, ChatStates>(builder: (context, state) {
+        child: Scaffold(
+            bottomNavigationBar: buildNavigationBar(context),
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              scrolledUnderElevation: 0,
+              backgroundColor: Colors.transparent,
+              centerTitle: true,
+              title: Text(
+                AppLocale.of(context)!.messages,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            body: BlocBuilder<ChatBloc, ChatStates>(builder: (context, state) {
               if (state is UsersLoadingState) {
                 return buildLoadingWidget(context);
               } else if (state is UsersLoadedState) {
                 List<User> users = state.myData;
-                return buildLoadedChatWidgets(context, users);
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    buildRecentsTextWithAvatars(context, users),
+                    buildLoadedChatWidgets(context, users)
+                  ],
+                );
               } else {
-                return const Center(child: Text('No data available'));
+                return (Text(
+                  AppLocale.of(context)!.no_data,
+                ));
               }
-            }),
-          ],
-        ),
-      ),
-    );
+            })));
   }
 }
 
@@ -98,12 +90,12 @@ Widget buildRecentsRow(BuildContext context) {
   return Row(
     children: [
       SizedBox(width: context.setWidth(3)),
-      const SizedBox(
+      SizedBox(
         child: FittedBox(
           fit: BoxFit.contain,
           child: Text(
-            "Recents",
-            style: TextStyle(
+            AppLocale.of(context)!.recents,
+            style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
               color: Colors.grey,
@@ -120,7 +112,6 @@ Widget buildHorizontalUserAvatars(BuildContext context, List<User> users) {
     scrollDirection: Axis.horizontal,
     itemCount: users.length,
     itemBuilder: (context, index) {
-      final user = users[index];
       return Row(
         children: [
           SizedBox(
@@ -132,8 +123,11 @@ Widget buildHorizontalUserAvatars(BuildContext context, List<User> users) {
               children: [
                 CircleAvatar(
                   radius: context.setHeight(5),
-                  backgroundImage: const NetworkImage(
-                      "https://i.pravatar.cc/400"), // Use dynamic URL
+                  child: Icon(
+                    Icons.person,
+                    size: context.setHeight(
+                        5), // Adjust the size according to your needs
+                  ), // Use dynamic URL
                 ),
               ],
             ),
@@ -163,7 +157,10 @@ Widget buildLoadingWidget(BuildContext context) {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Center(child: Text('LOADING')),
+        Center(
+            child: Text(
+          AppLocale.of(context)!.loading,
+        )),
         SizedBox(
           height: context.setHeight(3),
         ),
@@ -178,6 +175,7 @@ Widget buildLoadingWidget(BuildContext context) {
 
 Widget buildLoadedChatWidgets(BuildContext context, List<User> users) {
   return Expanded(
+    flex: 1,
     child: ListView.builder(
       scrollDirection: Axis.vertical,
       itemCount: users.length,
@@ -209,10 +207,13 @@ Widget buildLoadedChatWidgets(BuildContext context, List<User> users) {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      const CircleAvatar(
-                        backgroundImage:
-                            NetworkImage("https://i.pravatar.cc/200"),
+                      CircleAvatar(
                         radius: 40,
+                        child: Icon(
+                          Icons.person,
+                          size: context.setHeight(
+                              5), // Adjust the size according to your needs
+                        ),
                       ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
