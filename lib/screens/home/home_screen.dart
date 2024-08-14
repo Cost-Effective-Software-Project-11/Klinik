@@ -41,6 +41,9 @@ class HomeScreen extends StatelessWidget {
             _buildSettingsButton(context),
             _customDivider(thickness: 2.0),
             const Text("Info", textAlign: TextAlign.center),
+            _customDivider(thickness: 2.0),
+            _buildChatButton(context),
+            _customDivider(thickness: 2.0),
           ],
         ),
       ),
@@ -101,6 +104,23 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildChatButton(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        Navigator.pushNamed(context, AppRoutes.chat);
+      },
+      child: Text(
+        'Chat',
+        style: TextStyle(
+          fontSize: 20,
+          inherit: true,
+          fontWeight: FontWeight.bold,
+          color: Colors.lightGreen.shade900,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
   Divider _customDivider({
     double thickness = 0.0,
     Color color = Colors.black,

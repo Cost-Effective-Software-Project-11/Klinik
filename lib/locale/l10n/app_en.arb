@@ -56,5 +56,9 @@
     "termsServiceLimitations": "2. Service Limitations: While we strive to provide accurate medical information, our services do not replace professional medical advice.",
     "termsCompliance": "3. Compliance: You agree to comply with local regulations and not use our services for unlawful purposes.",
     "termsConsent": "4. Consent: You consent to receive occasional emails related to your account and health management.",
-    "termsReadComplete": "Please read our complete Terms of Service to understand your rights and obligations."
+    "termsReadComplete": "Please read our complete Terms of Service to understand your rights and obligations.",
+    "messages": "Messages",
+    "no_data": "No data available",
+    "recents": "Recents",
+    "loading": "LOADING"
 }
