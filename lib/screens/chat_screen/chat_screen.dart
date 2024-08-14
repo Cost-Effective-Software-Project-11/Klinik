@@ -29,47 +29,47 @@ class ChatScreen extends StatelessWidget {
 }
 
 class _ChatScreen extends StatelessWidget {
-  const _ChatScreen({super.key});
+  const _ChatScreen();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(ImageUtils.chatBackgroundPhoto),
-            fit: BoxFit.cover,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(ImageUtils.chatBackgroundPhoto),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Scaffold(
+        bottomNavigationBar: buildNavigationBar(context),
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          scrolledUnderElevation: 0,
+          backgroundColor: Colors.transparent,
+          centerTitle: true,
+          title: Text(
+            AppLocale.of(context)!.messages,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        child: Scaffold(
-            bottomNavigationBar: buildNavigationBar(context),
-            backgroundColor: Colors.transparent,
-            appBar: AppBar(
-              scrolledUnderElevation: 0,
-              backgroundColor: Colors.transparent,
-              centerTitle: true,
-              title: Text(
-                AppLocale.of(context)!.messages,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            body: BlocBuilder<ChatBloc, ChatStates>(builder: (context, state) {
-              if (state is UsersLoadingState) {
-                return buildLoadingWidget(context);
-              } else if (state is UsersLoadedState) {
-                List<User> users = state.myData;
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    buildRecentsTextWithAvatars(context, users),
-                    buildLoadedChatWidgets(context, users)
-                  ],
-                );
-              } else {
-                return (Text(
-                  AppLocale.of(context)!.no_data,
-                ));
-              }
-            })));
+        body: BlocBuilder<ChatBloc, ChatStates>(builder: (context, state) {
+          if (state is UsersLoadingState) {
+            return buildLoadingWidget(context);
+          } else if (state is UsersLoadedState) {
+            List<User> users = state.myData;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                buildRecentsTextWithAvatars(context, users),
+                buildLoadedChatWidgets(context, users)
+              ],
+            );
+          } else {
+            return Text(AppLocale.of(context)!.no_data);
+          }
+        }),
+      ),
+    );
   }
 }
 
@@ -152,24 +152,23 @@ Widget buildRecentsTextWithAvatars(BuildContext context, List<User> users) {
 }
 
 Widget buildLoadingWidget(BuildContext context) {
-  return Expanded(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Center(
-            child: Text(
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      Center(
+        child: Text(
           AppLocale.of(context)!.loading,
-        )),
-        SizedBox(
-          height: context.setHeight(3),
         ),
-        const CustomCircularProgressIndicator(),
-        SizedBox(
-          height: context.setHeight(3),
-        ),
-      ],
-    ),
+      ),
+      SizedBox(
+        height: context.setHeight(3),
+      ),
+      const CustomCircularProgressIndicator(),
+      SizedBox(
+        height: context.setHeight(3),
+      ),
+    ],
   );
 }
 
