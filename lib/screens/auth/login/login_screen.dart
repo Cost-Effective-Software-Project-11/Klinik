@@ -4,7 +4,7 @@ import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/enums/status_enum.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
 import 'package:flutter_gp5/routes/app_routes.dart';
-import 'package:flutter_gp5/screens/auth/password/password_reset.dart';
+import 'package:flutter_gp5/screens/auth/password/forgot_password_screen.dart';
 import 'package:iconly/iconly.dart';
 import '../../../repos/authentication/authentication_repository.dart';
 import '../../../utils/image_utils.dart';
