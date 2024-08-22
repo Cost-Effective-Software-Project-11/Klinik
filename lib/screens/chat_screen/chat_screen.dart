@@ -188,7 +188,7 @@ Widget buildLoadedChatWidgets(BuildContext context, List<User> users) {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => PersonalChat(user: user,)),
+                MaterialPageRoute(builder: (context) => PersonalChatScreen(chatPartner: user,)),
               );
               print('Container tapped');
             },
