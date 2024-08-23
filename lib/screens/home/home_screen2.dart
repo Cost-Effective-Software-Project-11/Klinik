@@ -7,91 +7,33 @@ import 'package:iconly/iconly.dart';
 import '../../locale/l10n/app_locale.dart';
 import '../../repos/authentication/authentication_repository.dart';
 import '../../routes/app_routes.dart';
+import 'bloc/home_bloc.dart';
 
-class HomeScreen2 extends StatefulWidget {
+class HomeScreen2 extends StatelessWidget {
   const HomeScreen2({super.key});
 
   @override
-  _HomeScreen2State createState() => _HomeScreen2State();
-}
-
-class _HomeScreen2State extends State<HomeScreen2> {
-  List<String> selectedSpecializations = [];
-  List<String> selectedCities = [];
-  String searchText = '';
-  TextEditingController searchController = TextEditingController();
-
-  void toggleSpecialization(String specialization) {
-    setState(() {
-      if (selectedSpecializations.contains(specialization)) {
-        selectedSpecializations.remove(specialization);
-      } else {
-        selectedSpecializations.add(specialization);
-      }
-    });
-  }
-
-  void toggleCity(String city) {
-    setState(() {
-      if (selectedCities.contains(city)) {
-        selectedCities.remove(city);
-      } else {
-        selectedCities.add(city);
-      }
-    });
-  }
-
-  Future<List<String>> fetchDistinctCities() async {
-    var snapshot = await FirebaseFirestore.instance.collection('institutions').get();
-    return snapshot.docs.map((doc) => doc.data()['city'] as String).toSet().toList();
-  }
-
-  Future<void> showCityDialog(BuildContext context) async {
-    var cities = await fetchDistinctCities();
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Select City"),
-          content: SingleChildScrollView(
-            child: Wrap(
-              spacing: 8.0,
-              runSpacing: 4.0,
-              children: cities.map((city) {
-                bool isSelected = selectedCities.contains(city);
-                return FilterChip(
-                  label: Text(city),
-                  selected: isSelected,
-                  onSelected: (bool selected) {
-                    setState(() {
-                      if (selected) {
-                        selectedCities.add(city);
-                      } else {
-                        selectedCities.remove(city);
-                      }
-                    });
-                  },
-                );
-              }).toList(),
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("Close"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
+  Widget build(BuildContext context) {
+    return BlocProvider<HomeBloc>(
+      create: (context) {
+        final bloc = HomeBloc();
+        bloc.add(const LoadInitialData());
+        return bloc;
       },
+      child: HomeScreen2View(),
     );
   }
+}
+
+class HomeScreen2View extends StatelessWidget {
+  HomeScreen2View({super.key});
+
+  final TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final authRepo = RepositoryProvider.of<AuthenticationRepository>(context);
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
@@ -194,12 +136,8 @@ class _HomeScreen2State extends State<HomeScreen2> {
                                     child: const Text("Yes"),
                                     onPressed: () {
                                       Navigator.of(context).pop();
-                                      setState(() {
-                                        searchText = '';
-                                        searchController.clear();
-                                        selectedSpecializations.clear();
-                                        selectedCities.clear();
-                                      });
+                                      // Dispatch ClearFilters event
+                                      context.read<HomeBloc>().add(const ClearFilters());
                                       Navigator.of(context).pop();
                                     },
                                   ),
@@ -243,17 +181,15 @@ class _HomeScreen2State extends State<HomeScreen2> {
                     ),
                   ),
                   onSubmitted: (value) {
-                    setState(() {
-                      searchText = value.trim().toLowerCase();
-                    });
+                    // Dispatch UpdateSearchText event
+                    context.read<HomeBloc>().add(UpdateSearchText(value.trim().toLowerCase()));
                   },
                 ),
                 IconButton(
                   icon: const Icon(Icons.search, color: Color(0xFF49454F)),
                   onPressed: () {
-                    setState(() {
-                      searchText = searchController.text.trim().toLowerCase();
-                    });
+                    // Dispatch UpdateSearchText event
+                    context.read<HomeBloc>().add(UpdateSearchText(searchController.text.trim().toLowerCase()));
                   },
                 ),
               ],
@@ -267,21 +203,48 @@ class _HomeScreen2State extends State<HomeScreen2> {
   Widget buttonRow(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: context.setWidth(2)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _buildButton(context, "Specialization", Icons.add, onTap: () => showSpecializationDialog(context)),
-              specializationChips(context), // Chips are displayed right below the button
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildButton(
+                    context,
+                    "Specialization",
+                    Icons.add,
+                    onTap: () {
+                      context.read<HomeBloc>().add(LoadSpecializations()); // Ensure specializations are loaded
+                      showSpecializationDialog(context);
+                    },
+                  ),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildButton(
+                    context,
+                    "Location",
+                    Icons.add,
+                    onTap: () {
+                      context.read<HomeBloc>().add(LoadCities());
+                    },
+                  ),
+                ],
+              ),
             ],
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          SizedBox(height: context.setHeight(1)), // Space between buttons and chips
+          Wrap(
+            spacing: 8.0,
+            runSpacing: 4.0,
             children: [
-              _buildButton(context, "Location", Icons.add, onTap: () => showCityDialog(context)),
-              locationChips(context), // Chips are displayed right below the button
+              specializationChips(context), // Specialization Chips
+              locationChips(context),       // Location Chips
             ],
           ),
         ],
@@ -289,72 +252,137 @@ class _HomeScreen2State extends State<HomeScreen2> {
     );
   }
 
-
-  Future<void> showSpecializationDialog(BuildContext context) async {
-    final QuerySnapshot specializationSnapshot = await FirebaseFirestore.instance.collection('specialities').get();
-    List<DocumentSnapshot> docs = specializationSnapshot.docs;
-
+  void showSpecializationDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Select Specialization"),
-          content: SingleChildScrollView(
-            child: Wrap(
-              spacing: 8.0,
-              runSpacing: 4.0,
-              children: docs.map((doc) {
-                bool isSelected = selectedSpecializations.contains(doc['name']);
-                return FilterChip(
-                  label: Text(doc['name']),
-                  selected: isSelected,
-                  onSelected: (bool selected) {
-                    setState(() {
-                      if (selected) {
-                        selectedSpecializations.add(doc['name']);
-                      } else {
-                        selectedSpecializations.remove(doc['name']);
-                      }
-                    });
-                  },
-                );
-              }).toList(),
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("Close"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+        return BlocBuilder<HomeBloc, HomeState>(
+          builder: (context, state) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: Container(
+                padding: EdgeInsets.all(context.setWidth(5)),
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.8, // Set max height to 80% of the screen height
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(bottom: context.setHeight(2)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              decoration: InputDecoration(
+                                hintText: 'Search',
+                                prefixIcon: Icon(Icons.search, color: const Color(0xFF49454F)),
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: context.setHeight(1),
+                                    horizontal: context.setWidth(4)),
+                                hintStyle: TextStyle(
+                                  color: const Color(0xFF49454F),
+                                  fontSize: context.setWidth(4),
+                                ),
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.close, color: const Color(0xFF49454F)),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(  // Use Expanded to make sure the list of chips is scrollable within the dialog
+                      child: SingleChildScrollView(
+                        child: Wrap(
+                          spacing: 8.0,
+                          runSpacing: 8.0,
+                          children: state.specializations.map((specialization) {
+                            bool isSelected = state.selectedSpecializations.contains(specialization);
+                            return FilterChip(
+                              label: Text(
+                                specialization,
+                                style: TextStyle(
+                                  color: isSelected ? Colors.white : const Color(0xFF6750A4),
+                                  fontSize: context.setWidth(3.5),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              selected: isSelected,
+                              backgroundColor: const Color(0xFFE8DEF8),
+                              selectedColor: const Color(0xFF6750A4),
+                              shape: StadiumBorder(
+                                side: BorderSide(
+                                  color: isSelected ? const Color(0xFF6750A4) : const Color(0xFFE8DEF8),
+                                ),
+                              ),
+                              onSelected: (bool selected) {
+                                context.read<HomeBloc>().add(ToggleSpecialization(specialization));
+                              },
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         );
       },
     );
   }
 
   Widget specializationChips(BuildContext context) {
-    return Wrap(
-      spacing: 8.0,
-      runSpacing: 4.0,
-      direction: Axis.vertical, // Ensure chips are arranged vertically
-      children: selectedSpecializations.map((specialization) => Chip(
-        label: Text(specialization),
-        onDeleted: () => toggleSpecialization(specialization),
-      )).toList(),
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        if (state.selectedSpecializations.isEmpty) {
+          return Container(); // Return an empty container if no specializations are selected
+        }
+        return Wrap(
+          spacing: 8.0,
+          runSpacing: 4.0,
+          children: state.selectedSpecializations.map((specialization) {
+            return Chip(
+              label: Text(specialization),
+              onDeleted: () {
+                context.read<HomeBloc>().add(ToggleSpecialization(specialization));
+              },
+            );
+          }).toList(),
+        );
+      },
     );
   }
 
   Widget locationChips(BuildContext context) {
-    return Wrap(
-      spacing: 8.0,
-      runSpacing: 4.0,
-      direction: Axis.vertical, // Ensure chips are arranged vertically
-      children: selectedCities.map((city) => Chip(
-        label: Text(city),
-        onDeleted: () => toggleCity(city),
-      )).toList(),
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        if (state.selectedCities.isEmpty) {
+          return Container(); // Return an empty container if no cities are selected
+        }
+        return Wrap(
+          spacing: 8.0,
+          runSpacing: 4.0,
+          children: state.selectedCities.map((city) {
+            return Chip(
+              label: Text(city),
+              onDeleted: () {
+                context.read<HomeBloc>().add(ToggleCity(city));
+              },
+            );
+          }).toList(),
+        );
+      },
     );
   }
 
@@ -418,259 +446,261 @@ class _HomeScreen2State extends State<HomeScreen2> {
     );
   }
 
+  // Widget doctorList(BuildContext context) {
+  //   return BlocBuilder<HomeBloc, HomeState>(
+  //     builder: (context, state) {
+  //       if (state.doctors.isEmpty) {
+  //         return const Center(child: CircularProgressIndicator());
+  //       }
+  //
+  //       return ListView.builder(
+  //         itemCount: state.doctors.length,
+  //         itemBuilder: (context, index) {
+  //           var doc = state.doctors[index];
+  //           return Container(
+  //             width: MediaQuery.of(context).size.width,
+  //             height: MediaQuery.of(context).size.height * 0.15,
+  //             decoration: const BoxDecoration(
+  //               color: Colors.transparent,
+  //             ),
+  //             child: Column(
+  //               mainAxisSize: MainAxisSize.min,
+  //               mainAxisAlignment: MainAxisAlignment.start,
+  //               crossAxisAlignment: CrossAxisAlignment.center,
+  //               children: [
+  //                 Expanded(
+  //                   child: Padding(
+  //                     padding: EdgeInsets.symmetric(
+  //                       vertical: MediaQuery.of(context).size.height * 0.01,
+  //                       horizontal: MediaQuery.of(context).size.width * 0.05,
+  //                     ),
+  //                     child: Row(
+  //                       children: [
+  //                         Container(
+  //                           width: MediaQuery.of(context).size.width * 0.15,
+  //                           height: MediaQuery.of(context).size.width * 0.15,
+  //                           decoration: BoxDecoration(
+  //                             shape: BoxShape.circle,
+  //                             image: DecorationImage(
+  //                               image: NetworkImage(doc['imageUrl'] ??
+  //                                   "https://static-00.iconduck.com/assets.00/profile-default-icon-2048x2045-u3j7s5nj.png"),
+  //                               fit: BoxFit.cover,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                         SizedBox(width: MediaQuery.of(context).size.width * 0.05),
+  //                         Expanded(
+  //                           child: Column(
+  //                             mainAxisAlignment: MainAxisAlignment.center,
+  //                             crossAxisAlignment: CrossAxisAlignment.start,
+  //                             children: [
+  //                               Text(
+  //                                 doc['name'] ?? 'N/A',
+  //                                 style: TextStyle(
+  //                                   color: const Color(0xFF6750A4),
+  //                                   fontSize: MediaQuery.of(context).size.width * 0.04,
+  //                                   fontWeight: FontWeight.w500,
+  //                                 ),
+  //                               ),
+  //                               Text(
+  //                                 doc['speciality'] ?? 'N/A',
+  //                                 style: TextStyle(
+  //                                   fontSize: MediaQuery.of(context).size.width * 0.035,
+  //                                   fontWeight: FontWeight.w400,
+  //                                 ),
+  //                               ),
+  //                               Text(
+  //                                 'Phone number: ${doc['phone'] ?? 'N/A'}',
+  //                                 style: TextStyle(
+  //                                   fontSize: MediaQuery.of(context).size.width * 0.03,
+  //                                   fontWeight: FontWeight.w400,
+  //                                 ),
+  //                               ),
+  //                             ],
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 Padding(
+  //                   padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.07),
+  //                   child: const Divider(
+  //                     height: 1,
+  //                     thickness: 2,
+  //                     color: Color(0xFFCAC4D0),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
+
   Widget doctorList(BuildContext context) {
-    return StreamBuilder<List<QueryDocumentSnapshot>>(
-      stream: getFilteredDoctorsStream(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text('Something went wrong: ${snapshot.error}');
-        }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        if (state.filteredDoctors.isEmpty) {
+          return const Center(child: Text('No doctors found'));
         }
 
-        var docs = snapshot.data ?? [];
-        docs = docs.where((doc) {
-          var name = doc['name']?.toLowerCase() ?? '';
-          return name.contains(searchText);
-        }).toList();
-
-        if (docs.isEmpty) {
-          return const Center(child: Text("No doctors found"));
-        }
         return ListView.builder(
-          itemCount: docs.length,
+          itemCount: state.filteredDoctors.length,
           itemBuilder: (context, index) {
-            var doc = docs[index].data() as Map<String, dynamic>;
-            return Container(
-              width: context.setWidth(100),
-              height: context.setHeight(15),
-              decoration: const BoxDecoration(
-                color: Colors.transparent,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        top: context.setHeight(1),
-                        left: context.setWidth(5),
-                        right: context.setWidth(1),
-                        bottom: context.setHeight(1),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: context.setWidth(15),
-                            height: context.setHeight(15),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                image: NetworkImage(doc['imageUrl'] ?? "https://static-00.iconduck.com/assets.00/profile-default-icon-2048x2045-u3j7s5nj.png"),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: context.setWidth(5)),
-                          Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  doc['name'] ?? 'N/A',
-                                  style: TextStyle(
-                                    color: const Color(0xFF6750A4),
-                                    fontSize: context.setWidth(4),
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                Text(
-                                  doc['speciality'] ?? 'N/A',
-                                  style: TextStyle(
-                                    fontSize: context.setWidth(3),
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                Text(
-                                  'Phone number: ${doc['phone'] ?? 'N/A'}',
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                    fontSize: context.setWidth(2.5),
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.07),
-                    child: const Divider(
-                      height: 1,
-                      thickness: 2,
-                      color: Color(0xFFCAC4D0),
-                    ),
-                  ),
-                ],
-              ),
-            );
+            var doc = state.filteredDoctors[index];
+            return doctorCard(context, doc);
           },
         );
       },
     );
   }
 
-  Stream<List<QueryDocumentSnapshot>> getFilteredDoctorsStream() async* {
-    var query = FirebaseFirestore.instance.collection('users').where('type', isEqualTo: 'Doctor');
-
-    if (selectedSpecializations.isNotEmpty) {
-      var result = await query.where('speciality', whereIn: selectedSpecializations).get();
-      var filteredDocs = result.docs.where((doc) => selectedCities.isEmpty || selectedCities.contains(doc.data()['city'])).toList();
-      yield filteredDocs;
-    } else if (selectedCities.isNotEmpty) {
-      var result = await query.where('city', whereIn: selectedCities).get();
-      yield result.docs;
-    } else {
-      var result = await query.get();
-      yield result.docs;
-    }
+  Widget doctorCard(BuildContext context, Map<String, dynamic> doctor) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundImage: NetworkImage(doctor['imageUrl'] ?? "https://via.placeholder.com/150"),
+        ),
+        title: Text(doctor['name'] ?? 'Unknown Doctor'),
+        subtitle: Text(doctor['speciality'] ?? 'Specialty not available'),
+        trailing: Text(doctor['phone'] ?? 'No phone'),
+      ),
+    );
   }
 
-  Stream<List<QueryDocumentSnapshot>> getFilteredInstitutionsStream() async* {
-    var query = FirebaseFirestore.instance.collection('institutions');
-
-    if (selectedSpecializations.isNotEmpty) {
-      var result = await query.where('specialities', arrayContainsAny: selectedSpecializations).get();
-      var filteredDocs = result.docs.where((doc) => selectedCities.isEmpty || selectedCities.contains(doc.data()['city'])).toList();
-      yield filteredDocs;
-    } else if (selectedCities.isNotEmpty) {
-      var result = await query.where('city', whereIn: selectedCities).get();
-      yield result.docs;
-    } else {
-      var result = await query.get();
-      yield result.docs;
-    }
-  }
+  // Widget institutionList(BuildContext context) {
+  //   return BlocBuilder<HomeBloc, HomeState>(
+  //     builder: (context, state) {
+  //       if (state.institutions.isEmpty) {
+  //         return const Center(child: CircularProgressIndicator());
+  //       }
+  //
+  //       return ListView.builder(
+  //         itemCount: state.institutions.length,
+  //         itemBuilder: (context, index) {
+  //           var institution = state.institutions[index];
+  //           var imageUrl = institution['imageUrl'] ?? "https://png.pngtree.com/png-vector/20231023/ourmid/pngtree-simple-buildings-office-png-image_10312300.png";
+  //           var name = institution['name'] ?? "Unknown Institution";
+  //           var specialtiesDescription = institution['specialities'] is List
+  //               ? (institution['specialities'] as List).join(', ')
+  //               : "No Specialties Listed";
+  //           var city = institution['city'] ?? "No City Listed";
+  //
+  //           return Container(
+  //             width: MediaQuery.of(context).size.width,
+  //             height: MediaQuery.of(context).size.height * 0.15,
+  //             decoration: const BoxDecoration(
+  //               color: Colors.transparent,
+  //             ),
+  //             child: Column(
+  //               mainAxisSize: MainAxisSize.min,
+  //               mainAxisAlignment: MainAxisAlignment.start,
+  //               crossAxisAlignment: CrossAxisAlignment.center,
+  //               children: [
+  //                 Expanded(
+  //                   child: Padding(
+  //                     padding: EdgeInsets.symmetric(
+  //                       vertical: MediaQuery.of(context).size.height * 0.01,
+  //                       horizontal: MediaQuery.of(context).size.width * 0.05,
+  //                     ),
+  //                     child: Row(
+  //                       children: [
+  //                         Container(
+  //                           width: MediaQuery.of(context).size.width * 0.15,
+  //                           height: MediaQuery.of(context).size.width * 0.15,
+  //                           decoration: BoxDecoration(
+  //                             shape: BoxShape.circle,
+  //                             image: DecorationImage(
+  //                               image: NetworkImage(imageUrl),
+  //                               fit: BoxFit.cover,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                         SizedBox(width: MediaQuery.of(context).size.width * 0.05),
+  //                         Expanded(
+  //                           child: Column(
+  //                             mainAxisAlignment: MainAxisAlignment.center,
+  //                             crossAxisAlignment: CrossAxisAlignment.start,
+  //                             children: [
+  //                               Text(
+  //                                 name,
+  //                                 style: TextStyle(
+  //                                   color: const Color(0xFF6750A4),
+  //                                   fontSize: MediaQuery.of(context).size.width * 0.04,
+  //                                   fontWeight: FontWeight.w500,
+  //                                 ),
+  //                               ),
+  //                               Text(
+  //                                 city,
+  //                                 style: TextStyle(
+  //                                   fontSize: MediaQuery.of(context).size.width * 0.035,
+  //                                   fontWeight: FontWeight.w400,
+  //                                 ),
+  //                               ),
+  //                               Text(
+  //                                 specialtiesDescription,
+  //                                 style: TextStyle(
+  //                                   fontSize: MediaQuery.of(context).size.width * 0.03,
+  //                                   fontWeight: FontWeight.w400,
+  //                                 ),
+  //                               ),
+  //                             ],
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 Padding(
+  //                   padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.07),
+  //                   child: const Divider(
+  //                     height: 1,
+  //                     thickness: 2,
+  //                     color: Color(0xFFCAC4D0),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget institutionList(BuildContext context) {
-    return StreamBuilder<List<QueryDocumentSnapshot>>(
-      stream: getFilteredInstitutionsStream(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text('Something went wrong: ${snapshot.error}');
-        }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        if (state.filteredInstitutions.isEmpty) {
+          return const Center(child: Text('No institutions found'));
         }
 
-        var docs = snapshot.data ?? [];
-        docs = docs.where((doc) {
-          var name = doc['name']?.toLowerCase() ?? '';
-          return name.contains(searchText);
-        }).toList();
-
-        if (docs.isEmpty) {
-          return const Center(child: Text("No institutions found"));
-        }
         return ListView.builder(
-          itemCount: docs.length,
+          itemCount: state.filteredInstitutions.length,
           itemBuilder: (context, index) {
-            var institution = docs[index].data() as Map<String, dynamic>;
-            var imageUrl = institution['imageUrl'] ?? "https://png.pngtree.com/png-vector/20231023/ourmid/pngtree-simple-buildings-office-png-image_10312300.png";
-            var name = institution['name'] ?? "Unknown Institution";
-            var specialitiesDescription = institution['specialities'] is List
-                ? (institution['specialities'] as List).join(', ')
-                : "No Specialities Listed";
-            var city = institution['city'] ?? "No City Listed";
-
-            return Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.15,
-              decoration: const BoxDecoration(
-                color: Colors.transparent,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: MediaQuery.of(context).size.height * 0.01,
-                        horizontal: MediaQuery.of(context).size.width * 0.05,
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.15,
-                            height: MediaQuery.of(context).size.width * 0.15,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                image: NetworkImage(imageUrl),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: MediaQuery.of(context).size.width * 0.05),
-                          Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  city,
-                                  style: TextStyle(
-                                    color: const Color(0xFF6750A4),
-                                    fontSize: MediaQuery.of(context).size.width * 0.035,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  name,
-                                  style: TextStyle(
-                                    color: const Color(0xFF1D1B20),
-                                    fontSize: MediaQuery.of(context).size.width * 0.04,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                Text(
-                                  specialitiesDescription,
-                                  style: TextStyle(
-                                    color: const Color(0xFF49454F),
-                                    fontSize: MediaQuery.of(context).size.width * 0.03,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.07),
-                    child: const Divider(
-                      height: 1,
-                      thickness: 2,
-                      color: Color(0xFFCAC4D0),
-                    ),
-                  ),
-                ],
-              ),
-            );
+            var institution = state.filteredInstitutions[index];
+            return institutionCard(context, institution);
           },
         );
       },
+    );
+  }
+
+  Widget institutionCard(BuildContext context, Map<String, dynamic> institution) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundImage: NetworkImage(institution['imageUrl'] ?? "https://vfdfdia.placeholder.com/150"),
+        ),
+        title: Text(institution['name'] ?? 'Unknown Instfditution'),
+        subtitle: Text(institution['city'] ?? 'City not available'),
+        trailing: Text(institution['specialities']?.join(', ') ?? 'No specialties'),
+      ),
     );
   }
 
@@ -719,9 +749,7 @@ class _HomeScreen2State extends State<HomeScreen2> {
     );
   }
 
-  @override
   void dispose() {
     searchController.dispose();
-    super.dispose();
   }
 }
