@@ -21,7 +21,6 @@ class ChatBloc extends Bloc<ChatEvents, ChatStates> {
       final data = await userRepository.getAll();
 
       final userEmail = authRepo.currentUser?.email;
-      print(userEmail);
 
       if (data.isEmpty) {
         emit(ErrorState("Collection is Empty"));
@@ -34,7 +33,6 @@ class ChatBloc extends Bloc<ChatEvents, ChatStates> {
         final filteredUsers = data
             .where((user) => user.email.toLowerCase() != userEmail.toLowerCase())
             .toList();
-        print(filteredUsers);
 
         // Emit the loaded state with filtered data
         emit(UsersLoadedState(filteredUsers));

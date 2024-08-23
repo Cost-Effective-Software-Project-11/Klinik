@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 // Define the Message model class
 class Message extends Equatable {
   final String? messageId;
-  final String senderId;
+  final String? senderId;
   final String receiverId;
   final String messageContent;
   final String messageType;
@@ -13,7 +13,7 @@ class Message extends Equatable {
   // Constructor
   const Message({
     this.messageId,
-    required this.senderId,
+    this.senderId,
     required this.receiverId,
     required this.messageContent,
     required this.messageType,

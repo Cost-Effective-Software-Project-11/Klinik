@@ -34,10 +34,21 @@ class UserRepository {
   Future<List<User>> getAll() async {
     List<User> userList = [];
     try {
-      final userCollection =
-          await FirebaseFirestore.instance.collection("users").get();
+      final userCollection = await _firestore.collection("users").get();
       userCollection.docs.forEach((element) {
-        return userList.add(User.fromMap(element.data()));
+        final user = User.fromMap(element.data());
+        // Create a new User instance with the document ID set
+        final userWithId = User(
+          id: element.id, // Set the document ID here
+          email: user.email,
+          name: user.name,
+          phone: user.phone,
+          speciality: user.speciality,
+          type: user.type,
+          workplace: user.workplace,
+        );
+
+        userList.add(userWithId);
       });
       return userList;
     } on FirebaseException catch (e) {

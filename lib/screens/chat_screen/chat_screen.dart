@@ -190,7 +190,6 @@ Widget buildLoadedChatWidgets(BuildContext context, List<User> users) {
                 context,
                 MaterialPageRoute(builder: (context) => PersonalChatScreen(chatPartner: user,)),
               );
-              print('Container tapped');
             },
             child: Column(
               children: [

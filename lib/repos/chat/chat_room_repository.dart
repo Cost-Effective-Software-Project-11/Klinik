@@ -16,13 +16,11 @@ class ChatRoomRepository {
   Future<void> createChatRoom(ChatRoomModel chatRoom) async {
     try {
       // Check if a chat room with these participants already exists
-      final querySnapshot = await _firestore
-          .collection('chat_rooms')
-          .where('participants', isEqualTo: chatRoom.participants)
-          .get();
+      final searchedChatRoom =
+      await findChatRoomId(participants: chatRoom.participants);
 
       // If there are no existing chat rooms, create a new one
-      if (querySnapshot.docs.isEmpty) {
+      if (searchedChatRoom == null) {
         final chatRoomModel = ChatRoomModel(
           lastMessage: chatRoom.lastMessage,
           participants: chatRoom.participants,
@@ -34,7 +32,7 @@ class ChatRoomRepository {
             .collection('chat_rooms')
             .add(chatRoomModel.toMap());
 
-        // Retrieve the generated chatId and update the model if necessary
+        // Retrieve the generated chatId and log the success
         String chatId = docRef.id;
         _logger.i('Chat room $chatId created successfully.');
       } else {
@@ -46,98 +44,74 @@ class ChatRoomRepository {
   }
 
   Future<void> updateChatRoomLastMessageAndTimeStamp({
-    required String chatId,
+    required String chatRoomId,
     required String messageContent,
     required Timestamp lastMessageTimestamp,
   }) async {
     try {
-      await _firestore.collection('chat_rooms').doc(chatId).update({
+      await _firestore.collection('chat_rooms').doc(chatRoomId).update({
         'lastMessage': messageContent,
         'lastMessageTimestamp': lastMessageTimestamp,
       });
-      _logger.i('Chat room $chatId updated successfully.');
+      _logger.i('Chat room $chatRoomId updated successfully.');
     } catch (e) {
-      _logger.e('Error updating chat room $chatId: $e', error: e);
+      _logger.e('Error updating chat room $chatRoomId: $e', error: e);
     }
   }
 
-  Future<void> sendMessage(
-    Message message,
-  ) async {
+  Future<void> sendMessage(Message message) async {
     try {
-      // Query for an existing chat room with the two users
-      final chatRoomQuery = await _firestore.collection('chat_rooms').where(
-          'participants',
-          arrayContainsAny: [message.senderId, message.receiverId]).get();
+      // Ensure senderId and receiverId are not null
+      final senderId = message.senderId;
+      final receiverId = message.receiverId;
 
-      String chatId;
-
-      if (chatRoomQuery.docs.isEmpty) {
-        // If no chat room exists, create a new chat room with an auto-generated chatId
-        DocumentReference chatRoomRef =
-            await _firestore.collection('chat_rooms').add({
-          'participants': [message.senderId, message.receiverId],
-          'lastMessage': message.messageContent,
-          'lastMessageTimestamp': message.timestamp,
-        });
-
-        chatId = chatRoomRef.id; // Use the auto-generated chatId
-      } else {
-        // If the chat room exists, use its ID
-        chatId = chatRoomQuery.docs.first.id;
+      if (senderId == null) {
+        _logger.e('Error: senderId or receiverId is null');
+        return; // Exit the function early
       }
+      // Proceed with finding the chat room ID
+      final chatRoomId = await findChatRoomId(
+          participants: [senderId, receiverId]);
 
-      // Create message data
-      final messageData = {
-        'senderId': message.senderId,
-        'receiverId': message.receiverId,
-        'messageContent': message.messageContent,
-        'messageType': message.messageType,
-        'timestamp': message.timestamp,
-      };
+      if (chatRoomId == null) {
+        _logger.e('Error chat room not found');
+      } else {
+        // Create message data
+        final messageData = message.toMap();
 
-      // Add the message to the sub-collection
-      await _firestore
-          .collection('chat_rooms')
-          .doc(chatId)
-          .collection('messages')
-          .add(messageData);
+        // Add the message to the sub-collection
+        await _firestore
+            .collection('chat_rooms')
+            .doc(chatRoomId)
+            .collection('messages')
+            .add(messageData);
 
-      // Update last message and timestamp in the chat room
-      updateChatRoomLastMessageAndTimeStamp(
-          chatId: chatId,
+        // Update last message and timestamp in the chat room
+        await updateChatRoomLastMessageAndTimeStamp(
+          chatRoomId: chatRoomId,
           messageContent: message.messageContent,
-          lastMessageTimestamp: message.timestamp);
+          lastMessageTimestamp: message.timestamp,
+        );
 
-      _logger.i('Message sent in chat room $chatId.');
+        _logger.i('Message sent in chat room $chatRoomId.');
+      }
     } catch (e) {
       _logger.e('Error sending message in chat room: $e', error: e);
     }
   }
 
+
   Future<List<Message>> getMessages(
       String chatParticipantOneId, String chatParticipantTwoId) async {
     try {
       // Query the chat room by matching the participants
-      final chatRoom = (await _firestore
-              .collection('chat_rooms')
-              .where('participants', arrayContains: chatParticipantOneId)
-              .get())
-          .docs
-          .firstWhere(
-            (doc) =>
-                List<String>.from(doc['participants'])
-                    .contains(chatParticipantTwoId) &&
-                List<String>.from(doc['participants']).length == 2,
-            orElse: () => throw Exception('Chat room not found'),
-          );
+      final chatRoomId = await findChatRoomId(participants: [chatParticipantOneId,chatParticipantTwoId]);
 
-      final chatRoomId = chatRoom.id;
       final messagesSnapshot = await _firestore
           .collection('chat_rooms')
           .doc(chatRoomId)
           .collection('messages')
-          .orderBy('timestamp', descending: true)
+          .orderBy('timestamp', descending: false)
           .get();
 
       // Convert documents to a list of maps
@@ -160,4 +134,40 @@ class ChatRoomRepository {
       return [];
     }
   }
+
+  Future<String?> findChatRoomId({
+    required List<String> participants,
+  }) async {
+    try {
+      // Ensure we have exactly two participants to compare
+      if (participants.length != 2) {
+        throw ArgumentError('Participants list must contain exactly two participants.');
+      }
+
+      // Fetch potential chat rooms where the participants list contains either of the IDs
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('chat_rooms')
+          .where('participants', arrayContainsAny: participants)
+          .get();
+
+      // Filter results to find a chat room where both participants are present
+      for (var doc in querySnapshot.docs) {
+        List<String> chatRoomParticipants = List<String>.from(doc['participants']);
+
+        // Check if both participants are present in the chat room's participants list
+        if (participants.every((participant) => chatRoomParticipants.contains(participant))) {
+          // Return the ID of the matching document
+          return doc.id;
+        }
+      }
+
+      // Return null if no matching chat room is found
+      return null;
+    } catch (e) {
+      // Log or handle the error
+      print('Error finding chat room: $e');
+      return null;
+    }
+  }
+
 }

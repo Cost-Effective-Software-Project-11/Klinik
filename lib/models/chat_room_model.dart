@@ -1,24 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_gp5/models/message_model.dart';
 
 class ChatRoomModel extends Equatable {
-  final String? chatRoomId; // Nullable chatRoomId
   final String lastMessage;
   final List<String> participants; // List of participant IDs
   final Timestamp timestamp;
+  final List<Message>? messages;
 
   // Constructor
   const ChatRoomModel({
-    this.chatRoomId,
     required this.lastMessage,
     required this.participants,
     required this.timestamp,
+    this.messages
   });
 
   // Convert ChatRoomModel to Map for Firestore
   Map<String, dynamic> toMap() {
     return {
-      'chatRoomId': chatRoomId,
       'lastMessage': lastMessage,
       'participants': participants,
       'timestamp': timestamp,
@@ -28,7 +28,6 @@ class ChatRoomModel extends Equatable {
   // Create a ChatRoomModel from Firestore Map
   factory ChatRoomModel.fromMap(Map<String, dynamic> map, {String? id}) {
     return ChatRoomModel(
-      chatRoomId: id ?? map['chatRoomId'] as String?,
       lastMessage: map['lastMessage'] ?? '',
       participants: List<String>.from(map['participants']),
       timestamp: map['timestamp'] as Timestamp,
@@ -36,5 +35,5 @@ class ChatRoomModel extends Equatable {
   }
 
   @override
-  List<Object?> get props => [chatRoomId, lastMessage, participants, timestamp];
+  List<Object?> get props => [lastMessage, participants, timestamp];
 }

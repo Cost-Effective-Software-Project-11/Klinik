@@ -7,22 +7,18 @@ abstract class PersonalChatEvent extends Equatable {
 }
 
 class SendMessageEvent extends PersonalChatEvent {
-  final Message message;
-  final List<Message>? messages;
-  final String chatId;
-  final String currentUserId;
-  final String chatParticipantTwoId;
+  final String receiverId;
+  final String messageContent;
+  final Timestamp timestamp;
+  final String messageType;
+
   // Constructor
   SendMessageEvent({
-    required this.chatId,
-    required this.currentUserId,
-    required this.chatParticipantTwoId,
-    required this.message,
-    this.messages
+    required this.receiverId,
+    required this.messageContent,
+    required this.timestamp,
+    required this.messageType,
   });
-
-  @override
-  List<Object> get props => [message];
 }
 
 

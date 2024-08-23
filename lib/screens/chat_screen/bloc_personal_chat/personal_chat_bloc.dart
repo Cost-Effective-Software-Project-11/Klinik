@@ -9,7 +9,6 @@ import '../../../repos/authentication/authentication_repository.dart';
 import '../../../repos/chat/chat_room_repository.dart';
 
 part 'personal_chat_event.dart';
-
 part 'personal_chat_state.dart';
 
 class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
@@ -18,40 +17,62 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
 
   PersonalChatBloc(
       {required this.chatRoomRepository, required this.authRepository})
-      : super(PersonalChatStateInitial()) {
+      : super(PersonalChatLoadingState()) {
     on<SendMessageEvent>(_onSendMessage);
-    on<GetMessagesEvent>(_getMessages);
-    on<CreateChatRoomEvent>(_createChatRoom);
+    on<GetMessagesEvent>(_onGetMessages);
+    on<CreateChatRoomEvent>(_onCreateChatRoom);
   }
 
   Future<void> _onSendMessage(
-      SendMessageEvent event, Emitter<PersonalChatState> emit) async {
+      SendMessageEvent event,
+      Emitter<PersonalChatState> emit
+      ) async {
     try {
-      // Emit a loading state before sending the message
-      emit(PersonalChatMessagesLoadedState(
-          messagesList: event.messages,
-          currentUserId: event.currentUserId,
-          chatParticipantTwoId: event.chatParticipantTwoId));
+      final currentState = state;
+      if (currentState is PersonalChatMessagesLoadedState) {
+        // Get the current user ID
+        dynamic currentUserId = authRepository.currentUser?.uid;
+        if (currentUserId == null) {
+          emit(PersonalChatErrorState('User is not logged in'));
+          return;
+        }
+        else {
+          // Create the new Message object using the event data
+          final newMessage = Message(
+            senderId: currentUserId,
+            receiverId: event.receiverId,
+            messageContent: event.messageContent,
+            messageType: event.messageType,
+            timestamp: event.timestamp,
+          );
 
-      // Send the message using the repository
-      await chatRoomRepository.sendMessage(event.message);
+          // Retrieve the current messages from the state
+          final currentMessages = currentState.messagesList;
 
-      // Retrieve the updated messages list from the repository
-      final messagesList = await chatRoomRepository.getMessages(
-        event.message.receiverId,
-        event.message.senderId,
-      );
-      // Emit the state with the updated messages
-      emit(PersonalChatMessageSentState(
-        messagesList: messagesList,
-      ));
+          // Add the new message to the list
+          final updatedMessagesList = [...currentMessages, newMessage];
+
+          // Emit the updated state with the new message
+          emit(PersonalChatMessagesLoadedState(
+            messagesList: updatedMessagesList,
+            currentUserId: currentState.currentUserId,
+            chatParticipantTwoId: currentState.chatParticipantTwoId,
+          ));
+
+          // Send the message using the repository
+          await chatRoomRepository.sendMessage(newMessage);
+        }
+      } else {
+        // Handle the case where the current state is not as expected
+        emit(PersonalChatErrorState('Unexpected state: $currentState'));
+      }
     } catch (e) {
       // Emit an error state if something goes wrong
       emit(PersonalChatErrorState('Error sending message: $e'));
     }
   }
 
-  Future<void> _getMessages(
+  Future<void> _onGetMessages(
       GetMessagesEvent event, Emitter<PersonalChatState> emit) async {
     try {
       var currentUserId = authRepository.currentUser?.uid;
@@ -59,9 +80,8 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
         emit(PersonalChatErrorState('User is not logged in'));
         return;
       }
-      emit(PersonalChatLoadingState());
       final messagesList = (await chatRoomRepository.getMessages(
-          currentUserId , event.chatParticipantTwoId));
+          currentUserId, event.chatParticipantTwoId));
 
       // Emit the state with the fetched messages
       emit(PersonalChatMessagesLoadedState(
@@ -73,7 +93,7 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
     }
   }
 
-  Future<void> _createChatRoom(
+  Future<void> _onCreateChatRoom(
     CreateChatRoomEvent event,
     Emitter<PersonalChatState> emit,
   ) async {
@@ -85,7 +105,6 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
         emit(PersonalChatErrorState('User is not logged in'));
         return;
       }
-
       final chatParticipantId = event.chatParticipantTwoId;
       final chatRoom = ChatRoomModel(
         participants: [currentUserId, chatParticipantId],
@@ -93,9 +112,10 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
         timestamp: Timestamp.now(),
       );
 
-      // Call repository to create the chat room with the model
+      // Call repository to create the chat room with the model if such chat room doesn't exist
       await chatRoomRepository.createChatRoom(chatRoom);
-
+      // Emit the success state and then dispatch GetMessagesEvent
+      emit(PersonalChatRoomCreatedState());
     } catch (e) {
       emit(PersonalChatErrorState('Error creating chat room: $e'));
     }

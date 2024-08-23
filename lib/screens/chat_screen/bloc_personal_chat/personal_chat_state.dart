@@ -5,7 +5,8 @@ abstract class PersonalChatState extends Equatable {
   List<Object> get props => [];
 }
 
-class PersonalChatStateInitial extends PersonalChatState {
+class PersonalChatRoomCreatedState extends PersonalChatState{
+
 }
 
 class PersonalChatMessagesLoadedState extends PersonalChatState {
@@ -36,13 +37,7 @@ class PersonalChatErrorState extends PersonalChatState {
   List<Object> get props => [error];
 }
 
-class PersonalChatLoadingState extends PersonalChatState {}
-
-class PersonalChatMessageSentState extends PersonalChatState {
-  final List<Message> messagesList;
-
-  PersonalChatMessageSentState({required this.messagesList});
-
+class PersonalChatLoadingState extends PersonalChatState {
   @override
-  List<Object> get props => [messagesList];
+  List<Object> get props=> [];
 }

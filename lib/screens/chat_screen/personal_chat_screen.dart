@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
@@ -5,13 +6,34 @@ import 'package:flutter_gp5/repos/authentication/authentication_repository.dart'
 import 'package:flutter_gp5/repos/chat/chat_room_repository.dart';
 import 'package:flutter_gp5/screens/chat_screen/bloc_personal_chat/personal_chat_bloc.dart';
 
+import '../../locale/l10n/app_locale.dart';
 import '../../models/message_model.dart';
 import '../../models/user.dart';
+import '../../widgets/custom_circular_progress_indicator.dart';
 
-class PersonalChatScreen extends StatelessWidget {
+class PersonalChatScreen extends StatefulWidget {
   final User chatPartner;
 
   const PersonalChatScreen({super.key, required this.chatPartner});
+
+  @override
+  _PersonalChatScreenState createState() => _PersonalChatScreenState();
+}
+
+class _PersonalChatScreenState extends State<PersonalChatScreen> {
+  late TextEditingController _messageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _messageController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,40 +42,57 @@ class PersonalChatScreen extends StatelessWidget {
         authRepository: context.read<AuthenticationRepository>(),
         chatRoomRepository: context.read<ChatRoomRepository>(),
       )..add(
-        CreateChatRoomEvent(chatParticipantTwoId: chatPartner.id),
+          CreateChatRoomEvent(chatParticipantTwoId: widget.chatPartner.id),
+        ),
+      child: BlocListener<PersonalChatBloc, PersonalChatState>(
+        listener: (context, state) {
+          if (state is PersonalChatRoomCreatedState) {
+            context.read<PersonalChatBloc>().add(
+                GetMessagesEvent(chatParticipantTwoId: widget.chatPartner.id));
+          }
+        },
+        child: _PersonalChat(
+          chatPartner: widget.chatPartner,
+          messageController: _messageController,
+        ),
       ),
-      child: _PersonalChat(chatPartner: chatPartner),
     );
   }
-
 }
-
 
 class _PersonalChat extends StatelessWidget {
   final User chatPartner;
-  const _PersonalChat({required this.chatPartner});
+  final TextEditingController messageController;
+
+  const _PersonalChat(
+      {required this.chatPartner, required this.messageController});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomSheet: buildBottomChatBar(context),
-        resizeToAvoidBottomInset: true,
-        appBar: buildAppBar(context, chatPartner),
-        body: BlocBuilder<PersonalChatBloc, PersonalChatState>(
-          builder: (context, state) {
-            if (state is PersonalChatMessagesLoadedState) {
-              return Center(
-                  child: buildChatMessageListTile(
-                      context, state.messagesList, state.currentUserId));
-            } else {
-              return SizedBox();
-            }
-          },
-        ));
+      bottomSheet:
+          buildBottomChatBar(context, messageController, chatPartner.id),
+      resizeToAvoidBottomInset: true,
+      appBar: buildAppBar(context, chatPartner),
+      body: BlocBuilder<PersonalChatBloc, PersonalChatState>(
+        builder: (context, state) {
+          if (state is PersonalChatMessagesLoadedState) {
+            return buildChatMessageListTile(context, state.messagesList,null);
+          } else if (state is PersonalChatLoadingState || state is PersonalChatRoomCreatedState) {
+            return buildLoadingWidget(context);
+          } else {
+            return const SizedBox(
+              child: Text("Doesnt Work"),
+            );
+          }
+        },
+      ),
+    );
   }
 }
 
-Widget buildBottomChatBar(BuildContext context) {
+Widget buildBottomChatBar(BuildContext context,
+    TextEditingController messageController, String chatPartnerId) {
   return SafeArea(
     child: Container(
       height: context.setHeight(10),
@@ -87,37 +126,50 @@ Widget buildBottomChatBar(BuildContext context) {
                 SizedBox(
                   width: context.setWidth(6),
                 ),
-                const Expanded(
+                Expanded(
                   child: TextField(
+                    controller: messageController,
+                    textInputAction: TextInputAction.newline,
+                    keyboardType: TextInputType.multiline,
+                    minLines: null,
                     maxLines: null,
-                    // Allows the TextField to expand in height
-                    minLines: 1,
                     textAlign: TextAlign.left,
                     // Aligns the user input text to the left
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: InputBorder.none,
                       hintText: 'Type a message',
                       hintStyle: TextStyle(color: Colors.grey),
                     ),
                   ),
                 ),
+
+                // Icon for sending message
                 IconButton(
-                  iconSize: context.setWidth(8),
-                  icon: const Icon(Icons.keyboard_voice, color: Colors.black),
+                  iconSize: 28,
+                  icon: const Icon(Icons.send_sharp, color: Colors.black),
                   onPressed: () {
-                    print('Send icon pressed');
+                    // Get the text from the TextField
+                    final messageText = messageController.text.trim();
+                    if (messageText.isNotEmpty) {
+                      // Dispatch an event to send the message
+                      context.read<PersonalChatBloc>().add(
+                            SendMessageEvent(
+                              receiverId: chatPartnerId,
+                              messageContent: messageText,
+                              timestamp: Timestamp.fromDate(DateTime.now()),
+                              messageType: "String",
+                            ),
+                          );
+
+                      // Clear the TextField
+                      messageController.clear();
+                    } else {
+                      print('Message is empty');
+                    }
                   },
                 ),
               ],
             ),
-          ),
-          // Icon for sending message
-          IconButton(
-            iconSize: 28,
-            icon: const Icon(Icons.send_sharp, color: Colors.black),
-            onPressed: () {
-              print('Send icon pressed');
-            },
           ),
         ],
       ),
@@ -194,6 +246,27 @@ Widget buildChatMessageListTile(
           itemCount: messages.length,
           itemBuilder: (context, index) {
             final message = messages[index];
-            return Container();
+            return SizedBox(child:Text(message.messageContent));
           }));
+}
+
+Widget buildLoadingWidget(BuildContext context) {
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      Center(
+        child: Text(
+          AppLocale.of(context)!.loading,
+        ),
+      ),
+      SizedBox(
+        height: context.setHeight(3),
+      ),
+      const CustomCircularProgressIndicator(),
+      SizedBox(
+        height: context.setHeight(3),
+      ),
+    ],
+  );
 }
