@@ -1,43 +1,48 @@
 part of 'personal_chat_bloc.dart';
 
-abstract class PersonalChatState extends Equatable {
-  @override
-  List<Object> get props => [];
-}
+class PersonalChatState extends Equatable {
+  const PersonalChatState({
+    this.currentUserId = '',
+    this.chatParticipantTwoId = '',
+    this.textMessageInput = '',
+    this.messagesList = const [],
+  });
 
-class PersonalChatRoomCreatedState extends PersonalChatState{
-
-}
-
-class PersonalChatMessagesLoadedState extends PersonalChatState {
   final List<Message> messagesList;
-  final String currentUserId; // Ensure this is non-nullable
-  final String chatParticipantTwoId; // Ensure this is non-nullable
+  final String currentUserId;
+  final String chatParticipantTwoId;
+  final String textMessageInput;
 
-  PersonalChatMessagesLoadedState({
+  PersonalChatState copyWith({
     List<Message>? messagesList,
-    required this.currentUserId,
-    required this.chatParticipantTwoId,
-  }) : messagesList = messagesList ?? []; // Default to an empty list if null
+    String? currentUserId,
+    String? chatParticipantTwoId,
+    String? textMessageInput,
+  }) {
+    return PersonalChatState(
+      messagesList: messagesList ?? this.messagesList,
+      currentUserId: currentUserId ?? this.currentUserId,
+      chatParticipantTwoId: chatParticipantTwoId ?? this.chatParticipantTwoId,
+      textMessageInput: textMessageInput ?? this.textMessageInput,
+    );
+  }
 
   @override
-  List<Object> get props => [
-    messagesList, // List<Message> is non-nullable due to default value
-    currentUserId, // Ensure it's non-nullable
-    chatParticipantTwoId, // Ensure it's non-nullable
-  ];
-}
-
-class PersonalChatErrorState extends PersonalChatState {
-  final String error;
-
-  PersonalChatErrorState(this.error);
-
-  @override
-  List<Object> get props => [error];
+  List<Object> get props => [messagesList, currentUserId, chatParticipantTwoId];
 }
 
 class PersonalChatLoadingState extends PersonalChatState {
+  const PersonalChatLoadingState();
+
   @override
   List<Object> get props=> [];
+}
+
+class PersonalChatErrorState extends PersonalChatState {
+  const PersonalChatErrorState(this.error);
+
+  final String error;
+
+  @override
+  List<Object> get props => [error];
 }

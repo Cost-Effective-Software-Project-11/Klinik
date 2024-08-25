@@ -3,11 +3,11 @@ import 'package:flutter_gp5/models/chat_room_model.dart';
 import 'package:flutter_gp5/models/message_model.dart';
 import 'package:logger/logger.dart';
 
-class ChatRoomRepository {
+class ChatRepository {
   final FirebaseFirestore _firestore;
   final Logger _logger;
 
-  ChatRoomRepository({
+  ChatRepository({
     FirebaseFirestore? firestore,
     Logger? logger,
   })  : _firestore = firestore ?? FirebaseFirestore.instance,
@@ -135,9 +135,7 @@ class ChatRoomRepository {
     }
   }
 
-  Future<String?> findChatRoomId({
-    required List<String> participants,
-  }) async {
+  Future<String?> findChatRoomId({required List<String> participants}) async {
     try {
       // Ensure we have exactly two participants to compare
       if (participants.length != 2) {

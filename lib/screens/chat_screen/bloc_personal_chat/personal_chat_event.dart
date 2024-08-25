@@ -12,7 +12,6 @@ class SendMessageEvent extends PersonalChatEvent {
   final Timestamp timestamp;
   final String messageType;
 
-  // Constructor
   SendMessageEvent({
     required this.receiverId,
     required this.messageContent,
@@ -21,11 +20,10 @@ class SendMessageEvent extends PersonalChatEvent {
   });
 }
 
-
 class GetMessagesEvent extends PersonalChatEvent {
   final List<Message>? messages;
   final String chatParticipantTwoId;
-  // Constructor
+
   GetMessagesEvent({
     required this.chatParticipantTwoId,
     this.messages,
@@ -44,4 +42,20 @@ class CreateChatRoomEvent extends PersonalChatEvent {
 
   @override
   List<Object> get props => [chatParticipantTwoId];
+}
+
+class UpdateTextMessageEvent extends PersonalChatEvent {
+  final String textMessageInput;
+
+  UpdateTextMessageEvent(this.textMessageInput);
+
+  @override
+  List<Object> get props => [textMessageInput];
+}
+
+class ClearMessageInputEvent extends PersonalChatEvent {
+  ClearMessageInputEvent();
+
+  @override
+  List<Object> get props => [];
 }

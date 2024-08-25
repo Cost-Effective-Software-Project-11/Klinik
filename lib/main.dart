@@ -50,8 +50,8 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider<UserRepository>(
           create: (_) => UserRepository(),
         ),
-    RepositoryProvider<ChatRoomRepository>(
-    create: (_) => ChatRoomRepository()),
+    RepositoryProvider<ChatRepository>(
+    create: (_) => ChatRepository()),
       ],
       child: BlocProvider<AuthenticationBloc>(
         create: (context) => createAuthenticationBloc(context),
