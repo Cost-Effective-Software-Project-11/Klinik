@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 
 import '../../../enums/status_enum.dart';
+import '../../../enums/user_enum.dart';
 import '../../../locale/l10n/app_locale.dart';
 import '../../../repos/authentication/authentication_repository.dart';
 import '../../../routes/app_routes.dart';
@@ -678,8 +679,8 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
             name: _nameController.text,
             phone: _phoneController.text,
             specialty: _specialtyController.text,
-            type: 'Doctor',
             workplace: _workplaceController.text,
+            type: UserEnum.Doctor,
           )
       );
     }
