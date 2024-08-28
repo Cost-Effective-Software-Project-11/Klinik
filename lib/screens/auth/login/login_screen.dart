@@ -7,7 +7,6 @@ import 'package:flutter_gp5/routes/app_routes.dart';
 import 'package:iconly/iconly.dart';
 import '../../../repos/authentication/authentication_repository.dart';
 import '../../../utils/image_utils.dart';
-import '../../starting_screen/starting_screen.dart';
 import 'bloc/login_bloc.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -533,4 +532,6 @@ class _LoginScreenState extends State<_LoginScreen> {
       ),
     );
   }
+
+  showRegisterAsDialog(BuildContext context) {}
 }
