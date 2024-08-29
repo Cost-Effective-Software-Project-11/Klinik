@@ -1,116 +1,154 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'models/doctor_model.dart';
+import 'models/institution_model.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   HomeBloc() : super(HomeState()) {
-    on<LoadInitialData>(_onLoadInitialData);
-    on<LoadCities>(_onLoadCities);
-    on<LoadSpecializations>(_onLoadSpecializations);
-    on<ToggleSpecialization>(_onToggleSpecialization);
-    on<ToggleCity>(_onToggleCity);
-    on<UpdateSearchText>(_onUpdateSearchText);
-    on<ClearFilters>(_onClearFilters);
+    on<LoadInitialData>((event, emit) async {
+      final doctors = await _fetchDoctorsFromDatabase();
+      final institutions = await _fetchInstitutionsFromDatabase();
+      final specializations = _getUniqueSpecializations(doctors, institutions);
+      final cities = _getUniqueCities(doctors, institutions);
+
+      emit(state.copyWith(
+        doctors: doctors,
+        institutions: institutions,
+        specializations: specializations,
+        cities: cities,
+        allDoctors: doctors,
+        allInstitutions: institutions,
+      ));
+    });
+
+    on<UpdateSearchText>((event, emit) {
+      final filteredDoctors = _filterDoctors(event.query, state.selectedSpecializations, state.selectedCities, state.allDoctors);
+      final filteredInstitutions = _filterInstitutions(event.query, state.selectedSpecializations, state.selectedCities, state.allInstitutions);
+      emit(state.copyWith(doctors: filteredDoctors, institutions: filteredInstitutions, searchQuery: event.query));
+    });
+
+    on<UpdateSpecializationSearchQuery>((event, emit) {
+      emit(state.copyWith(specializationSearchQuery: event.query));
+    });
+
+    on<ToggleSpecialization>((event, emit) {
+      final updatedSpecializations = List<String>.from(state.selectedSpecializations);
+      if (updatedSpecializations.contains(event.specialization)) {
+        updatedSpecializations.remove(event.specialization);
+      } else {
+        updatedSpecializations.add(event.specialization);
+      }
+
+      final filteredDoctors = _filterDoctors(state.searchQuery, updatedSpecializations, state.selectedCities, state.allDoctors);
+      final filteredInstitutions = _filterInstitutions(state.searchQuery, updatedSpecializations, state.selectedCities, state.allInstitutions);
+
+      emit(state.copyWith(selectedSpecializations: updatedSpecializations, doctors: filteredDoctors, institutions: filteredInstitutions));
+    });
+
+    on<ToggleCity>((event, emit) {
+      final updatedCities = List<String>.from(state.selectedCities);
+      if (updatedCities.contains(event.city)) {
+        updatedCities.remove(event.city);
+      } else {
+        updatedCities.add(event.city);
+      }
+
+      final filteredDoctors = _filterDoctors(state.searchQuery, state.selectedSpecializations, updatedCities, state.allDoctors);
+      final filteredInstitutions = _filterInstitutions(state.searchQuery, state.selectedSpecializations, updatedCities, state.allInstitutions);
+
+      emit(state.copyWith(selectedCities: updatedCities, doctors: filteredDoctors, institutions: filteredInstitutions));
+    });
+
+    on<UpdateCitySearchQuery>((event, emit) {
+      emit(state.copyWith(citySearchQuery: event.query));
+    });
+
+    on<ClearFilters>((event, emit) {
+      _clearFilters(emit);
+    });
+
+    on<ToggleViewType>((event, emit) {
+      emit(state.copyWith(viewType: event.viewType));
+    });
   }
 
-  Future<void> _onLoadInitialData(LoadInitialData event, Emitter<HomeState> emit) async {
-    await _loadDoctorsData(emit);
-    await _loadInstitutionsData(emit);
-    add(const LoadSpecializations());
-    add(const LoadCities());
-  }
-
-  void _onLoadCities(LoadCities event, Emitter<HomeState> emit) async {
-    var snapshot = await FirebaseFirestore.instance.collection('institutions').get();
-    var cities = snapshot.docs.map((doc) => doc.data()['city'] as String).toSet().toList();
-    emit(state.copyWith(cities: cities));
-  }
-
-  void _onLoadSpecializations(LoadSpecializations event, Emitter<HomeState> emit) async {
-    var snapshot = await FirebaseFirestore.instance.collection('specialities').get();
-    var specializations = snapshot.docs.map((doc) => doc['name'] as String).toList();
-    emit(state.copyWith(specializations: specializations));
-  }
-
-  Future<void> _loadDoctorsData(Emitter<HomeState> emit) async {
-    var snapshot = await FirebaseFirestore.instance.collection('users').where('type', isEqualTo: 'Doctor').get();
-    var doctors = snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
-    emit(state.copyWith(doctors: doctors, filteredDoctors: doctors));
-  }
-
-  Future<void> _loadInstitutionsData(Emitter<HomeState> emit) async {
-    var snapshot = await FirebaseFirestore.instance.collection('institutions').get();
-    var institutions = snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
-    emit(state.copyWith(institutions: institutions, filteredInstitutions: institutions));
-  }
-
-  void _onToggleSpecialization(ToggleSpecialization event, Emitter<HomeState> emit) async {
-    final updatedSpecializations = List<String>.from(state.selectedSpecializations);
-    if (updatedSpecializations.contains(event.specialization)) {
-      updatedSpecializations.remove(event.specialization);
-    } else {
-      updatedSpecializations.add(event.specialization);
+  Future<List<Doctor>> _fetchDoctorsFromDatabase() async {
+    try {
+      final querySnapshot = await _firestore.collection('users').where('type', isEqualTo: 'Doctor').get();
+      return querySnapshot.docs.map((doc) {
+        return Doctor.fromFirestore(doc.data());
+      }).toList();
+    } catch (e) {
+      return [];
     }
-    emit(state.copyWith(selectedSpecializations: updatedSpecializations));
-    await _filterData(emit);
   }
 
-  Future<void> _onToggleCity(ToggleCity event, Emitter<HomeState> emit) async {
-    final updatedCities = List<String>.from(state.selectedCities);
-    if (updatedCities.contains(event.city)) {
-      updatedCities.remove(event.city);
-    } else {
-      updatedCities.add(event.city);
+  Future<List<Institution>> _fetchInstitutionsFromDatabase() async {
+    try {
+      final querySnapshot = await _firestore.collection('institutions').get();
+      return querySnapshot.docs.map((doc) {
+        return Institution.fromFirestore(doc.data());
+      }).toList();
+    } catch (e) {
+      return [];
     }
-    emit(state.copyWith(selectedCities: updatedCities));
   }
 
-  Future<void> _onUpdateSearchText(UpdateSearchText event, Emitter<HomeState> emit) async {
-    emit(state.copyWith(searchText: event.searchText));
+  // Extract unique specializations from both doctors and institutions
+  List<String> _getUniqueSpecializations(List<Doctor> doctors, List<Institution> institutions) {
+    final specializations = <String>{};
+    for (var doctor in doctors) {
+      specializations.add(doctor.speciality);
+    }
+    for (var institution in institutions) {
+      specializations.addAll(institution.specialities);
+    }
+    return specializations.toList();
   }
 
-  void _onClearFilters(ClearFilters event, Emitter<HomeState> emit) {
+  // Extract unique cities from both doctors and institutions
+  List<String> _getUniqueCities(List<Doctor> doctors, List<Institution> institutions) {
+    final cities = <String>{};
+    for (var doctor in doctors) {
+      cities.add(doctor.city);
+    }
+    for (var institution in institutions) {
+      cities.add(institution.city);
+    }
+    return cities.toList();
+  }
+
+  void _clearFilters(Emitter<HomeState> emit) {
     emit(state.copyWith(
       selectedSpecializations: [],
       selectedCities: [],
-      searchText: '',
-      filteredDoctors: state.doctors,
-      filteredInstitutions: state.institutions,
+      doctors: state.allDoctors,
+      institutions: state.allInstitutions,
+      searchQuery: '',
     ));
   }
 
-  Future<void> _filterData(Emitter<HomeState> emit) async {
-    // Query for doctors
-    Query<Map<String, dynamic>> doctorQuery = FirebaseFirestore.instance.collection('users').where('type', isEqualTo: 'Doctor');
+  List<Doctor> _filterDoctors(String query, List<String> specializations, List<String> cities, List<Doctor> allDoctors) {
+    return allDoctors.where((doctor) {
+      final matchesQuery = doctor.name.toLowerCase().contains(query.toLowerCase());
+      final matchesSpecialization = specializations.isEmpty || specializations.contains(doctor.speciality);
+      final matchesCity = cities.isEmpty || cities.contains(doctor.city);
+      return matchesQuery && matchesSpecialization && matchesCity;
+    }).toList();
+  }
 
-    if (state.selectedSpecializations.isNotEmpty) {
-      doctorQuery = doctorQuery.where('speciality', whereIn: state.selectedSpecializations);
-    }
-    if (state.selectedCities.isNotEmpty) {
-      doctorQuery = doctorQuery.where('city', whereIn: state.selectedCities);
-    }
-    var doctorResult = await doctorQuery.get();
-    var filteredDoctors = doctorResult.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
-
-    print('Filtered doctors: $filteredDoctors');
-
-    // Query for institutions
-    Query<Map<String, dynamic>> institutionQuery = FirebaseFirestore.instance.collection('institutions');
-
-    if (state.selectedSpecializations.isNotEmpty) {
-      institutionQuery = institutionQuery.where('specialities', arrayContainsAny: state.selectedSpecializations);
-    }
-    if (state.selectedCities.isNotEmpty) {
-      institutionQuery = institutionQuery.where('city', whereIn: state.selectedCities);
-    }
-    var institutionResult = await institutionQuery.get();
-    var filteredInstitutions = institutionResult.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
-
-    print('Filtered institutions: $filteredInstitutions');
-
-    emit(state.copyWith(filteredDoctors: filteredDoctors, filteredInstitutions: filteredInstitutions));
+  List<Institution> _filterInstitutions(String query, List<String> specializations, List<String> cities, List<Institution> allInstitutions) {
+    return allInstitutions.where((institution) {
+      final matchesQuery = institution.name.toLowerCase().contains(query.toLowerCase());
+      final matchesCity = cities.isEmpty || cities.contains(institution.city);
+      final matchesSpecialization = specializations.isEmpty ||
+          institution.specialities.any((specialization) => specializations.contains(specialization));
+      return matchesQuery && matchesCity && matchesSpecialization;
+    }).toList();
   }
 }

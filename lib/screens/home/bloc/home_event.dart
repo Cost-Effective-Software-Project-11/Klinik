@@ -1,59 +1,37 @@
 part of 'home_bloc.dart';
 
-abstract class HomeEvent extends Equatable {
-  const HomeEvent();
+abstract class HomeEvent {}
 
-  @override
-  List<Object> get props => [];
-}
+class LoadInitialData extends HomeEvent {}
 
-class LoadInitialData extends HomeEvent {
-  const LoadInitialData();
-}
-
-class LoadCities extends HomeEvent {
-  const LoadCities();
-}
-
-class LoadSpecializations extends HomeEvent {
-  const LoadSpecializations();
+class UpdateSearchText extends HomeEvent {
+  final String query;
+  UpdateSearchText(this.query);
 }
 
 class ToggleSpecialization extends HomeEvent {
   final String specialization;
-
-  const ToggleSpecialization(this.specialization);
-
-  @override
-  List<Object> get props => [specialization];
+  ToggleSpecialization(this.specialization);
 }
 
 class ToggleCity extends HomeEvent {
   final String city;
-
-  const ToggleCity(this.city);
-
-  @override
-  List<Object> get props => [city];
+  ToggleCity(this.city);
 }
 
-class UpdateSearchText extends HomeEvent {
-  final String searchText;
+class ClearFilters extends HomeEvent {}
 
-  const UpdateSearchText(this.searchText);
-
-  @override
-  List<Object> get props => [searchText];
+class ToggleViewType extends HomeEvent {
+  final ViewType viewType;
+  ToggleViewType(this.viewType);
 }
 
-class ClearFilters extends HomeEvent {
-  const ClearFilters();
+class UpdateSpecializationSearchQuery extends HomeEvent {
+  final String query;
+  UpdateSpecializationSearchQuery(this.query);
 }
 
-class LoadFilteredDoctors extends HomeEvent {
-  const LoadFilteredDoctors();
-}
-
-class LoadFilteredInstitutions extends HomeEvent {
-  const LoadFilteredInstitutions();
+class UpdateCitySearchQuery extends HomeEvent {
+  final String query;
+  UpdateCitySearchQuery(this.query);
 }

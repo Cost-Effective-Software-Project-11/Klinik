@@ -1,62 +1,68 @@
 part of 'home_bloc.dart';
 
-class HomeState extends Equatable {
-  final List<Map<String, dynamic>> doctors;
-  final List<Map<String, dynamic>> filteredDoctors;
-  final List<Map<String, dynamic>> institutions;
-  final List<Map<String, dynamic>> filteredInstitutions;
+enum ViewType { doctors, institutions }
+
+class HomeState {
+  final List<Doctor> doctors;
+  final List<Institution> institutions;
   final List<String> specializations;
   final List<String> cities;
   final List<String> selectedSpecializations;
   final List<String> selectedCities;
-  final String searchText;
+  final String searchQuery;
+  final List<Doctor> allDoctors; // Unfiltered list of all doctors
+  final List<Institution> allInstitutions; // Unfiltered list of all institutions
+  final ViewType viewType;
+  final String specializationSearchQuery;
+  final String citySearchQuery;
 
-  const HomeState({
+  HomeState({
     this.doctors = const [],
-    this.filteredDoctors = const [],
     this.institutions = const [],
-    this.filteredInstitutions = const [],
     this.specializations = const [],
     this.cities = const [],
     this.selectedSpecializations = const [],
     this.selectedCities = const [],
-    this.searchText = '',
+    this.searchQuery = '',
+    this.allDoctors = const [],
+    this.allInstitutions = const [],
+    this.viewType = ViewType.doctors,
+    this.specializationSearchQuery = '',
+    this.citySearchQuery = '',
   });
 
   HomeState copyWith({
-    List<Map<String, dynamic>>? doctors,
-    List<Map<String, dynamic>>? filteredDoctors,
-    List<Map<String, dynamic>>? institutions,
-    List<Map<String, dynamic>>? filteredInstitutions,
+    List<Doctor>? doctors,
+    List<Institution>? institutions,
     List<String>? specializations,
     List<String>? cities,
     List<String>? selectedSpecializations,
     List<String>? selectedCities,
-    String? searchText,
+    String? searchQuery,
+    List<Doctor>? allDoctors,
+    List<Institution>? allInstitutions,
+    ViewType? viewType,
+    String? specializationSearchQuery,
+    String? citySearchQuery,
   }) {
     return HomeState(
       doctors: doctors ?? this.doctors,
-      filteredDoctors: filteredDoctors ?? this.filteredDoctors,
       institutions: institutions ?? this.institutions,
-      filteredInstitutions: filteredInstitutions ?? this.filteredInstitutions,
       specializations: specializations ?? this.specializations,
       cities: cities ?? this.cities,
       selectedSpecializations: selectedSpecializations ?? this.selectedSpecializations,
       selectedCities: selectedCities ?? this.selectedCities,
-      searchText: searchText ?? this.searchText,
+      searchQuery: searchQuery ?? this.searchQuery,
+      allDoctors: allDoctors ?? this.allDoctors,
+      allInstitutions: allInstitutions ?? this.allInstitutions,
+      viewType: viewType ?? this.viewType,
+      specializationSearchQuery: specializationSearchQuery ?? this.specializationSearchQuery,
+      citySearchQuery: citySearchQuery ?? this.citySearchQuery,
     );
   }
+}
 
+class LoadingState extends HomeState {
   @override
-  List<Object> get props => [
-    doctors,
-    filteredDoctors,
-    institutions,
-    filteredInstitutions,
-    specializations,
-    cities,
-    selectedSpecializations,
-    selectedCities,
-    searchText,
-  ];
+  List<Object> get props=> [];
 }
