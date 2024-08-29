@@ -16,7 +16,7 @@ class UserRepository {
   // Asynchronous method to fetch a user by ID, returning a nullable User
   Future<User?> getUser(String id) async {
     try {
-      final doc = await _firestore.collection('users2').doc(id).get();
+      final doc = await _firestore.collection('users').doc(id).get();
       if (doc.exists && doc.data() != null) {
         // Safely parse the user using the refactored fromMap method
         return User.fromMap(doc.data());
@@ -29,5 +29,23 @@ class UserRepository {
       _logger.e('Exception while fetching user: $e', error: e, stackTrace: stack);
     }
     return null;
+  }
+
+  Future<List<User>> getAll() async {
+    List<User> userList = [];
+    try {
+      final userCollection =
+          await FirebaseFirestore.instance.collection("users").get();
+      userCollection.docs.forEach((element) {
+        return userList.add(User.fromMap(element.data()));
+      });
+      return userList;
+    } on FirebaseException catch (e) {
+      _logger.e('FirebaseException: ${e.message}', error: e);
+    } catch (e, stack) {
+      _logger.e('Exception while fetching users: $e',
+          error: e, stackTrace: stack);
+    }
+    return userList;
   }
 }

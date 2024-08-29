@@ -70,5 +70,9 @@
     "termsCompliance": "3. Einhaltung: Sie erklären sich damit einverstanden, lokale Vorschriften einzuhalten und unsere Dienste nicht für rechtswidrige Zwecke zu verwenden.",
     "termsConsent": "4. Zustimmung: Sie willigen ein, gelegentliche E-Mails im Zusammenhang mit Ihrem Konto und der Verwaltung Ihrer Gesundheit zu erhalten.",
     "termsReadComplete": "Bitte lesen Sie unsere vollständigen Nutzungsbedingungen, um Ihre Rechte und Pflichten zu verstehen.",
+    "messages": "Nachrichten",
+    "no_data": "Keine Daten verfügbar",
+    "recents": "Letzte",
+    "loading": "AUFLADEN",
     "emailNotExist": "Es gibt kein Konto mit dieser E-Mail im System"
 }

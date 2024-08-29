@@ -73,15 +73,21 @@ class _LoginScreenState extends State<_LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(context.setHeight(16)),
+          preferredSize: Size.fromHeight(context.setHeight(7)),
           child: Padding(
             padding: EdgeInsets.only(
-                top: context.setHeight(8), bottom: context.setHeight(2)),
+                top: context.setHeight(1), bottom: context.setHeight(1)),
             child: AppBar(
               leading: IconButton(
                 icon: Icon(Icons.navigate_before,
                     color: const Color(0xFF1D1B20), size: context.setWidth(8)),
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () {
+                  // Unfocus to dismiss the keyboard
+                  FocusManager.instance.primaryFocus?.unfocus();
+
+                  // Navigate back
+                  Navigator.of(context).pop();
+                },
               ),
               title: Text(
                 AppLocale.of(context)!.login,
@@ -167,28 +173,38 @@ class _LoginScreenState extends State<_LoginScreen> {
       child: Column(
         children: [
           _buildInputField(
-              context,
-              AppLocale.of(context)!.email,
-              IconlyBold.message,
-              AppLocale.of(context)!.email_placeholder,
-              false,
-              _emailController),
+            context,
+            AppLocale.of(context)!.email,
+            IconlyBold.message,
+            AppLocale.of(context)!.email_placeholder,
+            false,
+            _emailController,
+            keyboardType: TextInputType.emailAddress,
+          ),
           _buildInputField(
-              context,
-              AppLocale.of(context)!.password,
-              IconlyBold.lock,
-              AppLocale.of(context)!.password_placeholder,
-              true,
-              _passwordController,
-              _togglePasswordVisibility)
+            context,
+            AppLocale.of(context)!.password,
+            IconlyBold.lock,
+            AppLocale.of(context)!.password_placeholder,
+            true,
+            _passwordController,
+            toggleVisibility: _togglePasswordVisibility,
+          )
         ],
       ),
     );
   }
 
-  Widget _buildInputField(BuildContext context, String label, IconData icon,
-      String placeholder, bool isPassword, TextEditingController controller,
-      [VoidCallback? toggleVisibility]) {
+  Widget _buildInputField(
+      BuildContext context,
+      String label,
+      IconData icon,
+      String placeholder,
+      bool isPassword,
+      TextEditingController controller, {
+        VoidCallback? toggleVisibility,
+        TextInputType keyboardType = TextInputType.text,
+      }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -219,6 +235,7 @@ class _LoginScreenState extends State<_LoginScreen> {
                     child: TextFormField(
                       controller: controller,
                       obscureText: isPassword && !_passwordVisible,
+                      keyboardType: keyboardType,
                       decoration: InputDecoration(
                         hintText: placeholder,
                         hintStyle: TextStyle(
@@ -230,16 +247,22 @@ class _LoginScreenState extends State<_LoginScreen> {
                             horizontal: context.setWidth(3)),
                         suffixIcon: isPassword
                             ? IconButton(
-                                icon: Icon(_passwordVisible
-                                    ? Icons.visibility
-                                    : Icons.visibility_off),
-                                onPressed: toggleVisibility,
-                                color: const Color(0xFF49454F),
-                              )
+                          icon: Icon(_passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off),
+                          onPressed: toggleVisibility,
+                          color: const Color(0xFF49454F),
+                        )
                             : null,
                       ),
                       textAlign: TextAlign.left,
                       validator: (value) => _validateField(value, label),
+
+                      // Dismiss the keyboard on tap or submission
+
+                      onFieldSubmitted: (value) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                      },
                     ),
                   ),
                 ],
@@ -268,11 +291,11 @@ class _LoginScreenState extends State<_LoginScreen> {
               left: context.setWidth(5), top: context.setHeight(0.3)),
           child: Text(
             controller.value.text.isEmpty ||
-                    _validateField(controller.value.text, label) == null
+                _validateField(controller.value.text, label) == null
                 ? ""
                 : _validateField(controller.value.text, label)!,
             style:
-                TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
+            TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
           ),
         ),
       ],
@@ -356,7 +379,13 @@ class _LoginScreenState extends State<_LoginScreen> {
             borderRadius: BorderRadius.circular(100),
           ),
         ),
-        onPressed: _isFormFilled ? _submitForm : null,
+        onPressed: _isFormFilled
+            ? () {
+                // Dismiss the keyboard
+                FocusManager.instance.primaryFocus?.unfocus();
+                _submitForm();
+              }
+            : null,
         child: Text(
           AppLocale.of(context)!.login,
           style: TextStyle(
