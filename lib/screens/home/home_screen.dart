@@ -358,7 +358,7 @@ class HomeScreen extends StatelessWidget {
             var doc = state.doctors[index];
             return Container(
               width: context.setWidth(100),
-              height: context.setHeight(15),
+              height: context.setHeight(20),
               decoration: const BoxDecoration(
                 color: Colors.transparent,
               ),
@@ -458,7 +458,7 @@ class HomeScreen extends StatelessWidget {
 
             return Container(
               width: context.setWidth(100),
-              height: context.setHeight(15),
+              height: context.setHeight(20),
               decoration: const BoxDecoration(
                 color: Colors.transparent,
               ),
