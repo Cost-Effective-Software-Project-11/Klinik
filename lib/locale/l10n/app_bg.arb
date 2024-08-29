@@ -74,7 +74,10 @@
     "noSpecialtiesListed": "Няма посочени специалности",
     "trials": "Опити",
     "data": "Данни",
-    "messages": "Съобщения",
     "profile": "Профил",
-    "logoutFailed": "Неуспешно излизане"
+    "logoutFailed": "Неуспешно излизане",
+    "messages": "Съобщения",
+    "no_data": "Няма налични данни",
+    "recents": "Последни",
+    "loading": "ЗАРЕЖДАНЕ"
 }

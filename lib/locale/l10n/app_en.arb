@@ -74,7 +74,10 @@
     "noSpecialtiesListed": "No Specialties Listed",
     "trials": "Trials",
     "data": "Data",
-    "messages": "Messages",
     "profile": "Profile",
-    "logoutFailed": "Logout failed"
+    "logoutFailed": "Logout failed",
+    "messages": "Messages",
+    "no_data": "No data available",
+    "recents": "Recents",
+    "loading": "LOADING"
 }

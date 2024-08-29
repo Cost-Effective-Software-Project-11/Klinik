@@ -74,7 +74,10 @@
     "noSpecialtiesListed": "Keine Spezialitäten aufgeführt",
     "trials": "Versuche",
     "data": "Daten",
-    "messages": "Nachrichten",
     "profile": "Profil",
-    "logoutFailed": "Abmeldung fehlgeschlagen"
+    "logoutFailed": "Abmeldung fehlgeschlagen",
+    "messages": "Nachrichten",
+    "no_data": "Keine Daten verfügbar",
+    "recents": "Letzte",
+    "loading": "AUFLADEN"
 }
