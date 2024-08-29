@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gp5/screens/home/home_screen.dart';
 import 'package:flutter_gp5/screens/auth/login/login_screen.dart';
 
 import '../screens/auth/signup/doctor-signup_screen.dart';
 import '../screens/auth/signup/patient-signup_screen.dart';
-import '../screens/home/home_screen2.dart';
+import '../screens/home/home_screen.dart';
 import '../screens/starting_screen/starting_screen.dart';
 import '../screens/create_trials/create_trials_screen.dart';
 import '../screens/patient_trials/patient_trials_screen.dart';
@@ -27,7 +26,7 @@ class AppRoutes {
       case splash:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case home:
-        return MaterialPageRoute(builder: (_) => const HomeScreen2());
+        return MaterialPageRoute(builder: (_) => HomeScreen());
       case start:
         return MaterialPageRoute(builder: (_) => const StartingScreen());
       case login:
