@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../enums/viewtype.dart';
 import '../repository/home_repository.dart';
 import 'models/doctor_model.dart';
