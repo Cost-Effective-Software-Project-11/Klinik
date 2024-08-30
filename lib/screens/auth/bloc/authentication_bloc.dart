@@ -8,16 +8,16 @@ import '../../../models/user.dart';
 import '../../../repos/authentication/authentication_repository.dart';
 import '../../../repos/user/user_repository.dart';
 
-import '../../../enums/authentication_status_enum.dart';
-
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
 /// Bloc to handle authentication state changes and manage user authentication.
-class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc
+    extends Bloc<AuthenticationEvent, AuthenticationState> {
   final AuthenticationRepository _authenticationRepository;
   final UserRepository _userRepository;
-  late StreamSubscription<AuthenticationStatus> _authenticationStatusSubscription;
+  late StreamSubscription<AuthenticationStatus>
+      _authenticationStatusSubscription;
 
   /// Constructor initializing the bloc with repositories and states.
   AuthenticationBloc({
@@ -31,14 +31,15 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
     // Make sure the stream emits AuthenticationStatus and remove the casting if not needed
     _authenticationStatusSubscription = _authenticationRepository.status.listen(
-          (status) => add(_AuthenticationStatusChanged(status)),
+      (status) => add(_AuthenticationStatusChanged(status)),
     );
   }
+
   /// Handles changes in authentication status and updates the state accordingly.
   Future<void> _onAuthenticationStatusChanged(
-      _AuthenticationStatusChanged event,
-      Emitter<AuthenticationState> emit,
-      ) async {
+    _AuthenticationStatusChanged event,
+    Emitter<AuthenticationState> emit,
+  ) async {
     switch (event.status) {
       case AuthenticationStatus.unauthenticated:
         emit(const AuthenticationState.unauthenticated());
@@ -59,9 +60,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   /// Logs out the current user and updates the state to unauthenticated.
   void _onAuthenticationLogoutRequested(
-      AuthenticationLogoutRequested event,
-      Emitter<AuthenticationState> emit,
-      ) {
+    AuthenticationLogoutRequested event,
+    Emitter<AuthenticationState> emit,
+  ) {
     _authenticationRepository.logOut();
   }
 
@@ -73,10 +74,10 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         final user = await _userRepository.getUser(currentUser.uid);
         return user;
       } catch (_) {
-        return null;  // Return null if fetching user fails.
+        return null; // Return null if fetching user fails.
       }
     }
-    return null;  // Return null if no current user.
+    return null; // Return null if no current user.
   }
 
   /// Overridden close method to cancel the stream subscription on bloc close.

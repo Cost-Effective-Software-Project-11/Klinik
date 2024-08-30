@@ -30,4 +30,22 @@ class UserRepository {
     }
     return null;
   }
+
+  Future<List<User>> getAll() async {
+    List<User> userList = [];
+    try {
+      final userCollection =
+          await FirebaseFirestore.instance.collection("users").get();
+      userCollection.docs.forEach((element) {
+        return userList.add(User.fromMap(element.data()));
+      });
+      return userList;
+    } on FirebaseException catch (e) {
+      _logger.e('FirebaseException: ${e.message}', error: e);
+    } catch (e, stack) {
+      _logger.e('Exception while fetching users: $e',
+          error: e, stackTrace: stack);
+    }
+    return userList;
+  }
 }
