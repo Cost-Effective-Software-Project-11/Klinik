@@ -79,5 +79,8 @@
     "messages": "Съобщения",
     "no_data": "Няма налични данни",
     "recents": "Последни",
-    "loading": "ЗАРЕЖДАНЕ"
+    "loading": "ЗАРЕЖДАНЕ",
+    "noDoctorsFound": "Няма намерени лекари",
+    "noInstitutionsFound": "Няма намерени институции",
+    "noCity": "Няма град"
 }

@@ -79,5 +79,8 @@
     "messages": "Messages",
     "no_data": "No data available",
     "recents": "Recents",
-    "loading": "LOADING"
+    "loading": "LOADING",
+    "noDoctorsFound": "No doctors found",
+    "noInstitutionsFound": "No institutions found",
+    "noCity": "No city"
 }

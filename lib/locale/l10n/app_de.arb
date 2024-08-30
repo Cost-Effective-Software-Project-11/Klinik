@@ -79,5 +79,8 @@
     "messages": "Nachrichten",
     "no_data": "Keine Daten verfügbar",
     "recents": "Letzte",
-    "loading": "AUFLADEN"
+    "loading": "AUFLADEN",
+    "noDoctorsFound": "Keine Ärzte gefunden",
+    "noInstitutionsFound": "Keine Institutionen gefunden",
+    "noCity": "Keine Stadt"
 }
