@@ -93,7 +93,7 @@
     "no_data": "No data available",
     "recents": "Recents",
     "loading": "LOADING",
-    "emailNotExist": "There is no account with this email in the system"
+    "emailNotExist": "There is no account with this email in the system",
     "noDoctorsFound": "No doctors found",
     "noInstitutionsFound": "No institutions found",
     "noCity": "No city"
