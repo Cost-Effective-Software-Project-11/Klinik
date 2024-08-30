@@ -7,9 +7,33 @@ import '../../repos/authentication/authentication_repository.dart';
 import '../../routes/app_routes.dart';
 import 'bloc/home_bloc.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+class HomeScreenWrapper extends StatefulWidget {
+  const HomeScreenWrapper({super.key});
+
+  @override
+  _HomeScreenWrapperState createState() => _HomeScreenWrapperState();
+}
+
+class _HomeScreenWrapperState extends State<HomeScreenWrapper> {
   final TextEditingController searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return HomeScreen(
+      searchController: searchController,
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key, required this.searchController}) : super(key: key);
+  final TextEditingController searchController;
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +141,6 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              // Location Button
               ElevatedButton(
                 onPressed: () => showLocationDialog(context),
                 style: ElevatedButton.styleFrom(
@@ -144,62 +167,79 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
+          SizedBox(height: context.setHeight(1)),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: BlocBuilder<HomeBloc, HomeState>(
-                  builder: (context, state) {
-                    return Wrap(
-                      spacing: context.setWidth(2),
-                      runSpacing: context.setHeight(1),
-                      children: state.selectedSpecializations.map((specialization) {
-                        return Chip(
-                          label: Text(
-                            specialization,
-                            style: TextStyle(
-                              color: const Color(0xFF6750A4),
-                              fontSize: context.setWidth(3.5),
-                              fontWeight: FontWeight.w500,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: BlocBuilder<HomeBloc, HomeState>(
+                    builder: (context, state) {
+                      return Wrap(
+                        spacing: context.setWidth(0.5),
+                        runSpacing: context.setHeight(1),
+                        children: state.selectedSpecializations.map((specialization) {
+                          return Chip(
+                            label: Text(
+                              specialization,
+                              style: TextStyle(
+                                color: const Color(0xFF6750A4),
+                                fontSize: context.setWidth(3.5),
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
-                          ),
-                          backgroundColor: const Color(0xFFE8DEF8),
-                          deleteIcon: Icon(Icons.close, size: context.setWidth(4), color: const Color(0xFF6750A4)),
-                          onDeleted: () {
-                            context.read<HomeBloc>().add(ToggleSpecialization(specialization));
-                          },
-                        );
-                      }).toList(),
-                    );
-                  },
+                            backgroundColor: const Color(0xFFE8DEF8),
+                            shape: const StadiumBorder(
+                              side: BorderSide(
+                                color: Color(0xFF6750A4),
+                                width: 1.5,
+                              ),
+                            ),
+                            deleteIcon: Icon(Icons.close, size: context.setWidth(4), color: const Color(0xFF6750A4)),
+                            onDeleted: () {
+                              context.read<HomeBloc>().add(ToggleSpecialization(specialization));
+                            },
+                          );
+                        }).toList(),
+                      );
+                    },
+                  ),
                 ),
               ),
               Expanded(
-                child: BlocBuilder<HomeBloc, HomeState>(
-                  builder: (context, state) {
-                    return Wrap(
-                      spacing: context.setWidth(2),
-                      runSpacing: context.setHeight(1),
-                      children: state.selectedCities.map((city) {
-                        return Chip(
-                          label: Text(
-                            city,
-                            style: TextStyle(
-                              color: const Color(0xFF6750A4),
-                              fontSize: context.setWidth(3.5),
-                              fontWeight: FontWeight.w500,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: BlocBuilder<HomeBloc, HomeState>(
+                    builder: (context, state) {
+                      return Wrap(
+                        spacing: context.setWidth(2),
+                        runSpacing: context.setHeight(1),
+                        children: state.selectedCities.map((city) {
+                          return Chip(
+                            label: Text(
+                              city.isNotEmpty ? city : AppLocale.of(context)!.noCity,
+                              style: TextStyle(
+                                color: const Color(0xFF6750A4),
+                                fontSize: context.setWidth(3.5),
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
-                          ),
-                          backgroundColor: const Color(0xFFE8DEF8),
-                          deleteIcon: Icon(Icons.close, size: context.setWidth(4), color: const Color(0xFF6750A4)),
-                          onDeleted: () {
-                            context.read<HomeBloc>().add(ToggleCity(city));
-                          },
-                        );
-                      }).toList(),
-                    );
-                  },
+                            backgroundColor: const Color(0xFFE8DEF8),
+                            shape: const StadiumBorder(
+                              side: BorderSide(
+                                color: Color(0xFF6750A4),
+                                width: 1.5,
+                              ),
+                            ),
+                            deleteIcon: Icon(Icons.close, size: context.setWidth(4), color: const Color(0xFF6750A4)),
+                            onDeleted: () {
+                              context.read<HomeBloc>().add(ToggleCity(city));
+                            },
+                          );
+                        }).toList(),
+                      );
+                    },
+                  ),
                 ),
               ),
             ],
@@ -349,7 +389,16 @@ class HomeScreen extends StatelessWidget {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         if (state.doctors.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: Text(
+              AppLocale.of(context)!.noDoctorsFound,
+              style: TextStyle(
+                color: const Color(0xFF49454F),
+                fontSize: context.setWidth(5),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          );
         }
 
         return ListView.builder(
@@ -442,7 +491,16 @@ class HomeScreen extends StatelessWidget {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         if (state.institutions.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: Text(
+              AppLocale.of(context)!.noInstitutionsFound,
+              style: TextStyle(
+                color: const Color(0xFF49454F),
+                fontSize: context.setWidth(5),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          );
         }
 
         return ListView.builder(
@@ -557,7 +615,8 @@ class HomeScreen extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.all(context.setWidth(5)),
                 constraints: BoxConstraints(
-                  maxHeight: context.setHeight(80),
+                  maxHeight: context.setHeight(50),
+                  maxWidth: context.setWidth(80),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -600,29 +659,31 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     Expanded(
-                      child: SingleChildScrollView(
-                        child: Wrap(
-                          spacing: context.setWidth(2),
-                          runSpacing: context.setHeight(1),
-                          children: filteredSpecializations.map((specialization) {
-                            return FilterChip(
-                              label: Text(
-                                specialization,
-                                style: TextStyle(
-                                  color: const Color(0xFF6750A4),
-                                  fontSize: context.setWidth(3.5),
-                                  fontWeight: FontWeight.w500,
+                      child: Scrollbar(
+                        child: SingleChildScrollView(
+                          child: Wrap(
+                            spacing: context.setWidth(2),
+                            runSpacing: context.setHeight(1),
+                            children: filteredSpecializations.map((specialization) {
+                              return FilterChip(
+                                label: Text(
+                                  specialization,
+                                  style: TextStyle(
+                                    color: const Color(0xFF6750A4),
+                                    fontSize: context.setWidth(3.5),
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
-                              ),
-                              backgroundColor: const Color(0xFFE8DEF8),
-                              shape: const StadiumBorder(),
-                              onSelected: (bool selected) {
-                                if (selected) {
-                                  context.read<HomeBloc>().add(ToggleSpecialization(specialization));
-                                }
-                              },
-                            );
-                          }).toList(),
+                                backgroundColor: const Color(0xFFE8DEF8),
+                                shape: const StadiumBorder(),
+                                onSelected: (bool selected) {
+                                  if (selected) {
+                                    context.read<HomeBloc>().add(ToggleSpecialization(specialization));
+                                  }
+                                },
+                              );
+                            }).toList(),
+                          ),
                         ),
                       ),
                     ),
@@ -655,7 +716,8 @@ class HomeScreen extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.all(context.setWidth(5)),
                 constraints: BoxConstraints(
-                  maxHeight: context.setHeight(80),
+                  maxHeight: context.setHeight(50),
+                  maxWidth: context.setWidth(80),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -698,29 +760,31 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     Expanded(
-                      child: SingleChildScrollView(
-                        child: Wrap(
-                          spacing: context.setWidth(2),
-                          runSpacing: context.setHeight(1),
-                          children: filteredCities.map((city) {
-                            return FilterChip(
-                              label: Text(
-                                city,
-                                style: TextStyle(
-                                  color: const Color(0xFF6750A4),
-                                  fontSize: context.setWidth(3.5),
-                                  fontWeight: FontWeight.w500,
+                      child: Scrollbar(
+                        child: SingleChildScrollView(
+                          child: Wrap(
+                            spacing: context.setWidth(2),
+                            runSpacing: context.setHeight(1),
+                            children: filteredCities.map((city) {
+                              return FilterChip(
+                                label: Text(
+                                  city.isNotEmpty ? city : AppLocale.of(context)!.noCity,
+                                  style: TextStyle(
+                                    color: const Color(0xFF6750A4),
+                                    fontSize: context.setWidth(3.5),
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
-                              ),
-                              backgroundColor: const Color(0xFFE8DEF8),
-                              shape: const StadiumBorder(),
-                              onSelected: (bool selected) {
-                                if (selected) {
-                                  context.read<HomeBloc>().add(ToggleCity(city));
-                                }
-                              },
-                            );
-                          }).toList(),
+                                backgroundColor: const Color(0xFFE8DEF8),
+                                shape: const StadiumBorder(),
+                                onSelected: (bool selected) {
+                                  if (selected) {
+                                    context.read<HomeBloc>().add(ToggleCity(city));
+                                  }
+                                },
+                              );
+                            }).toList(),
+                          ),
                         ),
                       ),
                     ),

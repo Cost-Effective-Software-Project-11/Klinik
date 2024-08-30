@@ -3,7 +3,6 @@ import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
 import 'package:flutter_gp5/screens/settings/language_dropdown_button.dart';
 import 'package:flutter_gp5/widgets/custom_circular_progress_indicator.dart';
-
 import '../home/home_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -33,8 +32,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               Text(
                 localizations.language,
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: height, width: width),
               const LanguageDropdownButton(),
@@ -47,7 +45,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
+                MaterialPageRoute(builder: (context) => const HomeScreenWrapper()),
               );
             },
             child: const Text('Go to Home'),
