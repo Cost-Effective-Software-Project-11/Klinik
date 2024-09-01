@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
@@ -429,11 +430,26 @@ class HomeScreen extends StatelessWidget {
                             height: context.setWidth(15),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              image: DecorationImage(
+                              image: kIsWeb
+                                  ? null
+                                  : DecorationImage(
                                 image: NetworkImage(doc.imageUrl),
                                 fit: BoxFit.cover,
                               ),
                             ),
+                            child: kIsWeb
+                                ? Image.network(
+                              doc.imageUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Icon(
+                                  Icons.error,
+                                  size: context.setWidth(10),
+                                  color: Colors.red,
+                                );
+                              },
+                            )
+                                : null,
                           ),
                           SizedBox(width: context.setWidth(5)),
                           Expanded(
@@ -538,11 +554,26 @@ class HomeScreen extends StatelessWidget {
                             height: context.setWidth(15),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              image: DecorationImage(
+                              image: kIsWeb
+                                  ? null
+                                  : DecorationImage(
                                 image: NetworkImage(imageUrl),
                                 fit: BoxFit.cover,
                               ),
                             ),
+                            child: kIsWeb
+                                ? Image.network(
+                              imageUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Icon(
+                                  Icons.error,
+                                  size: context.setWidth(10),
+                                  color: Colors.red,
+                                );
+                              },
+                            )
+                                : null,
                           ),
                           SizedBox(width: context.setWidth(5)),
                           Expanded(

@@ -22,7 +22,9 @@ class Doctor {
       workplace: data['workplace'] ?? '',
       city: data['city'] ?? '',
       phone: data['phone'] ?? '',
-      imageUrl: data['imageUrl'] ?? 'https://static-00.iconduck.com/assets.00/profile-default-icon-2048x2045-u3j7s5nj.png',
+      imageUrl: data['imageUrl']?.isNotEmpty == true
+          ? data['imageUrl']
+          : 'https://static-00.iconduck.com/assets.00/profile-default-icon-2048x2045-u3j7s5nj.png',
     );
   }
 }
