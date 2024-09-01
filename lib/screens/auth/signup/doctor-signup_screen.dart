@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,32 +42,38 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _specialtyController = TextEditingController();
-  final TextEditingController _workplaceController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
 
   bool _isFormFilled = false;
 
+  List<String> institutionNames = [];
+  String? selectedInstitution;
+
   @override
   void initState() {
     super.initState();
     _nameController.addListener(_updateSubmitButtonState);
     _emailController.addListener(_updateSubmitButtonState);
-    _specialtyController.addListener(_updateSubmitButtonState);
-    _workplaceController.addListener(_updateSubmitButtonState);
     _phoneController.addListener(_updateSubmitButtonState);
     _passwordController.addListener(_updateSubmitButtonState);
     _confirmPasswordController.addListener(_updateSubmitButtonState);
+    loadInstitutions();
+  }
+
+  Future<void> loadInstitutions() async {
+    var institutions = await FirebaseFirestore.instance.collection('institutions').get();
+    var fetchedInstitutions = institutions.docs.map((doc) => doc.data()['name'] as String).toList();
+    setState(() {
+      institutionNames = fetchedInstitutions;
+    });
   }
 
   void _updateSubmitButtonState() {
     setState(() {
       _isFormFilled = _validateField(_nameController.text, 'Name') == null &&
           _validateField(_emailController.text, 'Email') == null &&
-          _validateField(_specialtyController.text, 'Specialty') == null &&
-          _validateField(_workplaceController.text, 'Workplace') == null &&
           _validateField(_phoneController.text, 'Phone') == null &&
           _validateField(_passwordController.text, 'Password') == null &&
           _validateField(_confirmPasswordController.text, 'Confirm Password') == null &&
@@ -163,8 +170,7 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
         children: [
           _buildInputField(context, AppLocale.of(context)!.name, Icons.account_circle, AppLocale.of(context)!.enterYourName, false, _nameController),
           _buildInputField(context, AppLocale.of(context)!.email, IconlyBold.message, AppLocale.of(context)!.email_placeholder, false, _emailController),
-          _buildInputField(context, AppLocale.of(context)!.specialty, IconlyBold.document, AppLocale.of(context)!.enterYourSpecialty, false, _specialtyController),
-          _buildInputField(context, AppLocale.of(context)!.workplace, IconlyBold.bag_2, AppLocale.of(context)!.enterYourWorkplace, false, _workplaceController),
+          _buildInstitutionDropdown(context),
           _buildInputField(context, AppLocale.of(context)!.phone, IconlyBold.calling, AppLocale.of(context)!.enterYourPhone, false, _phoneController),
           _buildInputField(context, AppLocale.of(context)!.password, IconlyBold.lock, AppLocale.of(context)!.password_placeholder, true, _passwordController, _togglePasswordVisibility),
           _buildInputField(context, AppLocale.of(context)!.confirm_password, IconlyBold.unlock, AppLocale.of(context)!.confirmYourPassword, true, _confirmPasswordController, _toggleConfirmPasswordVisibility),
@@ -302,16 +308,6 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
       case 'Confirm Password':
         if (_passwordController.text != value) {
           return 'Passwords do not match';
-        }
-        break;
-      case 'Specialty':
-        if (value.length < 3) {
-          return 'Specialty must be at least 3 characters long';
-        }
-        break;
-      case 'Workplace':
-        if (value.length < 3) {
-          return 'Workplace must be at least 3 characters long';
         }
         break;
     }
@@ -661,21 +657,145 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
     );
   }
 
+  Widget _buildInstitutionDropdown(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Stack(
+          alignment: Alignment.centerLeft,
+          children: [
+            Container(
+              width: context.setWidth(90),
+              height: 60,
+              margin: EdgeInsets.only(top: context.setHeight(1)),
+              decoration: ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  side: const BorderSide(color: Color(0xFF79747E)),
+                ),
+                color: const Color(0xFFFEF7FF),
+              ),
+              child: InkWell(
+                onTap: () => _openInstitutionMenu(context),
+                child: Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(left: context.setWidth(3)),
+                      alignment: Alignment.centerLeft,
+                      child: Icon(IconlyBold.bag_2, color: const Color(0xFF49454F), size: context.setWidth(6)),
+                    ),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: context.setWidth(3)),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          selectedInstitution ?? "Select Institution",
+                          style: TextStyle(
+                            color: selectedInstitution == null ? const Color(0x6649454F) : const Color(0xFF49454F),
+                            fontSize: context.setWidth(4),
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Roboto',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              top: context.setHeight(-1.2),
+              left: context.setWidth(4),
+              child: Container(
+                padding: EdgeInsets.all(context.setWidth(1.6)),
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: Text(
+                  'Workplace',
+                  style: TextStyle(
+                    color: const Color(0xFF49454F),
+                    fontSize: context.setWidth(3.5),
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: context.setWidth(5), top: context.setHeight(0.3)),
+          child: Text(
+            selectedInstitution == null ? "Workplace is required" : "",
+            style: TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _openInstitutionMenu(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            height: context.setHeight(50),
+            width: context.setWidth(80),
+            child: Column(
+              children: [
+                Text(
+                  "Select Institution",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: context.setWidth(5),
+                      color: const Color(0xFF6750A4)
+                  ),
+                ),
+                SizedBox(height: context.setHeight(1)),
+                Expanded(
+                  child: Scrollbar(
+                    thumbVisibility: true,
+                    thickness: 8.0,
+                    radius: const Radius.circular(10),
+                    child: ListView.builder(
+                      itemCount: institutionNames.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                          title: Text(
+                            institutionNames[index],
+                            style: TextStyle(fontSize: context.setWidth(4)),
+                            textAlign: TextAlign.center,
+                          ),
+                          onTap: () {
+                            setState(() {
+                              selectedInstitution = institutionNames[index];
+                            });
+                            Navigator.of(context).pop();
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   void dispose() {
     _nameController.removeListener(_updateSubmitButtonState);
     _emailController.removeListener(_updateSubmitButtonState);
-    _specialtyController.removeListener(_updateSubmitButtonState);
-    _workplaceController.removeListener(_updateSubmitButtonState);
     _phoneController.removeListener(_updateSubmitButtonState);
     _passwordController.removeListener(_updateSubmitButtonState);
     _confirmPasswordController.removeListener(_updateSubmitButtonState);
 
     _nameController.dispose();
     _emailController.dispose();
-    _specialtyController.dispose();
-    _workplaceController.dispose();
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -690,9 +810,9 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
             password: _passwordController.text,
             name: _nameController.text,
             phone: _phoneController.text,
-            specialty: _specialtyController.text,
+            specialty: "",
             type: 'Doctor',
-            workplace: _workplaceController.text,
+            workplace: selectedInstitution!,
           )
       );
     }

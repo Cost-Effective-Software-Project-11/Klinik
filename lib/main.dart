@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_gp5/screens/home/bloc/home_bloc.dart';
+import 'package:flutter_gp5/screens/home/repository/home_repository.dart';
 
 import 'firebase_options.dart';
 import 'locale/l10n/app_locale.dart';
@@ -50,8 +52,16 @@ class _MyAppState extends State<MyApp> {
           create: (_) => UserRepository(),
         ),
       ],
-      child: BlocProvider<AuthenticationBloc>(
-        create: (context) => createAuthenticationBloc(context),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<AuthenticationBloc>(
+            create: (context) => createAuthenticationBloc(context),
+          ),
+          BlocProvider<HomeBloc>(
+            create: (context) => HomeBloc(HomeRepository())..add(LoadInitialData()),
+            child: const MyApp(),
+          ),
+        ],
         child: MaterialApp(
           title: 'GP5',
           debugShowCheckedModeBanner: false,

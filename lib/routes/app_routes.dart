@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gp5/screens/home/home_screen.dart';
-import 'package:flutter_gp5/screens/auth/login/login_screen.dart';
-
+import '../screens/auth/login/login_screen.dart';
 import '../screens/auth/signup/doctor-signup_screen.dart';
 import '../screens/auth/signup/patient-signup_screen.dart';
+import '../screens/home/home_screen.dart';
 import '../screens/chat_screen/chat_screen.dart';
 import '../screens/starting_screen/starting_screen.dart';
 import '../screens/create_trials/create_trials_screen.dart';
@@ -29,7 +28,7 @@ class AppRoutes {
       case splash:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case home:
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+        return MaterialPageRoute(builder: (_) => const HomeScreenWrapper());
       case start:
         return MaterialPageRoute(builder: (_) => const StartingScreen());
       case login:
@@ -42,10 +41,10 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const CreateTrialsScreen());
       case signupDoctor:
         return MaterialPageRoute(builder: (_) => const DoctorSignUpScreen());
-       case signupPatient:
-         return MaterialPageRoute(builder: (_) => const PatientSignUpScreen());
+      case signupPatient:
+        return MaterialPageRoute(builder: (_) => const PatientSignUpScreen());
       case chat:
-      return MaterialPageRoute(builder: (_) => const ChatScreen());
+        return MaterialPageRoute(builder: (_) => const ChatScreen());
       default:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
     }
