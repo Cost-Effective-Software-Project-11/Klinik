@@ -7,7 +7,6 @@ class Message extends Equatable {
   final String? senderId;
   final String receiverId;
   final String messageContent;
-  final String messageType;
   final Timestamp timestamp;
 
   // Constructor
@@ -16,7 +15,6 @@ class Message extends Equatable {
     this.senderId,
     required this.receiverId,
     required this.messageContent,
-    required this.messageType,
     required this.timestamp,
   });
 
@@ -26,7 +24,6 @@ class Message extends Equatable {
       senderId: map['senderId'] as String,
       receiverId: map['receiverId'] as String,
       messageContent: map['messageContent'] as String,
-      messageType: map['messageType'] as String,
       timestamp: map['timestamp'] as Timestamp,
     );
   }
@@ -37,11 +34,10 @@ class Message extends Equatable {
       'senderId': senderId,
       'receiverId': receiverId,
       'messageContent': messageContent,
-      'messageType': messageType,
       'timestamp': timestamp,
     };
   }
 
   @override
-  List<Object?> get props => [senderId, receiverId, messageContent, messageType, timestamp];
+  List<Object?> get props => [senderId, receiverId, messageContent,timestamp];
 }

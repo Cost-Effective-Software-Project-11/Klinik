@@ -28,7 +28,7 @@ class PersonalChatState extends Equatable {
   }
 
   @override
-  List<Object> get props => [messagesList, currentUserId, chatParticipantTwoId];
+  List<Object> get props => [messagesList, currentUserId, chatParticipantTwoId,textMessageInput];
 }
 
 class PersonalChatLoadingState extends PersonalChatState {

@@ -10,6 +10,7 @@ class ChatAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      forceMaterialTransparency: true,
       toolbarHeight: context.setHeight(10),
       leadingWidth: context.setWidth(8),
       leading: Align(

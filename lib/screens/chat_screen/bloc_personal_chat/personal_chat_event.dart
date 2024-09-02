@@ -10,13 +10,11 @@ class SendMessageEvent extends PersonalChatEvent {
   final String receiverId;
   final String messageContent;
   final Timestamp timestamp;
-  final String messageType;
 
   SendMessageEvent({
     required this.receiverId,
     required this.messageContent,
     required this.timestamp,
-    required this.messageType,
   });
 }
 
@@ -53,9 +51,11 @@ class UpdateTextMessageEvent extends PersonalChatEvent {
   List<Object> get props => [textMessageInput];
 }
 
-class ClearMessageInputEvent extends PersonalChatEvent {
-  ClearMessageInputEvent();
+class MessagesUpdated extends PersonalChatEvent {
+  final List<Message> messages;
+
+  MessagesUpdated({required this.messages});
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [messages];
 }

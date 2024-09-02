@@ -13,46 +13,58 @@ import '../../models/user.dart';
 import '../../widgets/custom_circular_progress_indicator.dart';
 
 class PersonalChatScreen extends StatelessWidget {
-  const PersonalChatScreen({super.key, required this.chatPartner});
+   PersonalChatScreen({super.key, required this.chatPartner});
 
   final User chatPartner;
-
+  final ScrollController _scrollController = ScrollController();
+   final TextEditingController _messageController=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => PersonalChatBloc(
         authRepository: context.read<AuthenticationRepository>(),
         chatRoomRepository: context.read<ChatRepository>(),
-      )..add(CreateChatRoomEvent(chatParticipantTwoId: chatPartner.id)),
-      child: _PersonalChat(chatPartner: chatPartner),
+      )
+        ..add(CreateChatRoomEvent(chatParticipantTwoId: chatPartner.id))
+        ..add(GetMessagesEvent(chatParticipantTwoId: chatPartner.id)),
+      child: _PersonalChat(chatPartner: chatPartner,scrollController: _scrollController,messageController: _messageController,),
     );
   }
 }
 
 class _PersonalChat extends StatelessWidget {
   final User chatPartner;
-
-  const _PersonalChat({required this.chatPartner});
+  final ScrollController scrollController;
+  final TextEditingController messageController;
+  const _PersonalChat({required this.chatPartner, required this.scrollController,required this.messageController});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomSheet: BottomChatBar(chatPartnerId: chatPartner.id),
+      bottomSheet: BottomChatBar(chatPartnerId: chatPartner.id, messageController: messageController,),
       resizeToAvoidBottomInset: true,
       appBar: PreferredSize(
+
         //TODO: fix that size.
-        preferredSize: const Size.fromHeight(56),
+        preferredSize:  Size.fromHeight(100),
         child: ChatAppBar(chatPartner: chatPartner),
       ),
       body: BlocBuilder<PersonalChatBloc, PersonalChatState>(
         builder: (context, state) {
-          if (state is PersonalChatMessagesLoadedState) {
-            return _chatMessageList(context, state.messagesList,null);
-          } else if (state is PersonalChatLoadingState || state is PersonalChatRoomCreatedState) {
+          if (state is PersonalChatLoadingState) {
             return _loadingIndicator(context);
+          } else if (state is PersonalChatState) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              scrollController.animateTo(
+                scrollController.position.maxScrollExtent,  // Scroll to the bottom
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+              );
+            });
+            return _chatMessageList(context, state.messagesList, chatPartner.id, scrollController);
           } else {
             return const SizedBox(
-              child: Text("Doesnt Work"),
+              child: Text("The state is wrong"),
             );
           }
         },
@@ -61,16 +73,33 @@ class _PersonalChat extends StatelessWidget {
   }
 }
 
-Widget _chatMessageList(BuildContext context, List<Message> messages, String? currentUserId) {
-  return Expanded(
-    child: ListView.builder(
-      scrollDirection: Axis.vertical,
-      itemCount: messages.length,
-      itemBuilder: (context, index) {
-        final message = messages[index];
-        return Text(message.messageContent);
-      },
-    ),
+Widget _chatMessageList(BuildContext context, List<Message> messages,
+    String chatPartnerId, ScrollController scrollController) {
+  return ListView.builder(
+    controller: scrollController,
+    padding: EdgeInsets.only(bottom: context.setHeight(10)),
+    itemCount: messages.length,
+    itemBuilder: (context, index) {
+      final message = messages[index];
+      final isFromChatPartner = message.senderId == chatPartnerId;
+      return Align(
+        alignment:
+            isFromChatPartner ? Alignment.centerLeft : Alignment.centerRight,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+          decoration: BoxDecoration(
+            color: isFromChatPartner ? Colors.grey[300] : Colors.blue[200],
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            message.messageContent,
+            style: TextStyle(
+              color: isFromChatPartner ? Colors.black : Colors.white,
+            ),
+          ),
+        ),
+      );
+    },
   );
 }
 

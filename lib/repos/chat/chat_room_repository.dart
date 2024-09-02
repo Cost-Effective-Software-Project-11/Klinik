@@ -10,7 +10,7 @@ class ChatRepository {
   ChatRepository({
     FirebaseFirestore? firestore,
     Logger? logger,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
+  }): _firestore = firestore ?? FirebaseFirestore.instance,
         _logger = logger ?? Logger();
 
   Future<void> createChatRoom(ChatRoomModel chatRoom) async {
@@ -101,45 +101,53 @@ class ChatRepository {
   }
 
 
-  Future<List<Message>> getMessages(
-      String chatParticipantOneId, String chatParticipantTwoId) async {
+  Stream<List<Message>> getMessagesStream(String chatParticipantOneId,
+      String chatParticipantTwoId) async* {
     try {
       // Query the chat room by matching the participants
-      final chatRoomId = await findChatRoomId(participants: [chatParticipantOneId,chatParticipantTwoId]);
+      final chatRoomId = await findChatRoomId(
+          participants: [chatParticipantOneId, chatParticipantTwoId]);
 
-      final messagesSnapshot = await _firestore
+      // If no chat room is found, return an empty stream
+      if (chatRoomId == null) {
+        _logger.e(
+            'No chat room found for participants $chatParticipantOneId and $chatParticipantTwoId.');
+        yield [];
+        return;
+      }
+
+      // Return a stream of messages from Firestore
+      yield* _firestore
           .collection('chat_rooms')
           .doc(chatRoomId)
           .collection('messages')
           .orderBy('timestamp', descending: false)
-          .get();
-
-      // Convert documents to a list of maps
-      final messages = messagesSnapshot.docs.map((doc) {
-        final data = doc.data();
-        return Message(
-          messageId: doc.id,
-          senderId: data['senderId'] as String,
-          receiverId: data['receiverId'] as String,
-          messageContent: data['messageContent'] as String,
-          messageType: data['messageType'] as String,
-          timestamp: data['timestamp'] as Timestamp,
-        );
-      }).toList();
-      _logger
-          .i('Fetched ${messages.length} messages from chat room $chatRoomId.');
-      return messages;
+          .snapshots()
+          .map((snapshot) {
+        return snapshot.docs.map((doc) {
+          final data = doc.data();
+          return Message(
+            messageId: doc.id,
+            senderId: data['senderId'] as String,
+            receiverId: data['receiverId'] as String,
+            messageContent: data['messageContent'] as String,
+            timestamp: data['timestamp'] as Timestamp,
+          );
+        }).toList();
+      });
     } catch (e) {
-      _logger.e('Error fetching messages: $e', error: e);
-      return [];
+      _logger.e('Error fetching messages stream: $e', error: e);
+      yield [];
     }
   }
+
 
   Future<String?> findChatRoomId({required List<String> participants}) async {
     try {
       // Ensure we have exactly two participants to compare
       if (participants.length != 2) {
-        throw ArgumentError('Participants list must contain exactly two participants.');
+        throw ArgumentError(
+            'Participants list must contain exactly two participants.');
       }
 
       // Fetch potential chat rooms where the participants list contains either of the IDs
@@ -150,10 +158,12 @@ class ChatRepository {
 
       // Filter results to find a chat room where both participants are present
       for (var doc in querySnapshot.docs) {
-        List<String> chatRoomParticipants = List<String>.from(doc['participants']);
+        List<String> chatRoomParticipants = List<String>.from(
+            doc['participants']);
 
         // Check if both participants are present in the chat room's participants list
-        if (participants.every((participant) => chatRoomParticipants.contains(participant))) {
+        if (participants.every((participant) =>
+            chatRoomParticipants.contains(participant))) {
           // Return the ID of the matching document
           return doc.id;
         }
