@@ -101,31 +101,33 @@ class ChatRepository {
   }
 
 
-  Stream<List<Message>> getMessagesStream(String chatParticipantOneId,
-      String chatParticipantTwoId) async* {
+  Stream<List<Message>> getMessagesStream(
+     String currentUserId,
+     String chatParticipantTwoId,
+  ) async* {
     try {
-      // Query the chat room by matching the participants
+      int limit = 15;
       final chatRoomId = await findChatRoomId(
-          participants: [chatParticipantOneId, chatParticipantTwoId]);
+        participants: [currentUserId, chatParticipantTwoId],
+      );
 
-      // If no chat room is found, return an empty stream
       if (chatRoomId == null) {
         _logger.e(
-            'No chat room found for participants $chatParticipantOneId and $chatParticipantTwoId.');
+            'No chat room found for participants $currentUserId and $chatParticipantTwoId.');
         yield [];
         return;
       }
-
-      // Return a stream of messages from Firestore
-      yield* _firestore
+      Query query = _firestore
           .collection('chat_rooms')
           .doc(chatRoomId)
           .collection('messages')
-          .orderBy('timestamp', descending: false)
-          .snapshots()
-          .map((snapshot) {
+          .orderBy('timestamp', descending: true)
+          .limit(limit);
+
+      yield* query.snapshots().map((snapshot) {
         return snapshot.docs.map((doc) {
-          final data = doc.data();
+          final data = doc.data() as Map<String, dynamic>;
+
           return Message(
             messageId: doc.id,
             senderId: data['senderId'] as String,
@@ -138,6 +140,56 @@ class ChatRepository {
     } catch (e) {
       _logger.e('Error fetching messages stream: $e', error: e);
       yield [];
+    }
+  }
+
+  Future<List<Message>> getMoreMessages({
+    required String currentUserId,
+    required String chatParticipantTwoId,
+    required Message lastMessage,
+    int limit = 15,
+  }) async {
+    try {
+      _logger.d('Fetching more messages for chat between $currentUserId and $chatParticipantTwoId.');
+
+      final chatRoomId = await findChatRoomId(
+        participants: [currentUserId, chatParticipantTwoId],
+      );
+
+      if (chatRoomId == null) {
+        _logger.e(
+            'No chat room found for participants $currentUserId and $chatParticipantTwoId.');
+        return [];
+      }
+
+      _logger.d('Chat room ID found: $chatRoomId. Fetching messages after timestamp: ${lastMessage.timestamp.toDate()}');
+
+      final querySnapshot = await _firestore
+          .collection('chat_rooms')
+          .doc(chatRoomId)
+          .collection('messages')
+          .orderBy('timestamp', descending: true)
+          .startAfter([lastMessage.timestamp])
+          .limit(limit)
+          .get();
+
+      final messages = querySnapshot.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return Message(
+          messageId: doc.id,
+          senderId: data['senderId'] as String,
+          receiverId: data['receiverId'] as String,
+          messageContent: data['messageContent'] as String,
+          timestamp: data['timestamp'] as Timestamp,
+        );
+      }).toList();
+
+      _logger.d('Fetched ${messages.length} more messages.');
+      return messages;
+
+    } catch (e) {
+      _logger.e('Error fetching more messages: $e', error: e);
+      return [];
     }
   }
 

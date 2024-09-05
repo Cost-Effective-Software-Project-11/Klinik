@@ -1,6 +1,5 @@
 part of 'personal_chat_bloc.dart';
 
-@immutable
 abstract class PersonalChatEvent extends Equatable {
   @override
   List<Object> get props => [];
@@ -38,6 +37,16 @@ class CreateChatRoomEvent extends PersonalChatEvent {
     required this.chatParticipantTwoId,
   });
 
+  @override
+  List<Object> get props => [chatParticipantTwoId];
+}
+
+class LoadMoreMessagesEvent extends PersonalChatEvent {
+  final String chatParticipantTwoId;
+
+   LoadMoreMessagesEvent({
+    required this.chatParticipantTwoId,
+  });
   @override
   List<Object> get props => [chatParticipantTwoId];
 }

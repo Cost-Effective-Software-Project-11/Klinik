@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 
 import '../../../models/chat_room_model.dart';
 import '../../../models/message_model.dart';
@@ -25,7 +24,8 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
     on<GetMessagesEvent>(_onGetMessages);
     on<CreateChatRoomEvent>(_onCreateChatRoom);
     on<UpdateTextMessageEvent>(_onUpdateTextMessage);
-    on<MessagesUpdated>(_onMessagesUpdated); // Register the MessagesUpdated event
+    on<MessagesUpdated>(_onMessagesUpdated);
+    on<LoadMoreMessagesEvent>(_onLoadMoreMessages);
   }
 
   Future<void> _onSendMessage(
@@ -48,9 +48,6 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
 
       // Send the message using the repository
       await chatRoomRepository.sendMessage(newMessage);
-
-      // No need to manually update the state with the new message,
-      // as it will be automatically handled by the stream in the _onMessagesUpdated method.
     } catch (e) {
       emit(PersonalChatErrorState('Error sending message: $e'));
     }
@@ -64,15 +61,14 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
         emit(const PersonalChatErrorState('User is not logged in'));
         return;
       }
+
       _messagesSubscription?.cancel();
 
-      // Subscribe to the stream of messages
       _messagesSubscription = chatRoomRepository
           .getMessagesStream(currentUserId, event.chatParticipantTwoId)
           .listen((messages) {
         add(MessagesUpdated(messages: messages));
       });
-      emit(const PersonalChatState());
     } catch (e) {
       emit(PersonalChatErrorState('Error fetching messages: $e'));
     }
@@ -101,8 +97,7 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
 
       // Call repository to create the chat room with the model if such chat room doesn't exist
       await chatRoomRepository.createChatRoom(chatRoom);
-
-      emit(const PersonalChatLoadingState());
+      emit(PersonalChatState());
     } catch (e) {
       emit(PersonalChatErrorState('Error creating chat room: $e'));
     }
@@ -113,10 +108,35 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
     emit(state.copyWith(textMessageInput: textMessageInput));
   }
 
-  @override
-  Future<void> close() {
-    // Cancel the subscription when the Bloc is closed
-    _messagesSubscription?.cancel();
-    return super.close();
+  Future<void> _onLoadMoreMessages(LoadMoreMessagesEvent event, Emitter<PersonalChatState> emit) async {
+
+    if (state.isLoadingMessages || state.messagesList.isEmpty) return;
+
+    emit(state.copyWith(
+      isLoadingMessages: true),
+    );
+
+    try {
+      final lastMessage = state.messagesList.last;
+      final moreMessages = await chatRoomRepository.getMoreMessages(
+        currentUserId: authRepository.currentUser!.uid,
+        chatParticipantTwoId: event.chatParticipantTwoId,
+        lastMessage: lastMessage,
+        limit: 15,
+      );
+
+      final allMessages = List<Message>.from(state.messagesList)
+        ..addAll(moreMessages);
+
+      emit(state.copyWith(
+        messagesList: allMessages,
+        isLoadingMessages: false,
+      ));
+    } catch (e) {
+      emit(state.copyWith(isLoadingMessages: false));
+      emit(PersonalChatErrorState('Error loading more messages: $e'));
+    }
   }
+
+
 }
