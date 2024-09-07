@@ -10,14 +10,14 @@ class ChatRepository {
   ChatRepository({
     FirebaseFirestore? firestore,
     Logger? logger,
-  }): _firestore = firestore ?? FirebaseFirestore.instance,
+  })  : _firestore = firestore ?? FirebaseFirestore.instance,
         _logger = logger ?? Logger();
 
   Future<void> createChatRoom(ChatRoomModel chatRoom) async {
     try {
       // Check if a chat room with these participants already exists
       final searchedChatRoom =
-      await findChatRoomId(participants: chatRoom.participants);
+          await findChatRoomId(participants: chatRoom.participants);
 
       // If there are no existing chat rooms, create a new one
       if (searchedChatRoom == null) {
@@ -70,8 +70,8 @@ class ChatRepository {
         return; // Exit the function early
       }
       // Proceed with finding the chat room ID
-      final chatRoomId = await findChatRoomId(
-          participants: [senderId, receiverId]);
+      final chatRoomId =
+          await findChatRoomId(participants: [senderId, receiverId]);
 
       if (chatRoomId == null) {
         _logger.e('Error chat room not found');
@@ -100,10 +100,9 @@ class ChatRepository {
     }
   }
 
-
   Stream<List<Message>> getMessagesStream(
-     String currentUserId,
-     String chatParticipantTwoId,
+    String currentUserId,
+    String chatParticipantTwoId,
   ) async* {
     try {
       int limit = 15;
@@ -150,7 +149,8 @@ class ChatRepository {
     int limit = 15,
   }) async {
     try {
-      _logger.d('Fetching more messages for chat between $currentUserId and $chatParticipantTwoId.');
+      _logger.d(
+          'Fetching more messages for chat between $currentUserId and $chatParticipantTwoId.');
 
       final chatRoomId = await findChatRoomId(
         participants: [currentUserId, chatParticipantTwoId],
@@ -162,7 +162,8 @@ class ChatRepository {
         return [];
       }
 
-      _logger.d('Chat room ID found: $chatRoomId. Fetching messages after timestamp: ${lastMessage.timestamp.toDate()}');
+      _logger.d(
+          'Chat room ID found: $chatRoomId. Fetching messages after timestamp: ${lastMessage.timestamp.toDate()}');
 
       final querySnapshot = await _firestore
           .collection('chat_rooms')
@@ -186,13 +187,11 @@ class ChatRepository {
 
       _logger.d('Fetched ${messages.length} more messages.');
       return messages;
-
     } catch (e) {
       _logger.e('Error fetching more messages: $e', error: e);
       return [];
     }
   }
-
 
   Future<String?> findChatRoomId({required List<String> participants}) async {
     try {
@@ -210,12 +209,12 @@ class ChatRepository {
 
       // Filter results to find a chat room where both participants are present
       for (var doc in querySnapshot.docs) {
-        List<String> chatRoomParticipants = List<String>.from(
-            doc['participants']);
+        List<String> chatRoomParticipants =
+            List<String>.from(doc['participants']);
 
         // Check if both participants are present in the chat room's participants list
-        if (participants.every((participant) =>
-            chatRoomParticipants.contains(participant))) {
+        if (participants.every(
+            (participant) => chatRoomParticipants.contains(participant))) {
           // Return the ID of the matching document
           return doc.id;
         }
@@ -229,5 +228,4 @@ class ChatRepository {
       return null;
     }
   }
-
 }

@@ -110,7 +110,7 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
 
   Future<void> _onLoadMoreMessages(LoadMoreMessagesEvent event, Emitter<PersonalChatState> emit) async {
 
-    if (state.isLoadingMessages || state.messagesList.isEmpty) return;
+    if (state.isLoadingMessages==true || state.messagesList.isEmpty) return;
 
     emit(state.copyWith(
       isLoadingMessages: true),

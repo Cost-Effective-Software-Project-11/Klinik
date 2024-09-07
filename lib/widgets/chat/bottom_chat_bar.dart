@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
@@ -7,11 +6,16 @@ import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import '../../screens/chat_screen/bloc_personal_chat/personal_chat_bloc.dart';
 
 class BottomChatBar extends StatelessWidget {
-  BottomChatBar({super.key, required this.chatPartnerId, required this.messageController});
+  BottomChatBar(
+      {super.key,
+      required this.chatPartnerId,
+      required this.messageController,
+      required this.scrollController});
 
   final String chatPartnerId;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController messageController;
+  final ScrollController scrollController; // Add the ScrollController
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +43,7 @@ class BottomChatBar extends StatelessWidget {
             SizedBox(width: context.setWidth(3)),
             Expanded(
               child: Container(
-                width: context.setWidth(60),  // No need to set the width here as it's wrapped in Expanded
+                width: context.setWidth(60),
                 decoration: BoxDecoration(
                   color: const Color(0x1D1B2025),
                   borderRadius: BorderRadius.circular(30.0),
@@ -77,11 +81,24 @@ class BottomChatBar extends StatelessWidget {
                         icon: const Icon(Icons.send_sharp, color: Colors.black),
                         onPressed: () {
                           if (_formKey.currentState?.validate() ?? false) {
-                            context.read<PersonalChatBloc>().add(SendMessageEvent(
-                              receiverId: chatPartnerId,
-                              messageContent: messageController.text,
-                              timestamp: Timestamp.fromDate(DateTime.now()),
-                            ));
+                            context
+                                .read<PersonalChatBloc>()
+                                .add(SendMessageEvent(
+                                  receiverId: chatPartnerId,
+                                  messageContent: messageController.text,
+                                  timestamp: Timestamp.fromDate(DateTime.now()),
+                                ));
+
+                            // Scroll to bottom after sending the message
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              if (scrollController.hasClients) {
+                                scrollController.animateTo(
+                                  scrollController.position.minScrollExtent,
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeOut,
+                                );
+                              }
+                            });
                             messageController.clear();
                           }
                         },

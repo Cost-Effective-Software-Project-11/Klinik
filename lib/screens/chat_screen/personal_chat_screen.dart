@@ -48,87 +48,78 @@ class _PersonalChatBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomSheet: BottomChatBar(
-        chatPartnerId: chatPartner.id,
-        messageController: messageController,
-      ),
-      resizeToAvoidBottomInset: true,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(100),
-        child: ChatAppBar(chatPartner: chatPartner),
-      ),
-      body: BlocBuilder<PersonalChatBloc, PersonalChatState>(
-        builder: (context, state) {
-          // Handling the initial loading state
-          if (state is PersonalChatLoadingState) {
-            return _loadingIndicator(context);
-          }
-          if (state.isLoadingMessages==true) {
-            return Column(
-              children: [
-                _loadingIndicator(context),
-                Expanded(
-                  child: _chatMessageList(context, state.messagesList,
-                      chatPartner.id, scrollController),
-                ),
-              ],
-            );
-          }
-          if (state.messagesList.isNotEmpty && state.isLoadingMessages==false) {
-            return _chatMessageList(
-                context, state.messagesList, chatPartner.id, scrollController);
-          }
-          return Center(child: Text("No messages yet"));
-        },
-      ),
-    );
-  }
-
-  Widget _chatMessageList(BuildContext context, List<Message> messages,
-      String chatPartnerId, ScrollController scrollController) {
     scrollController.addListener(() {
-      if (scrollController.position.pixels == scrollController.position.maxScrollExtent &&
+      if (scrollController.position.pixels ==
+              scrollController.position.maxScrollExtent &&
           !context.read<PersonalChatBloc>().state.isLoadingMessages) {
         context.read<PersonalChatBloc>().add(
-          LoadMoreMessagesEvent(chatParticipantTwoId: chatPartnerId),
-        );
+              LoadMoreMessagesEvent(chatParticipantTwoId: chatPartner.id),
+            );
       }
     });
 
-
-    return BlocBuilder<PersonalChatBloc, PersonalChatState>(
-      builder: (context, state) {
-        // Only the message list updates when state changes
-        final messages = state.messagesList;
-
-        return ListView.builder(
-          padding: const EdgeInsets.only(bottom: 80),
-          controller: scrollController,
-          itemCount: messages.length,
-          reverse: true,
-          itemBuilder: (context, index) {
-            final message = messages[index];
-            final isFromChatPartner = message.senderId == chatPartnerId;
-
-            return Align(
-              alignment:
-              isFromChatPartner ? Alignment.centerLeft : Alignment.centerRight,
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                decoration: BoxDecoration(
-                  color: isFromChatPartner ? Colors.grey[300] : Colors.blue[200],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  message.messageContent,
-                  style: TextStyle(
-                    color: isFromChatPartner ? Colors.black : Colors.white,
+    return Scaffold(
+        bottomSheet: BottomChatBar(
+          chatPartnerId: chatPartner.id,
+          messageController: messageController,
+          scrollController: scrollController,
+        ),
+        resizeToAvoidBottomInset: true,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(100),
+          child: ChatAppBar(chatPartner: chatPartner),
+        ),
+        body: BlocBuilder<PersonalChatBloc, PersonalChatState>(
+          builder: (context, state) {
+            return Column(
+              children: [
+                // Show loading indicator if messages are being loaded
+                if (state.isLoadingMessages)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _loadingIndicator(context),
+                      ],
+                    ),
                   ),
+                // Message list
+                Expanded(
+                  child: _chatMessageList(context, state.messagesList),
                 ),
-              ),
+              ],
             );
           },
+        ));
+  }
+
+  Widget _chatMessageList(BuildContext context, List<Message> messages) {
+    return ListView.builder(
+      padding: const EdgeInsets.only(bottom: 80),
+      controller: scrollController,
+      itemCount: messages.length,
+      reverse: true,
+      itemBuilder: (context, index) {
+        final message = messages[index];
+        final isFromChatPartner = message.senderId == chatPartner.id;
+
+        return Align(
+          alignment:
+              isFromChatPartner ? Alignment.centerLeft : Alignment.centerRight,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+            decoration: BoxDecoration(
+              color: isFromChatPartner ? Colors.grey[300] : Colors.blue[200],
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              message.messageContent,
+              style: TextStyle(
+                color: isFromChatPartner ? Colors.black : Colors.white,
+              ),
+            ),
+          ),
         );
       },
     );
