@@ -34,7 +34,7 @@ class DoctorDetailScreen extends StatelessWidget {
               },
             ),
             title: Text(
-              AppLocale.of(context)!.titleHome,  // Localized string
+              AppLocale.of(context)!.titleHome,
               style: TextStyle(
                 color: const Color(0xFF1D1B20),
                 fontSize: context.setWidth(5),
@@ -111,14 +111,14 @@ class DoctorDetailScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    doctorDetail.name, // Assuming the name is dynamic and doesn't need localization
+                    doctorDetail.name,
                     style: TextStyle(
                       fontSize: context.setWidth(6),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    doctorDetail.speciality, // Assuming the speciality is dynamic and doesn't need localization
+                    doctorDetail.speciality,
                     style: TextStyle(
                       color: Colors.grey[600],
                       fontSize: context.setWidth(4),
@@ -138,7 +138,7 @@ class DoctorDetailScreen extends StatelessWidget {
                 onPressed: null,
                 icon: const Icon(Icons.add, color: Color(0xFF6750A4)),
                 label: Text(
-                  AppLocale.of(context)!.messages,  // Localized string
+                  AppLocale.of(context)!.messages,
                   style: TextStyle(
                     color: const Color(0xFF6750A4),
                     fontSize: context.setWidth(4),
@@ -160,7 +160,7 @@ class DoctorDetailScreen extends StatelessWidget {
                 onPressed: null,
                 icon: const Icon(Icons.add, color: Colors.white),
                 label: Text(
-                  AppLocale.of(context)!.connect,  // Localized string
+                  AppLocale.of(context)!.connect,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: context.setWidth(4),
@@ -185,8 +185,8 @@ class DoctorDetailScreen extends StatelessWidget {
         SizedBox(height: context.setHeight(2)),
         Text(
           doctorDetail.description.isNotEmpty
-              ? doctorDetail.description  // Assuming the description is dynamic and doesn't need localization
-              : AppLocale.of(context)!.noDescription,  // Localized string
+              ? doctorDetail.description
+              : AppLocale.of(context)!.noDescription,
           style: TextStyle(
             fontSize: context.setWidth(4),
             color: Colors.grey[800],
@@ -196,7 +196,7 @@ class DoctorDetailScreen extends StatelessWidget {
         SizedBox(height: context.setHeight(2)),
         const Divider(),
         Text(
-          AppLocale.of(context)!.trials,  // Localized string
+          AppLocale.of(context)!.trials,
           style: TextStyle(
             fontSize: context.setWidth(5),
             fontWeight: FontWeight.bold,
@@ -241,7 +241,7 @@ class DoctorDetailScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  trial['title']!,  // Assuming the title is dynamic and doesn't need localization
+                  trial['title']!,
                   style: TextStyle(
                     fontSize: context.setWidth(4.5),
                     fontWeight: FontWeight.bold,
@@ -249,7 +249,7 @@ class DoctorDetailScreen extends StatelessWidget {
                 ),
                 SizedBox(height: context.setHeight(1)),
                 Text(
-                  trial['description']!,  // Assuming the description is dynamic and doesn't need localization
+                  trial['description']!,
                   style: TextStyle(fontSize: context.setWidth(4)),
                 ),
               ],
