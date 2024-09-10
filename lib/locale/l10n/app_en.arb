@@ -96,5 +96,8 @@
     "emailNotExist": "There is no account with this email in the system",
     "noDoctorsFound": "No doctors found",
     "noInstitutionsFound": "No institutions found",
-    "noCity": "No city"
+    "noCity": "No city",
+    "noSpecialization": "No specialization",
+    "connect": "Connect",
+    "noDescription": "No description available"
 }
