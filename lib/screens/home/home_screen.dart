@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:iconly/iconly.dart';
 import '../../locale/l10n/app_locale.dart';
-import '../../repos/authentication/authentication_repository.dart';
-import '../../routes/app_routes.dart';
+import '../bottom_nav_bar/bottom_nav_bar.dart';
 import 'bloc/home_bloc.dart';
+import 'doctor/doctor_screen.dart';
 
 class HomeScreenWrapper extends StatefulWidget {
   const HomeScreenWrapper({super.key});
@@ -38,7 +38,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authRepo = RepositoryProvider.of<AuthenticationRepository>(context);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -79,7 +78,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: buildBottomNavigationBar(context, authRepo),
+      bottomNavigationBar: const BottomNavigationBarWidget(currentIndex: 2),
     );
   }
 
@@ -182,7 +181,7 @@ class HomeScreen extends StatelessWidget {
                         children: state.selectedSpecializations.map((specialization) {
                           return Chip(
                             label: Text(
-                              specialization,
+                              specialization.isNotEmpty ? specialization : AppLocale.of(context)!.noSpecialization,
                               style: TextStyle(
                                 color: const Color(0xFF6750A4),
                                 fontSize: context.setWidth(3.5),
@@ -406,95 +405,105 @@ class HomeScreen extends StatelessWidget {
           itemCount: state.doctors.length,
           itemBuilder: (context, index) {
             var doc = state.doctors[index];
-            return Container(
-              width: context.setWidth(100),
-              height: context.setHeight(20),
-              decoration: const BoxDecoration(
-                color: Colors.transparent,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: context.setHeight(1),
-                        horizontal: context.setWidth(5),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: context.setWidth(15),
-                            height: context.setWidth(15),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: kIsWeb
-                                  ? null
-                                  : DecorationImage(
-                                image: NetworkImage(doc.imageUrl),
+            return InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DoctorDetailScreen(doctorId: doc.id),
+                  ),
+                );
+              },
+              child: Container(
+                width: context.setWidth(100),
+                height: context.setHeight(20),
+                decoration: const BoxDecoration(
+                  color: Colors.transparent,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: context.setHeight(1),
+                          horizontal: context.setWidth(5),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: context.setWidth(15),
+                              height: context.setWidth(15),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: kIsWeb
+                                    ? null
+                                    : DecorationImage(
+                                  image: NetworkImage(doc.imageUrl),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              child: kIsWeb
+                                  ? Image.network(
+                                doc.imageUrl,
                                 fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Icon(
+                                    Icons.error,
+                                    size: context.setWidth(10),
+                                    color: Colors.red,
+                                  );
+                                },
+                              )
+                                  : null,
+                            ),
+                            SizedBox(width: context.setWidth(5)),
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    doc.name,
+                                    style: TextStyle(
+                                      color: const Color(0xFF6750A4),
+                                      fontSize: context.setWidth(4),
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  Text(
+                                    doc.speciality,
+                                    style: TextStyle(
+                                      fontSize: context.setWidth(3.5),
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${AppLocale.of(context)!.phoneNumberLabel}: ${doc.phone}',
+                                    style: TextStyle(
+                                      fontSize: context.setWidth(3),
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            child: kIsWeb
-                                ? Image.network(
-                              doc.imageUrl,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Icon(
-                                  Icons.error,
-                                  size: context.setWidth(10),
-                                  color: Colors.red,
-                                );
-                              },
-                            )
-                                : null,
-                          ),
-                          SizedBox(width: context.setWidth(5)),
-                          Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  doc.name,
-                                  style: TextStyle(
-                                    color: const Color(0xFF6750A4),
-                                    fontSize: context.setWidth(4),
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                Text(
-                                  doc.speciality,
-                                  style: TextStyle(
-                                    fontSize: context.setWidth(3.5),
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                Text(
-                                  '${AppLocale.of(context)!.phoneNumberLabel}: ${doc.phone}',
-                                  style: TextStyle(
-                                    fontSize: context.setWidth(3),
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: context.setWidth(7)),
-                    child: Divider(
-                      height: context.setHeight(1),
-                      thickness: 2,
-                      color: const Color(0xFFCAC4D0),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: context.setWidth(7)),
+                      child: Divider(
+                        height: context.setHeight(1),
+                        thickness: 2,
+                        color: const Color(0xFFCAC4D0),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },
@@ -698,7 +707,7 @@ class HomeScreen extends StatelessWidget {
                             children: filteredSpecializations.map((specialization) {
                               return FilterChip(
                                 label: Text(
-                                  specialization,
+                                  specialization.isNotEmpty ? specialization : AppLocale.of(context)!.noSpecialization,
                                   style: TextStyle(
                                     color: const Color(0xFF6750A4),
                                     fontSize: context.setWidth(3.5),
@@ -826,55 +835,6 @@ class HomeScreen extends StatelessWidget {
           },
         );
       },
-    );
-  }
-
-  Widget buildBottomNavigationBar(BuildContext context, AuthenticationRepository authRepo) {
-    return Container(
-      height: context.setHeight(8),
-      decoration: const BoxDecoration(color: Color(0xFFECE6F0)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          buildNavItem(IconlyBold.paper, AppLocale.of(context)!.trials, false, context),
-          buildNavItem(IconlyBold.activity, AppLocale.of(context)!.data, false, context),
-          buildNavItem(IconlyBold.home, AppLocale.of(context)!.titleHome, true, context),
-          buildNavItem(IconlyBold.message, AppLocale.of(context)!.messages, false, context),
-          buildNavItem(IconlyBold.profile, AppLocale.of(context)!.profile, false, context, onTap: () async {
-            try {
-              await authRepo.logOut();
-              Navigator.pushReplacementNamed(context, AppRoutes.start);
-            } catch (error) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${AppLocale.of(context)!.logoutFailed}: $error')));
-            }
-          }),
-        ],
-      ),
-    );
-  }
-
-  Widget buildNavItem(IconData icon, String label, bool isActive, BuildContext context, {void Function()? onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            size: context.setWidth(7),
-            color: isActive ? const Color(0xFF6750A4) : const Color(0xFF49454F),
-          ),
-          SizedBox(height: context.setWidth(1)),
-          Text(
-            label,
-            style: TextStyle(
-              color: isActive ? const Color(0xFF6750A4) : const Color(0xFF49454F),
-              fontSize: context.setWidth(3),
-              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:logger/logger.dart';
 import '../../models/user.dart';
+import '../../screens/home/bloc/models/detailed_doctor_model.dart';
 
 class UserRepository {
   final FirebaseFirestore _firestore;
@@ -27,6 +28,23 @@ class UserRepository {
       _logger.e('FirebaseException: ${e.message}', error: e);
     } catch (e, stack) {
       _logger.e('Exception while fetching user: $e', error: e, stackTrace: stack);
+    }
+    return null;
+  }
+
+  // Asynchronous method to fetch a doctor by ID, returning a nullable User
+  Future<DoctorDetail?> getDoctorDetail(String id) async {
+    try {
+      final doc = await _firestore.collection('users').doc(id).get();
+      if (doc.exists && doc.data() != null) {
+        return DoctorDetail.fromMap(doc.data()!);
+      } else {
+        _logger.w('Doctor with id $id does not exist or data is null.');
+      }
+    } on FirebaseException catch (e) {
+      _logger.e('FirebaseException: ${e.message}', error: e);
+    } catch (e, stack) {
+      _logger.e('Exception while fetching doctor details: $e', error: e, stackTrace: stack);
     }
     return null;
   }
