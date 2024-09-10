@@ -8,6 +8,7 @@ import '../../locale/l10n/app_locale.dart';
 import '../../models/user.dart';
 import '../../repos/user/user_repository.dart';
 import '../../widgets/custom_circular_progress_indicator.dart';
+import '../bottom_nav_bar/bottom_nav_bar.dart';
 import 'bloc/chat_bloc.dart';
 import 'bloc/chat_events.dart';
 import 'bloc/chat_states.dart';
@@ -41,7 +42,7 @@ class _ChatScreen extends StatelessWidget {
         ),
       ),
       child: Scaffold(
-        bottomNavigationBar: buildNavigationBar(context),
+        bottomNavigationBar: const BottomNavigationBarWidget(currentIndex: 3),
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           scrolledUnderElevation: 0,
@@ -71,19 +72,6 @@ class _ChatScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-Widget buildNavigationBar(BuildContext context) {
-  return NavigationBar(destinations: const [
-    NavigationDestination(icon: Icon(Icons.description), label: 'Trials'),
-    NavigationDestination(icon: Icon(Icons.trending_up), label: 'Data'),
-    NavigationDestination(icon: Icon(Icons.home_filled), label: 'Home'),
-    NavigationDestination(
-      icon: Icon(Icons.email),
-      label: 'Messages',
-    ),
-    NavigationDestination(icon: Icon(Icons.person_rounded), label: 'Profile'),
-  ]);
 }
 
 Widget buildRecentsRow(BuildContext context) {
