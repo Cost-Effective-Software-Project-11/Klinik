@@ -7,8 +7,8 @@ import 'package:intl/intl.dart';
 import '../../locale/l10n/app_locale.dart';
 import '../../models/user.dart';
 import '../../repos/user/user_repository.dart';
+import '../../widgets/bottom_nav_bar.dart' as custom;
 import '../../widgets/custom_circular_progress_indicator.dart';
-import '../bottom_nav_bar/bottom_nav_bar.dart';
 import 'bloc/chat_bloc.dart';
 import 'bloc/chat_events.dart';
 import 'bloc/chat_states.dart';
@@ -42,7 +42,7 @@ class _ChatScreen extends StatelessWidget {
         ),
       ),
       child: Scaffold(
-        bottomNavigationBar: const BottomNavigationBarWidget(currentIndex: 3),
+        bottomNavigationBar: const custom.BottomNavigationBar(currentIndex: 3),
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           scrolledUnderElevation: 0,

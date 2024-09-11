@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:iconly/iconly.dart';
-import '../../locale/l10n/app_locale.dart';
-import '../../repos/authentication/authentication_repository.dart';
-import '../../routes/app_routes.dart';
+import '../locale/l10n/app_locale.dart';
+import '../repos/authentication/authentication_repository.dart';
+import '../routes/app_routes.dart';
 
-class BottomNavigationBarWidget extends StatelessWidget {
+class BottomNavigationBar extends StatelessWidget {
   final int currentIndex;
-  const BottomNavigationBarWidget({Key? key, required this.currentIndex}) : super(key: key);
+  const BottomNavigationBar({super.key, required this.currentIndex});
 
   @override
   Widget build(BuildContext context) {

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
 import '../../../repos/user/user_repository.dart';
-import '../../bottom_nav_bar/bottom_nav_bar.dart';
+import '../../../widgets/bottom_nav_bar.dart' as custom;
 import '../bloc/models/detailed_doctor_model.dart';
 import 'bloc/doctor_bloc.dart';
 import 'bloc/doctor_event.dart';
@@ -77,7 +77,7 @@ class DoctorDetailScreen extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: const BottomNavigationBarWidget(currentIndex: 2),
+      bottomNavigationBar: const custom.BottomNavigationBar(currentIndex: 2),
     );
   }
 

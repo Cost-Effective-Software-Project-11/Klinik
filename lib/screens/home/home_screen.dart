@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:iconly/iconly.dart';
 import '../../locale/l10n/app_locale.dart';
-import '../bottom_nav_bar/bottom_nav_bar.dart';
+import '../../widgets/bottom_nav_bar.dart' as custom;
 import 'bloc/home_bloc.dart';
 import 'doctor/doctor_screen.dart';
 
@@ -78,7 +78,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: const BottomNavigationBarWidget(currentIndex: 2),
+      bottomNavigationBar: const custom.BottomNavigationBar(currentIndex: 2),
     );
   }
 
