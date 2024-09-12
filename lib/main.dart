@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_gp5/repos/chat/chat_room_repository.dart';
 import 'package:flutter_gp5/screens/home/bloc/home_bloc.dart';
 import 'package:flutter_gp5/screens/home/repository/home_repository.dart';
 
@@ -51,6 +52,8 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider<UserRepository>(
           create: (_) => UserRepository(),
         ),
+    RepositoryProvider<ChatRepository>(
+    create: (_) => ChatRepository()),
       ],
       child: MultiBlocProvider(
         providers: [
