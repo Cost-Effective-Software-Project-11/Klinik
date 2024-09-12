@@ -8,6 +8,7 @@ import 'package:flutter_gp5/widgets/chat/chat_app_bar.dart';
 
 import '../../models/message_model.dart';
 import '../../models/user.dart';
+import '../../widgets/chat/chat_messages_list.dart';
 
 class PersonalChatScreen extends StatelessWidget {
   final User chatPartner;
@@ -86,70 +87,12 @@ class _PersonalChatBody extends StatelessWidget {
                   ),
                 // Message list
                 Expanded(
-                  child: _chatMessageList(context, state.messagesList),
+                  child: ChatMessageList(messages: state.messagesList,scrollController: scrollController,chatPartner: chatPartner,),
                 ),
               ],
             );
           },
         ));
-  }
-
-  Widget _chatMessageList(BuildContext context, List<Message> messages) {
-    return ListView.builder(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).size.height * 0.12,
-        top: MediaQuery.of(context).size.height * 0.05,
-      ),
-      controller: scrollController,
-      itemCount: messages.length,
-      reverse: true,
-      itemBuilder: (context, index) {
-        final message = messages[index];
-        final isFromChatPartner = message.senderId == chatPartner.id;
-        final isPreviousMessageFromCurrentUser = index < messages.length - 1
-            && messages[index + 1].senderId != chatPartner.id;
-        final isCurrentMessageFromChatPartner = isFromChatPartner;
-
-        return Column(
-          crossAxisAlignment: isCurrentMessageFromChatPartner ? CrossAxisAlignment.start : CrossAxisAlignment.end,
-          children: [
-            if (index < messages.length - 1 && isPreviousMessageFromCurrentUser && isCurrentMessageFromChatPartner)
-              const Padding(
-                padding:  EdgeInsets.only(left: 12.0), // Adjust padding as needed
-                child:  CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage('https://via.placeholder.com/150'), // Replace with your image URL
-                ),
-              ),
-            Align(
-              alignment: isCurrentMessageFromChatPartner ? Alignment.centerLeft : Alignment.centerRight,
-              child: Container(
-                margin: EdgeInsets.symmetric(
-                  vertical: MediaQuery.of(context).size.height * 0.003,
-                  horizontal: MediaQuery.of(context).size.height * 0.01,
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                decoration: BoxDecoration(
-                  color: isCurrentMessageFromChatPartner ? const Color(0xFFDBD6E0) : const Color(0xFFC5B3E5),
-                  borderRadius: BorderRadius.only(
-                    topLeft: isCurrentMessageFromChatPartner ? Radius.zero : const Radius.circular(12.0),
-                    topRight: const Radius.circular(12.0),
-                    bottomLeft: const Radius.circular(12.0),
-                    bottomRight: isCurrentMessageFromChatPartner ? const Radius.circular(12.0) : Radius.zero,
-                  ),
-                ),
-                child: Text(
-                  message.messageContent,
-                  style: TextStyle(
-                    color: isCurrentMessageFromChatPartner ? Colors.black : Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
   }
 
 
