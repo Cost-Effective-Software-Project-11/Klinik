@@ -5,8 +5,6 @@ import 'package:flutter_gp5/repos/chat/chat_room_repository.dart';
 import 'package:flutter_gp5/screens/chat_screen/bloc_personal_chat/personal_chat_bloc.dart';
 import 'package:flutter_gp5/widgets/chat/bottom_chat_bar.dart';
 import 'package:flutter_gp5/widgets/chat/chat_app_bar.dart';
-
-import '../../models/message_model.dart';
 import '../../models/user.dart';
 import '../../widgets/chat/chat_messages_list.dart';
 
