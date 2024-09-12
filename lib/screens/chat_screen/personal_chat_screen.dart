@@ -12,7 +12,7 @@ import '../../models/user.dart';
 class PersonalChatScreen extends StatelessWidget {
   final User chatPartner;
 
-  PersonalChatScreen({super.key, required this.chatPartner});
+  const PersonalChatScreen({super.key, required this.chatPartner});
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +66,7 @@ class _PersonalChatBody extends StatelessWidget {
         ),
         resizeToAvoidBottomInset: true,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100),
+          preferredSize: const Size.fromHeight(100),
           child: ChatAppBar(chatPartner: chatPartner),
         ),
         body: BlocBuilder<PersonalChatBloc, PersonalChatState>(
@@ -154,7 +154,7 @@ class _PersonalChatBody extends StatelessWidget {
 
 
   Widget _loadingIndicator(BuildContext context) {
-    return Column(
+    return const Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -162,7 +162,7 @@ class _PersonalChatBody extends StatelessWidget {
           child: Text('Loading...'),
         ),
         SizedBox(height: 5),
-        const CircularProgressIndicator(),
+        CircularProgressIndicator(),
         SizedBox(height: 5),
       ],
     );
