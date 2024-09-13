@@ -4,6 +4,7 @@ import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
 import '../../../repos/user/user_repository.dart';
 import '../../../widgets/bottom_nav_bar.dart' as custom;
+import '../../../widgets/custom_circular_progress_indicator.dart';
 import '../bloc/models/detailed_doctor_model.dart';
 import 'bloc/doctor_bloc.dart';
 import 'bloc/doctor_event.dart';
@@ -60,7 +61,7 @@ class DoctorDetailScreen extends StatelessWidget {
                   child: BlocBuilder<DoctorBloc, DoctorStates>(
                     builder: (context, state) {
                       if (state is DoctorLoadingState) {
-                        return const Center(child: CircularProgressIndicator());
+                        return buildLoadingWidget(context);
                       } else if (state is DoctorLoadedState) {
                         final doctorDetail = state.doctorDetail;
                         return buildDoctorDetail(context, doctorDetail);
@@ -87,6 +88,28 @@ class DoctorDetailScreen extends StatelessWidget {
         image: DecorationImage(
           image: AssetImage('assets/images/home.png'),
           fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  Widget buildLoadingWidget(BuildContext context) {
+    return SizedBox(
+      height: context.setHeight(80),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              AppLocale.of(context)!.loading,
+              style: TextStyle(
+                fontSize: context.setWidth(5),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(height: context.setHeight(3)),
+            const CustomCircularProgressIndicator(),
+          ],
         ),
       ),
     );
@@ -196,7 +219,7 @@ class DoctorDetailScreen extends StatelessWidget {
         SizedBox(height: context.setHeight(2)),
         const Divider(),
         Text(
-          AppLocale.of(context)!.trials,
+          'Explore trials by Dr. ${doctorDetail.name}',
           style: TextStyle(
             fontSize: context.setWidth(5),
             fontWeight: FontWeight.bold,
@@ -211,50 +234,66 @@ class DoctorDetailScreen extends StatelessWidget {
   Widget _buildTrialList(BuildContext context) {
     List<Map<String, String>> trials = [
       {
-        'title': 'Trial 1',
+        'title': 'Trial Category 1',
         'description': 'Short trial description. #placeholder text',
       },
       {
-        'title': 'Trial 2',
+        'title': 'Trial Category 2',
+        'description': 'Another trial description. #placeholder text',
+      },
+      {
+        'title': 'Trial Category 3',
         'description': 'Another trial description. #placeholder text',
       },
     ];
 
     return Column(
       children: trials.map((trial) {
-        return Padding(
-          padding: EdgeInsets.symmetric(vertical: context.setHeight(1)),
-          child: Container(
-            padding: EdgeInsets.all(context.setWidth(4)),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(context.setWidth(4)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 2,
-                  blurRadius: 5,
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        return StatefulBuilder(
+          builder: (context, setState) {
+            bool isExpanded = false;
+            return Column(
               children: [
-                Text(
-                  trial['title']!,
-                  style: TextStyle(
-                    fontSize: context.setWidth(4.5),
-                    fontWeight: FontWeight.bold,
+                ExpansionTile(
+                  key: ValueKey(trial['title']),
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        trial['title']!,
+                        style: TextStyle(
+                          fontSize: context.setWidth(4.5),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          const Icon(Icons.menu, color: Colors.black),
+                          SizedBox(width: context.setWidth(2)),
+                          const Icon(Icons.expand_more, color: Colors.black),
+                        ],
+                      ),
+                    ],
                   ),
+                  onExpansionChanged: (expanded) {
+                    setState(() {
+                      isExpanded = expanded;
+                    });
+                  },
+                  trailing: SizedBox.shrink(), // Remove default arrow
+                  children: [
+                    ListTile(
+                      title: Text(
+                        trial['description']!,
+                        style: TextStyle(fontSize: context.setWidth(4)),
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: context.setHeight(1)),
-                Text(
-                  trial['description']!,
-                  style: TextStyle(fontSize: context.setWidth(4)),
-                ),
+                if (!isExpanded) const Divider(),
               ],
-            ),
-          ),
+            );
+          },
         );
       }).toList(),
     );
