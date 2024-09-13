@@ -99,5 +99,6 @@
     "noCity": "Няма град",
     "noSpecialization": "Няма специализация",
     "connect": "Свързване",
-    "noDescription": "Няма налично описание"
+    "noDescription": "Няма налично описание",
+    "exploreTrialsByDoctor": "Проучете опитите на Д-р."
 }

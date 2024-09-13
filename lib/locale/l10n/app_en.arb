@@ -99,5 +99,6 @@
     "noCity": "No city",
     "noSpecialization": "No specialization",
     "connect": "Connect",
-    "noDescription": "No description available"
+    "noDescription": "No description available",
+    "exploreTrialsByDoctor": "Explore trials by Dr."
 }

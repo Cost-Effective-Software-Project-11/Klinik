@@ -219,7 +219,7 @@ class DoctorDetailScreen extends StatelessWidget {
         SizedBox(height: context.setHeight(2)),
         const Divider(),
         Text(
-          'Explore trials by Dr. ${doctorDetail.name}',
+          '${AppLocale.of(context)!.exploreTrialsByDoctor} ${doctorDetail.name}',
           style: TextStyle(
             fontSize: context.setWidth(5),
             fontWeight: FontWeight.bold,
