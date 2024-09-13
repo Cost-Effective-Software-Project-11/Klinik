@@ -280,7 +280,7 @@ class DoctorDetailScreen extends StatelessWidget {
                       isExpanded = expanded;
                     });
                   },
-                  trailing: SizedBox.shrink(), // Remove default arrow
+                  trailing: const SizedBox.shrink(),
                   children: [
                     ListTile(
                       title: Text(
