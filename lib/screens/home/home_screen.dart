@@ -416,7 +416,7 @@ class HomeScreen extends StatelessWidget {
               },
               child: Container(
                 width: context.setWidth(100),
-                height: context.setHeight(20),
+                height: context.setHeight(22),
                 decoration: const BoxDecoration(
                   color: Colors.transparent,
                 ),
@@ -428,14 +428,14 @@ class HomeScreen extends StatelessWidget {
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.symmetric(
-                          vertical: context.setHeight(1),
-                          horizontal: context.setWidth(5),
+                          vertical: context.setHeight(1.5),
+                          horizontal: context.setWidth(6),
                         ),
                         child: Row(
                           children: [
                             Container(
-                              width: context.setWidth(15),
-                              height: context.setWidth(15),
+                              width: context.setWidth(18),
+                              height: context.setWidth(18),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 image: kIsWeb
@@ -452,14 +452,14 @@ class HomeScreen extends StatelessWidget {
                                 errorBuilder: (context, error, stackTrace) {
                                   return Icon(
                                     Icons.error,
-                                    size: context.setWidth(10),
+                                    size: context.setWidth(12),
                                     color: Colors.red,
                                   );
                                 },
                               )
                                   : null,
                             ),
-                            SizedBox(width: context.setWidth(5)),
+                            SizedBox(width: context.setWidth(6)),
                             Expanded(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -469,21 +469,21 @@ class HomeScreen extends StatelessWidget {
                                     doc.name,
                                     style: TextStyle(
                                       color: const Color(0xFF6750A4),
-                                      fontSize: context.setWidth(4),
+                                      fontSize: context.setWidth(5),
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                   Text(
                                     doc.speciality,
                                     style: TextStyle(
-                                      fontSize: context.setWidth(3.5),
+                                      fontSize: context.setWidth(4.5),
                                       fontWeight: FontWeight.w400,
                                     ),
                                   ),
                                   Text(
                                     '${AppLocale.of(context)!.phoneNumberLabel}: ${doc.phone}',
                                     style: TextStyle(
-                                      fontSize: context.setWidth(3),
+                                      fontSize: context.setWidth(4),
                                       fontWeight: FontWeight.w400,
                                     ),
                                   ),
@@ -541,7 +541,7 @@ class HomeScreen extends StatelessWidget {
 
             return Container(
               width: context.setWidth(100),
-              height: context.setHeight(20),
+              height: context.setHeight(22),
               decoration: const BoxDecoration(
                 color: Colors.transparent,
               ),
@@ -553,14 +553,14 @@ class HomeScreen extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                        vertical: context.setHeight(1),
-                        horizontal: context.setWidth(5),
+                        vertical: context.setHeight(1.5),
+                        horizontal: context.setWidth(6),
                       ),
                       child: Row(
                         children: [
                           Container(
-                            width: context.setWidth(15),
-                            height: context.setWidth(15),
+                            width: context.setWidth(18),
+                            height: context.setWidth(18),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               image: kIsWeb
@@ -577,14 +577,14 @@ class HomeScreen extends StatelessWidget {
                               errorBuilder: (context, error, stackTrace) {
                                 return Icon(
                                   Icons.error,
-                                  size: context.setWidth(10),
+                                  size: context.setWidth(12),
                                   color: Colors.red,
                                 );
                               },
                             )
                                 : null,
                           ),
-                          SizedBox(width: context.setWidth(5)),
+                          SizedBox(width: context.setWidth(6)),
                           Expanded(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -594,21 +594,21 @@ class HomeScreen extends StatelessWidget {
                                   name,
                                   style: TextStyle(
                                     color: const Color(0xFF6750A4),
-                                    fontSize: context.setWidth(4),
+                                    fontSize: context.setWidth(5),
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                                 Text(
                                   city,
                                   style: TextStyle(
-                                    fontSize: context.setWidth(3.5),
+                                    fontSize: context.setWidth(4.5),
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),
                                 Text(
                                   specialtiesDescription,
                                   style: TextStyle(
-                                    fontSize: context.setWidth(3),
+                                    fontSize: context.setWidth(4),
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),
