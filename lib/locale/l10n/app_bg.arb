@@ -96,5 +96,9 @@
     "emailNotExist": "Няма акаунт с този имейл в системата",
     "noDoctorsFound": "Няма намерени лекари",
     "noInstitutionsFound": "Няма намерени институции",
-    "noCity": "Няма град"
+    "noCity": "Няма град",
+    "noSpecialization": "Няма специализация",
+    "connect": "Свързване",
+    "noDescription": "Няма налично описание",
+    "exploreTrialsByDoctor": "Проучете опитите на Д-р."
 }

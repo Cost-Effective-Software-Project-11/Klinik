@@ -96,5 +96,9 @@
     "emailNotExist": "Es gibt kein Konto mit dieser E-Mail im System",
     "noDoctorsFound": "Keine Ärzte gefunden",
     "noInstitutionsFound": "Keine Institutionen gefunden",
-    "noCity": "Keine Stadt"
+    "noCity": "Keine Stadt",
+    "noSpecialization": "Keine Spezialisierung",
+    "connect": "Verbinden",
+    "noDescription": "Keine Beschreibung verfügbar",
+    "exploreTrialsByDoctor": "Entdecken Sie Studien von Dr."
 }

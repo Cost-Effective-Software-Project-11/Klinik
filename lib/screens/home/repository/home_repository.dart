@@ -10,7 +10,7 @@ class HomeRepository {
     try {
       final querySnapshot = await _firestore.collection('users').where('type', isEqualTo: 'Doctor').get();
       return querySnapshot.docs.map((doc) {
-        return Doctor.fromFirestore(doc.data());
+        return Doctor.fromFirestore(doc.data(), doc.id);
       }).toList();
     } catch (e) {
       // handle errors
