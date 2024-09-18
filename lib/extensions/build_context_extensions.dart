@@ -14,6 +14,16 @@ extension ContextExtention on BuildContext {
     return _height * decimalPercentage;
   }
 
+  double setRadius(BuildContext context, double percent) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final baseDimension =
+        screenWidth < screenHeight ? screenWidth : screenHeight;
+
+    final decimalPercentage = _getDecimalPercentage(percent);
+    return baseDimension * decimalPercentage;
+  }
+
   _getDecimalPercentage(double percent) {
     return percent / 100;
   }

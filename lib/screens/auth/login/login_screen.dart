@@ -4,6 +4,7 @@ import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/enums/status_enum.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
 import 'package:flutter_gp5/routes/app_routes.dart';
+import 'package:flutter_gp5/screens/auth/password/forgot_password_screen.dart';
 import 'package:iconly/iconly.dart';
 import '../../../repos/authentication/authentication_repository.dart';
 import '../../../utils/image_utils.dart';
@@ -38,7 +39,6 @@ class _LoginScreenState extends State<_LoginScreen> {
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
   bool _passwordVisible = false;
-  bool _isForgotPasswordVisible = false;
   bool _rememberMe = false;
   bool _isFormFilled = false;
 
@@ -133,9 +133,6 @@ class _LoginScreenState extends State<_LoginScreen> {
                   if (state.status == StatusEnum.success) {
                     Navigator.pushReplacementNamed(context, AppRoutes.home);
                   } else if (state.status == StatusEnum.failure) {
-                    setState(() {
-                      _isForgotPasswordVisible = true;
-                    });
                     ScaffoldMessenger.of(context)
                       ..hideCurrentSnackBar()
                       ..showSnackBar(
@@ -331,32 +328,33 @@ class _LoginScreenState extends State<_LoginScreen> {
   }
 
   Widget _forgotPasswordButton(BuildContext context) {
-    return Visibility(
-        visible: _isForgotPasswordVisible,
-        child: Container(
-            child: Transform.translate(
-          offset: Offset(0, -context.setHeight(2)),
+    return Container(
+      margin: const EdgeInsets.only(top: 2.0),
+      child: InkWell(
+        onTap: () => {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => const ResetPassword()))
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(top: 5.0),
           child: SizedBox(
             width: context.setWidth(80),
-            child: InkWell(
-              onTap: () {
-                // Forgot Password functionality
-              },
-              child: Text(
-                AppLocale.of(context)!.forgotPasswordText,
-                textAlign: TextAlign.right,
-                style: const TextStyle(
-                  color: Color(0xFF6750A4),
-                  fontSize: 14,
-                  fontFamily: 'Roboto',
-                  fontWeight: FontWeight.w500,
-                  height: 0.10,
-                  letterSpacing: 0.25,
-                ),
+            child: Text(
+              AppLocale.of(context)!.forgotPasswordText,
+              textAlign: TextAlign.right,
+              style: const TextStyle(
+                color: Color(0xFF6750A4),
+                fontSize: 14,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w500,
+                height: 0.10,
+                letterSpacing: 0.25,
               ),
             ),
           ),
-        )));
+        ),
+      ),
+    );
   }
 
   Widget _buildLoginButton() {
