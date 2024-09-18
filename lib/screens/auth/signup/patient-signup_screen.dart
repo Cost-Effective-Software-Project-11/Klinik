@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 
 import '../../../enums/status_enum.dart';
 import '../../../locale/l10n/app_locale.dart';
@@ -46,6 +47,8 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
   final TextEditingController _confirmPasswordController = TextEditingController();
 
   bool _isFormFilled = false;
+
+  String _fullPhoneNumber = '';
 
   @override
   void initState() {
@@ -158,7 +161,7 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
         children: [
           _buildInputField(context, AppLocale.of(context)!.name, Icons.account_circle, AppLocale.of(context)!.enterYourName, false, _nameController),
           _buildInputField(context, AppLocale.of(context)!.email, IconlyBold.message, AppLocale.of(context)!.email_placeholder, false, _emailController),
-          _buildInputField(context, AppLocale.of(context)!.phone, IconlyBold.calling, AppLocale.of(context)!.enterYourPhone, false, _phoneController),
+          _buildPhoneField(context),
           _buildInputField(context, AppLocale.of(context)!.password, IconlyBold.lock, AppLocale.of(context)!.password_placeholder, true, _passwordController, _togglePasswordVisibility),
           _buildInputField(context, AppLocale.of(context)!.confirm_password, IconlyBold.unlock, AppLocale.of(context)!.confirmYourPassword, true, _confirmPasswordController, _toggleConfirmPasswordVisibility),
         ],
@@ -371,6 +374,86 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
     );
   }
 
+  Widget _buildPhoneField(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Stack(
+          alignment: Alignment.centerLeft,
+          children: [
+            Container(
+              width: context.setWidth(90),
+              height: 60,
+              margin: EdgeInsets.only(top: context.setHeight(1)),
+              decoration: ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  side: const BorderSide(color: Color(0xFF79747E)),
+                ),
+                color: const Color(0xFFFEF7FF),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(left: context.setWidth(3)),
+                    alignment: Alignment.centerLeft,
+                    child: Icon(IconlyBold.call, color: const Color(0xFF49454F), size: context.setWidth(6)),
+                  ),
+                  Expanded(
+                    child: IntlPhoneField(
+                      decoration: InputDecoration(
+                        hintText: AppLocale.of(context)!.enterYourPhone,
+                        hintStyle: TextStyle(color: const Color(0x6649454F), fontSize: context.setWidth(4)),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(vertical: context.setHeight(1), horizontal: context.setWidth(3)),
+                        counter: const SizedBox.shrink(),
+                      ),
+                      initialCountryCode: 'BG',
+                      dropdownIcon: const Icon(Icons.arrow_drop_down, color: Color(0xFF49454F)),
+                      dropdownTextStyle: TextStyle(fontSize: context.setWidth(4), color: const Color(0xFF49454F)),
+                      controller: _phoneController,
+                      onChanged: (phone) {
+                        _fullPhoneNumber = phone.completeNumber;
+                      },
+                      autovalidateMode: AutovalidateMode.disabled,
+                      validator: (value) {
+                        return _validateField(value as String?, 'Phone');
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              top: context.setHeight(-1.2),
+              left: context.setWidth(4),
+              child: Container(
+                padding: EdgeInsets.all(context.setWidth(1.6)),
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: Text(
+                  'Phone',
+                  style: TextStyle(
+                    color: const Color(0xFF49454F),
+                    fontSize: context.setWidth(3.5),
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: context.setWidth(5), top: context.setHeight(0.3)),
+          child: Text(
+            _phoneController.value.text.isEmpty || _validateField(_phoneController.value.text, 'Phone') == null ? "" :
+            _validateField(_phoneController.value.text, 'Phone')!,
+            style: TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
+          ),
+        ),
+      ],
+    );
+  }
+
   void _showTermsDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -385,21 +468,21 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
               thickness: 4.0,
               radius: const Radius.circular(10),
               child: Padding(
-              padding: EdgeInsets.only(right: context.setWidth(2)),
-              child: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    Text(AppLocale.of(context)!.signupAgreement),
-                    Text(AppLocale.of(context)!.termsConfidentiality),
-                    Text(AppLocale.of(context)!.termsServiceLimitations),
-                    Text(AppLocale.of(context)!.termsCompliance),
-                    Text(AppLocale.of(context)!.termsConsent),
-                    Text(AppLocale.of(context)!.termsReadComplete),
-                  ],
+                padding: EdgeInsets.only(right: context.setWidth(2)),
+                child: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      Text(AppLocale.of(context)!.signupAgreement),
+                      Text(AppLocale.of(context)!.termsConfidentiality),
+                      Text(AppLocale.of(context)!.termsServiceLimitations),
+                      Text(AppLocale.of(context)!.termsCompliance),
+                      Text(AppLocale.of(context)!.termsConsent),
+                      Text(AppLocale.of(context)!.termsReadComplete),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
           ),
           actions: <Widget>[
             OutlinedButton(
@@ -453,22 +536,22 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
               thickness: 4.0,
               radius: const Radius.circular(10),
               child: Padding(
-              padding: EdgeInsets.only(right: context.setWidth(2)),
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: ListBody(
-                  children: <Widget>[
-                    Text(AppLocale.of(context)!.privacyIsImportant),
-                    Text(AppLocale.of(context)!.privacyPrinciples),
-                    Text(AppLocale.of(context)!.privacyNeedInfo),
-                    Text(AppLocale.of(context)!.privacyShareInfo),
-                    Text(AppLocale.of(context)!.privacyStoreInfo),
-                    Text(AppLocale.of(context)!.privacyReview),
-                  ],
+                padding: EdgeInsets.only(right: context.setWidth(2)),
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: ListBody(
+                    children: <Widget>[
+                      Text(AppLocale.of(context)!.privacyIsImportant),
+                      Text(AppLocale.of(context)!.privacyPrinciples),
+                      Text(AppLocale.of(context)!.privacyNeedInfo),
+                      Text(AppLocale.of(context)!.privacyShareInfo),
+                      Text(AppLocale.of(context)!.privacyStoreInfo),
+                      Text(AppLocale.of(context)!.privacyReview),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
           ),
           actions: <Widget>[
             OutlinedButton(
@@ -658,7 +741,7 @@ class _PatientSignUpViewState extends State<PatientSignUpView> {
             email: _emailController.text,
             password: _passwordController.text,
             name: _nameController.text,
-            phone: _phoneController.text,
+            phone: _fullPhoneNumber,
             specialty: '',
             type: 'Patient',
             workplace: '',

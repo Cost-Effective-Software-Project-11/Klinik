@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 
 import '../../../enums/status_enum.dart';
 import '../../../locale/l10n/app_locale.dart';
@@ -50,6 +51,8 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
 
   List<String> institutionNames = [];
   String? selectedInstitution;
+
+  String _fullPhoneNumber = '';
 
   @override
   void initState() {
@@ -171,7 +174,7 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
           _buildInputField(context, AppLocale.of(context)!.name, Icons.account_circle, AppLocale.of(context)!.enterYourName, false, _nameController),
           _buildInputField(context, AppLocale.of(context)!.email, IconlyBold.message, AppLocale.of(context)!.email_placeholder, false, _emailController),
           _buildInstitutionDropdown(context),
-          _buildInputField(context, AppLocale.of(context)!.phone, IconlyBold.calling, AppLocale.of(context)!.enterYourPhone, false, _phoneController),
+          _buildPhoneField(context),
           _buildInputField(context, AppLocale.of(context)!.password, IconlyBold.lock, AppLocale.of(context)!.password_placeholder, true, _passwordController, _togglePasswordVisibility),
           _buildInputField(context, AppLocale.of(context)!.confirm_password, IconlyBold.unlock, AppLocale.of(context)!.confirmYourPassword, true, _confirmPasswordController, _toggleConfirmPasswordVisibility),
         ],
@@ -296,8 +299,8 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
         }
         break;
       case 'Phone':
-        if (value.length != 10) {
-          return 'Phone number must be 10 digits long';
+        if (value.length > 10) {
+          return 'Phone number can be maximum 10 digits long';
         }
         break;
       case 'Password':
@@ -629,6 +632,86 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
     );
   }
 
+  Widget _buildPhoneField(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Stack(
+          alignment: Alignment.centerLeft,
+          children: [
+            Container(
+              width: context.setWidth(90),
+              height: 60,
+              margin: EdgeInsets.only(top: context.setHeight(1)),
+              decoration: ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  side: const BorderSide(color: Color(0xFF79747E)),
+                ),
+                color: const Color(0xFFFEF7FF),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(left: context.setWidth(3)),
+                    alignment: Alignment.centerLeft,
+                    child: Icon(IconlyBold.call, color: const Color(0xFF49454F), size: context.setWidth(6)),
+                  ),
+                  Expanded(
+                    child: IntlPhoneField(
+                      decoration: InputDecoration(
+                        hintText: AppLocale.of(context)!.enterYourPhone,
+                        hintStyle: TextStyle(color: const Color(0x6649454F), fontSize: context.setWidth(4)),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(vertical: context.setHeight(1), horizontal: context.setWidth(3)),
+                        counter: const SizedBox.shrink(),
+                      ),
+                      initialCountryCode: 'BG',
+                      dropdownIcon: const Icon(Icons.arrow_drop_down, color: Color(0xFF49454F)),
+                      dropdownTextStyle: TextStyle(fontSize: context.setWidth(4), color: const Color(0xFF49454F)),
+                      controller: _phoneController,
+                      onChanged: (phone) {
+                        _fullPhoneNumber = phone.completeNumber;
+                      },
+                      autovalidateMode: AutovalidateMode.disabled,
+                      validator: (value) {
+                        return _validateField(value as String?, 'Phone');
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              top: context.setHeight(-1.2),
+              left: context.setWidth(4),
+              child: Container(
+                padding: EdgeInsets.all(context.setWidth(1.6)),
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: Text(
+                  'Phone',
+                  style: TextStyle(
+                    color: const Color(0xFF49454F),
+                    fontSize: context.setWidth(3.5),
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: context.setWidth(5), top: context.setHeight(0.3)),
+          child: Text(
+            _phoneController.value.text.isEmpty || _validateField(_phoneController.value.text, 'Phone') == null ? "" :
+            _validateField(_phoneController.value.text, 'Phone')!,
+            style: TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _loginPrompt(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(top: context.setHeight(2)),
@@ -736,51 +819,117 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            height: context.setHeight(50),
-            width: context.setWidth(80),
-            child: Column(
-              children: [
-                Text(
-                  "Select Institution",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: context.setWidth(5),
-                      color: const Color(0xFF6750A4)
-                  ),
+        List<String> filteredInstitutions = List.from(institutionNames); // Initialize with all institutions
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(context.setWidth(8)),
+              ),
+              child: Container(
+                width: context.setWidth(85),
+                height: context.setHeight(40),
+                padding: EdgeInsets.all(context.setWidth(5)),
+                decoration: BoxDecoration(
+                  color: Color(0xFFE0DBE9),
+                  borderRadius: BorderRadius.circular(context.setWidth(8)),
                 ),
-                SizedBox(height: context.setHeight(1)),
-                Expanded(
-                  child: Scrollbar(
-                    thumbVisibility: true,
-                    thickness: 8.0,
-                    radius: const Radius.circular(10),
-                    child: ListView.builder(
-                      itemCount: institutionNames.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ListTile(
-                          title: Text(
-                            institutionNames[index],
-                            style: TextStyle(fontSize: context.setWidth(4)),
-                            textAlign: TextAlign.center,
-                          ),
-                          onTap: () {
-                            setState(() {
-                              selectedInstitution = institutionNames[index];
-                            });
-                            Navigator.of(context).pop();
-                          },
-                        );
-                      },
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: context.setWidth(2)),
+                      child: Container(
+                        height: context.setHeight(6),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFD7CFE2),
+                          borderRadius: BorderRadius.circular(context.setWidth(6)),
+                        ),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: context.setWidth(2)),
+                              child: Icon(Icons.search, color: Colors.grey),
+                            ),
+                            Expanded(
+                              child: TextField(
+                                onChanged: (value) {
+                                  setState(() {
+                                    filteredInstitutions = institutionNames
+                                        .where((institution) => institution.toLowerCase().contains(value.toLowerCase()))
+                                        .toList();
+                                  });
+                                },
+                                decoration: InputDecoration(
+                                  hintText: "Searchh",
+                                  border: InputBorder.none,
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: context.setHeight(1),
+                                    horizontal: context.setWidth(2),
+                                  ),
+                                ),
+                                style: TextStyle(fontSize: context.setWidth(4)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                    SizedBox(height: context.setHeight(2)),
+                    Expanded(
+                      child: Scrollbar(
+                        thumbVisibility: true,
+                        thickness: 8.0,
+                        radius: const Radius.circular(10),
+                        child: ListView.builder(
+                          itemCount: filteredInstitutions.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(vertical: context.setHeight(1)),
+                              child: Center(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      selectedInstitution = filteredInstitutions[index];
+                                    });
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: context.setHeight(1.5),
+                                      horizontal: context.setWidth(4),
+                                    ),
+                                    constraints: BoxConstraints(
+                                      minWidth: context.setWidth(40), // minimum width for small names
+                                      maxWidth: context.setWidth(80), // maximum width for larger names
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFFD4CFE8),
+                                      borderRadius: BorderRadius.circular(context.setWidth(6)),
+                                    ),
+                                    child: Text(
+                                      filteredInstitutions[index],
+                                      style: TextStyle(
+                                        fontSize: context.setWidth(4),
+                                        color: Color(0xFF1D1B20),
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
@@ -809,7 +958,7 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
             email: _emailController.text,
             password: _passwordController.text,
             name: _nameController.text,
-            phone: _phoneController.text,
+            phone: _fullPhoneNumber,
             specialty: "",
             type: 'Doctor',
             workplace: selectedInstitution!,
