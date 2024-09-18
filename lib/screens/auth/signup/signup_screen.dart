@@ -32,7 +32,7 @@ class SignUpScreen extends StatelessWidget {
 class SignUpView extends StatefulWidget {
   final UserEnum userType;
 
-  const SignUpView({required this.userType, Key? key}) : super(key: key);
+  const SignUpView({required this.userType, super.key});
 
   @override
   _SignUpViewState createState() => _SignUpViewState();
@@ -46,8 +46,8 @@ class _SignUpViewState extends State<SignUpView> {
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController? _specialtyController = TextEditingController();
-  final TextEditingController? _workplaceController = TextEditingController();
+  final TextEditingController _specialtyController = TextEditingController();
+  final TextEditingController _workplaceController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
@@ -66,8 +66,8 @@ class _SignUpViewState extends State<SignUpView> {
     _confirmPasswordController.addListener(_updateSubmitButtonState);
 
     if (widget.userType == UserEnum.Doctor) {
-      _specialtyController?.addListener(_updateSubmitButtonState);
-      _workplaceController?.addListener(_updateSubmitButtonState);
+      _specialtyController.addListener(_updateSubmitButtonState);
+      _workplaceController.addListener(_updateSubmitButtonState);
     }
   }
 
@@ -80,8 +80,8 @@ class _SignUpViewState extends State<SignUpView> {
           _validateField(_confirmPasswordController.text, 'Confirm Password') == null &&
           _isTermsAccepted &&
           (widget.userType == UserEnum.Patient || (
-              _validateField(_specialtyController?.text ?? '', 'Specialty') == null &&
-                  _validateField(_workplaceController?.text ?? '', 'Workplace') == null));
+              _validateField(_specialtyController.text, 'Specialty') == null &&
+                  _validateField(_workplaceController.text, 'Workplace') == null));
     });
   }
 
@@ -196,7 +196,7 @@ class _SignUpViewState extends State<SignUpView> {
                 IconlyBold.bag_2,
                 AppLocale.of(context)!.enterYourWorkplace,
                 false,
-                _workplaceController!,
+                _workplaceController,
                 keyboardType: TextInputType.text
             ),
           ],
@@ -742,11 +742,11 @@ class _SignUpViewState extends State<SignUpView> {
     _confirmPasswordController.dispose();
 
     if (widget.userType == UserEnum.Doctor) {
-      _specialtyController?.removeListener(_updateSubmitButtonState);
-      _workplaceController?.removeListener(_updateSubmitButtonState);
+      _specialtyController.removeListener(_updateSubmitButtonState);
+      _workplaceController.removeListener(_updateSubmitButtonState);
 
-      _specialtyController?.dispose();
-      _workplaceController?.dispose();
+      _specialtyController.dispose();
+      _workplaceController.dispose();
     }
 
     super.dispose();
@@ -760,8 +760,8 @@ class _SignUpViewState extends State<SignUpView> {
             password: _passwordController.text,
             name: _nameController.text,
             phone: _fullPhoneNumber,
-            specialty: widget.userType == UserEnum.Doctor ? _specialtyController?.text ?? '' : '',
-            workplace: widget.userType == UserEnum.Doctor ? _workplaceController?.text ?? '' : '',
+            specialty: widget.userType == UserEnum.Doctor ? _specialtyController.text : '',
+            workplace: widget.userType == UserEnum.Doctor ? _workplaceController.text : '',
             type: widget.userType,
           )
       );
