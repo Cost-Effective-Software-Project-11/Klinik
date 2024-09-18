@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gp5/screens/profile/profile_info_screen.dart';
 import '../screens/auth/login/login_screen.dart';
 import '../screens/auth/signup/doctor-signup_screen.dart';
 import '../screens/auth/signup/patient-signup_screen.dart';
@@ -23,6 +24,7 @@ class AppRoutes {
   static const String signupDoctor = '/signup_doctor';
   static const String signupPatient = '/signup_patient';
   static const String doctorDetail = '/doctorDetail';
+  static const String profile = '/profile';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -53,6 +55,8 @@ class AppRoutes {
             doctorId: args['doctorId'],
           ),
         );
+      case profile:
+        return MaterialPageRoute(builder: (_) => const ProfileInfoScreen());
       default:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
     }

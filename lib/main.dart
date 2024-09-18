@@ -52,8 +52,7 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider<UserRepository>(
           create: (_) => UserRepository(),
         ),
-    RepositoryProvider<ChatRepository>(
-    create: (_) => ChatRepository()),
+        RepositoryProvider<ChatRepository>(create: (_) => ChatRepository()),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -61,7 +60,8 @@ class _MyAppState extends State<MyApp> {
             create: (context) => createAuthenticationBloc(context),
           ),
           BlocProvider<HomeBloc>(
-            create: (context) => HomeBloc(HomeRepository())..add(LoadInitialData()),
+            create: (context) =>
+                HomeBloc(HomeRepository())..add(LoadInitialData()),
             child: const MyApp(),
           ),
         ],

@@ -69,9 +69,11 @@ class BottomNavigationBar extends StatelessWidget {
             onTap: () async {
               try {
                 await authRepo.logOut();
-                Navigator.pushReplacementNamed(context, AppRoutes.start);
+                Navigator.pushReplacementNamed(context, AppRoutes.profile);
               } catch (error) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${AppLocale.of(context)!.logoutFailed}: $error')));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                        '${AppLocale.of(context)!.logoutFailed}: $error')));
               }
             },
           ),
@@ -80,7 +82,8 @@ class BottomNavigationBar extends StatelessWidget {
     );
   }
 
-  Widget buildNavItem(BuildContext context, {
+  Widget buildNavItem(
+    BuildContext context, {
     required IconData icon,
     required String label,
     required int index,
@@ -101,7 +104,8 @@ class BottomNavigationBar extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-              color: isActive ? const Color(0xFF6750A4) : const Color(0xFF49454F),
+              color:
+                  isActive ? const Color(0xFF6750A4) : const Color(0xFF49454F),
               fontSize: context.setWidth(3),
               fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
             ),
