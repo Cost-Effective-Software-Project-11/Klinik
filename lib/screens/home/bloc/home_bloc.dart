@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../enums/viewtype.dart';
+import '../repository/home_repository.dart';
 import 'models/doctor_model.dart';
 import 'models/institution_model.dart';
 
@@ -7,12 +8,12 @@ part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final HomeRepository _repository;
 
-  HomeBloc() : super(HomeState()) {
+  HomeBloc(this._repository) : super(HomeState()) {
     on<LoadInitialData>((event, emit) async {
-      final doctors = await _fetchDoctorsFromDatabase();
-      final institutions = await _fetchInstitutionsFromDatabase();
+      final doctors = await _repository.fetchDoctors();
+      final institutions = await _repository.fetchInstitutions();
       final specializations = _getUniqueSpecializations(doctors, institutions);
       final cities = _getUniqueCities(doctors, institutions);
 
@@ -75,28 +76,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<ToggleViewType>((event, emit) {
       emit(state.copyWith(viewType: event.viewType));
     });
-  }
-
-  Future<List<Doctor>> _fetchDoctorsFromDatabase() async {
-    try {
-      final querySnapshot = await _firestore.collection('users').where('type', isEqualTo: 'Doctor').get();
-      return querySnapshot.docs.map((doc) {
-        return Doctor.fromFirestore(doc.data());
-      }).toList();
-    } catch (e) {
-      return [];
-    }
-  }
-
-  Future<List<Institution>> _fetchInstitutionsFromDatabase() async {
-    try {
-      final querySnapshot = await _firestore.collection('institutions').get();
-      return querySnapshot.docs.map((doc) {
-        return Institution.fromFirestore(doc.data());
-      }).toList();
-    } catch (e) {
-      return [];
-    }
   }
 
   // Extract unique specializations from both doctors and institutions

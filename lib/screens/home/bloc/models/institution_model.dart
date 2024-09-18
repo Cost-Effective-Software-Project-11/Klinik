@@ -16,7 +16,9 @@ class Institution {
       name: data['name'] ?? '',
       city: data['city'] ?? '',
       specialities: List<String>.from(data['specialities'] ?? []),
-      imageUrl: data['imageUrl'] ?? 'https://png.pngtree.com/png-vector/20231023/ourmid/pngtree-simple-buildings-office-png-image_10312300.png',
+      imageUrl: data['imageUrl']?.isNotEmpty == true
+          ? data['imageUrl']
+          : 'https://static.vecteezy.com/system/resources/previews/028/078/799/original/hospital-cartoon-cute-ai-generative-png.png',
     );
   }
 }

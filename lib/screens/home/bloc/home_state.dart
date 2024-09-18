@@ -1,7 +1,5 @@
 part of 'home_bloc.dart';
 
-enum ViewType { doctors, institutions }
-
 class HomeState {
   final List<Doctor> doctors;
   final List<Institution> institutions;
@@ -63,6 +61,5 @@ class HomeState {
 }
 
 class LoadingState extends HomeState {
-  @override
   List<Object> get props=> [];
 }

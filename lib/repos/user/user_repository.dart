@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:logger/logger.dart';
 import '../../models/user.dart';
+import '../../screens/home/bloc/models/detailed_doctor_model.dart';
 
 class UserRepository {
   final FirebaseFirestore _firestore;
@@ -31,13 +32,41 @@ class UserRepository {
     return null;
   }
 
+  // Asynchronous method to fetch a doctor by ID, returning a nullable User
+  Future<DoctorDetail?> getDoctorDetail(String id) async {
+    try {
+      final doc = await _firestore.collection('users').doc(id).get();
+      if (doc.exists && doc.data() != null) {
+        return DoctorDetail.fromMap(doc.data()!);
+      } else {
+        _logger.w('Doctor with id $id does not exist or data is null.');
+      }
+    } on FirebaseException catch (e) {
+      _logger.e('FirebaseException: ${e.message}', error: e);
+    } catch (e, stack) {
+      _logger.e('Exception while fetching doctor details: $e', error: e, stackTrace: stack);
+    }
+    return null;
+  }
+
   Future<List<User>> getAll() async {
     List<User> userList = [];
     try {
-      final userCollection =
-          await FirebaseFirestore.instance.collection("users").get();
+      final userCollection = await _firestore.collection("users").get();
       userCollection.docs.forEach((element) {
-        return userList.add(User.fromMap(element.data()));
+        final user = User.fromMap(element.data());
+        // Create a new User instance with the document ID set
+        final userWithId = User(
+          id: element.id, // Set the document ID here
+          email: user.email,
+          name: user.name,
+          phone: user.phone,
+          speciality: user.speciality,
+          type: user.type,
+          workplace: user.workplace,
+        );
+
+        userList.add(userWithId);
       });
       return userList;
     } on FirebaseException catch (e) {
