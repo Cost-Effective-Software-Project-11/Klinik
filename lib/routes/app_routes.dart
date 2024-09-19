@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../enums/user_enum.dart';
+import '../enums/user_type_enum.dart';
 import '../screens/auth/login/login_screen.dart';
 import '../screens/auth/signup/signup_screen.dart';
 import '../screens/home/doctor/doctor_screen.dart';
@@ -40,7 +40,7 @@ class AppRoutes {
       case createTrials:
         return MaterialPageRoute(builder: (_) => const CreateTrialsScreen());
       case signup:
-        final args = settings.arguments as UserEnum;
+        final args = settings.arguments as UserType;
         return MaterialPageRoute(
           builder: (_) => SignUpScreen(userType: args),
         );

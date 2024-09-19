@@ -1,4 +1,0 @@
-enum UserEnum {
-  Patient,
-  Doctor
-}

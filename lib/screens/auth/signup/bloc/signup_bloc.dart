@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_gp5/enums/status_enum.dart';
-import 'package:flutter_gp5/enums/user_enum.dart';
+import 'package:flutter_gp5/enums/user_type_enum.dart';
 import '../../../../repos/authentication/authentication_repository.dart';
 
 part 'signup_event.dart';
