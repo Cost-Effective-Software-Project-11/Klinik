@@ -186,9 +186,30 @@ class ChatRepository {
           .limit(limit)
           .get();
 
-      final messages = querySnapshot.docs.map((doc) {
-        return Message.fromMap(doc.data(),doc.id);
+      List<Message> messages = querySnapshot.docs.map((doc) {
+        return Message.fromMap(doc.data(), doc.id);
       }).toList();
+
+      // Mark unread messages as read if the current user is the receiver
+      List<Message> unreadMessages = messages.where((message) =>
+      message.receiverId == currentUserId && !message.isRead).toList();
+
+      if (unreadMessages.isNotEmpty) {
+        WriteBatch batch = _firestore.batch();
+
+        for (var message in unreadMessages) {
+          DocumentReference messageRef = _firestore
+              .collection('chat_rooms')
+              .doc(chatRoomId)
+              .collection('messages')
+              .doc(message.messageId);
+
+          batch.update(messageRef, {'isRead': true});
+        }
+
+        await batch.commit();
+        _logger.d('Marked ${unreadMessages.length} messages as read.');
+      }
 
       _logger.d('Fetched ${messages.length} more messages.');
       return messages;
@@ -197,6 +218,7 @@ class ChatRepository {
       return [];
     }
   }
+
 
   Future<String?> findChatRoomId({required List<String> participants}) async {
     try {
