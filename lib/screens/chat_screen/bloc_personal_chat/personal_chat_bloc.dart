@@ -34,7 +34,7 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
       // Get the current user ID
       final currentUserId = authRepository.currentUser?.uid;
       if (currentUserId == null) {
-        emit(PersonalChatErrorState('User is not logged in'));
+        emit(const PersonalChatErrorState('User is not logged in'));
         return;
       }
 
@@ -44,6 +44,7 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
         receiverId: event.receiverId,
         messageContent: event.messageContent,
         timestamp: event.timestamp,
+        isRead: false
       );
 
       // Send the message using the repository

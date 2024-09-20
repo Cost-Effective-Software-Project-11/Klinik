@@ -839,7 +839,7 @@ class HomeScreen extends StatelessWidget {
           buildNavItem(IconlyBold.paper, AppLocale.of(context)!.trials, false, context),
           buildNavItem(IconlyBold.activity, AppLocale.of(context)!.data, false, context),
           buildNavItem(IconlyBold.home, AppLocale.of(context)!.titleHome, true, context),
-          buildNavItem(IconlyBold.message, AppLocale.of(context)!.messages, false, context),
+          buildNavItem(IconlyBold.message, AppLocale.of(context)!.messages, false, context, onTap: () {Navigator.pushReplacementNamed(context, AppRoutes.chat);},),
           buildNavItem(IconlyBold.profile, AppLocale.of(context)!.profile, false, context, onTap: () async {
             try {
               await authRepo.logOut();

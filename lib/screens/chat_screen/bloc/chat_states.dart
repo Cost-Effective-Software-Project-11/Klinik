@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../models/message_model.dart';
 import '../../../models/user.dart';
 
 abstract class ChatStates extends Equatable{
@@ -12,10 +13,14 @@ class UsersLoadingState extends ChatStates{
 }
 
 class UsersLoadedState extends ChatStates{
-  final List<User> myData;
-  UsersLoadedState(this.myData);
+  final List<User> users;
+  final Map<String, Message?> lastMessages;
+  final Map<String,int> unreadCount;
+
+  UsersLoadedState(this.users, this.lastMessages,this.unreadCount);
+
   @override
-  List<Object> get props => [myData];
+  List<Object> get props => [users, lastMessages ?? <String, String?>{},unreadCount];
 }
 
 class ErrorState extends ChatStates{
