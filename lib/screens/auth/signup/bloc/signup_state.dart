@@ -8,7 +8,7 @@ class SignupState extends Equatable {
   final String name;
   final String phone;
   final String specialty;
-  final UserEnum type;
+  final UserType type;
   final String workplace;
   final bool isValid;
 
@@ -20,7 +20,7 @@ class SignupState extends Equatable {
     this.name = '',
     this.phone = '',
     this.specialty = '',
-    this.type = UserEnum.Doctor,
+    this.type = UserType.doctor,
     this.workplace = '',
     this.isValid = false,
   });
@@ -33,7 +33,7 @@ class SignupState extends Equatable {
     String? name,
     String? phone,
     String? specialty,
-    UserEnum? type,
+    UserType? type,
     String? workplace,
     bool? isValid,
   }) {

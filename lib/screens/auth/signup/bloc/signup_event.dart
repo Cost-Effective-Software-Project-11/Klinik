@@ -13,7 +13,7 @@ class SignupSubmitted extends SignupEvent {
   final String name;
   final String phone;
   final String specialty;
-  final UserEnum type;
+  final UserType type;
   final String workplace;
 
   const SignupSubmitted({

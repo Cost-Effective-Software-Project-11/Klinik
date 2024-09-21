@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../locale/l10n/app_locale.dart';
 import '../../routes/app_routes.dart';
-import '../enums/user_enum.dart';
+import '../enums/user_type_enum.dart';
 
 class RegisterAsDialog extends StatelessWidget {
   const RegisterAsDialog({super.key});
@@ -49,7 +49,7 @@ class RegisterAsDialog extends StatelessWidget {
               AppLocale.of(context)!.patient,
                   () {
                 Navigator.of(context).pop();
-                Navigator.of(context).pushNamed(AppRoutes.signup, arguments: UserEnum.Patient);
+                Navigator.of(context).pushNamed(AppRoutes.signup, arguments: UserType.patient);
               },
             ),
             const SizedBox(height: 16),
@@ -58,7 +58,7 @@ class RegisterAsDialog extends StatelessWidget {
               AppLocale.of(context)!.doctor,
                   () {
                 Navigator.of(context).pop();
-                Navigator.of(context).pushNamed(AppRoutes.signup, arguments: UserEnum.Doctor);
+                Navigator.of(context).pushNamed(AppRoutes.signup, arguments: UserType.doctor);
               },
             ),
             const SizedBox(height: 24),
