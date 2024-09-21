@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,6 +57,9 @@ class _SignUpViewState extends State<SignUpView> {
 
   String _fullPhoneNumber = '';
 
+  List<String> institutionNames = [];
+  String? selectedInstitution;
+
   @override
   void initState() {
     super.initState();
@@ -64,11 +68,20 @@ class _SignUpViewState extends State<SignUpView> {
     _phoneController.addListener(_updateSubmitButtonState);
     _passwordController.addListener(_updateSubmitButtonState);
     _confirmPasswordController.addListener(_updateSubmitButtonState);
+    loadInstitutions();
 
     if (widget.userType == UserEnum.Doctor) {
       _specialtyController.addListener(_updateSubmitButtonState);
       _workplaceController.addListener(_updateSubmitButtonState);
     }
+  }
+
+  Future<void> loadInstitutions() async {
+    var institutions = await FirebaseFirestore.instance.collection('institutions').get();
+    var fetchedInstitutions = institutions.docs.map((doc) => doc.data()['name'] as String).toList();
+    setState(() {
+      institutionNames = fetchedInstitutions;
+    });
   }
 
   void _updateSubmitButtonState() {
@@ -78,10 +91,7 @@ class _SignUpViewState extends State<SignUpView> {
           _validateField(_phoneController.text, 'Phone') == null &&
           _validateField(_passwordController.text, 'Password') == null &&
           _validateField(_confirmPasswordController.text, 'Confirm Password') == null &&
-          _isTermsAccepted &&
-          (widget.userType == UserEnum.Patient || (
-              _validateField(_specialtyController.text, 'Specialty') == null &&
-                  _validateField(_workplaceController.text, 'Workplace') == null));
+          _isTermsAccepted;
     });
   }
 
@@ -190,15 +200,7 @@ class _SignUpViewState extends State<SignUpView> {
               keyboardType: TextInputType.emailAddress
           ),
           if (widget.userType == UserEnum.Doctor) ...[
-            _buildInputField(
-                context,
-                AppLocale.of(context)!.workplace,
-                IconlyBold.bag_2,
-                AppLocale.of(context)!.enterYourWorkplace,
-                false,
-                _workplaceController,
-                keyboardType: TextInputType.text
-            ),
+            _buildInstitutionDropdown(context),
           ],
           _buildPhoneField(context),
           _buildInputField(
@@ -345,8 +347,8 @@ class _SignUpViewState extends State<SignUpView> {
         }
         break;
       case 'Phone':
-        if (value.length != 10) {
-          return 'Phone number must be 10 digits long';
+        if (value.length > 16) {
+          return 'Phone number can be maximum 16 digits long';
         }
         break;
       case 'Password':
@@ -699,6 +701,201 @@ class _SignUpViewState extends State<SignUpView> {
     );
   }
 
+  Widget _buildInstitutionDropdown(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Stack(
+          alignment: Alignment.centerLeft,
+          children: [
+            Container(
+              width: context.setWidth(90),
+              height: 60,
+              margin: EdgeInsets.only(top: context.setHeight(1)),
+              decoration: ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  side: const BorderSide(color: Color(0xFF79747E)),
+                ),
+                color: const Color(0xFFFEF7FF),
+              ),
+              child: InkWell(
+                onTap: () => _openInstitutionMenu(context),
+                child: Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(left: context.setWidth(3)),
+                      alignment: Alignment.centerLeft,
+                      child: Icon(IconlyBold.bag_2, color: const Color(0xFF49454F), size: context.setWidth(6)),
+                    ),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: context.setWidth(3)),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          selectedInstitution ?? "Select Institution",
+                          style: TextStyle(
+                            color: selectedInstitution == null ? const Color(0x6649454F) : const Color(0xFF49454F),
+                            fontSize: context.setWidth(4),
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Roboto',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              top: context.setHeight(-1.2),
+              left: context.setWidth(4),
+              child: Container(
+                padding: EdgeInsets.all(context.setWidth(1.6)),
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: Text(
+                  'Workplace',
+                  style: TextStyle(
+                    color: const Color(0xFF49454F),
+                    fontSize: context.setWidth(3.5),
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: context.setWidth(5), top: context.setHeight(0.3)),
+          child: Text(
+            selectedInstitution == null ? "Workplace is required" : "",
+            style: TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _openInstitutionMenu(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        List<String> filteredInstitutions = List.from(institutionNames);
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(context.setWidth(8)),
+              ),
+              child: Container(
+                width: context.setWidth(85),
+                height: context.setHeight(40),
+                padding: EdgeInsets.all(context.setWidth(5)),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE0DBE9),
+                  borderRadius: BorderRadius.circular(context.setWidth(8)),
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: context.setWidth(2)),
+                      child: Container(
+                        height: context.setHeight(6),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFD7CFE2),
+                          borderRadius: BorderRadius.circular(context.setWidth(6)),
+                        ),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: context.setWidth(2)),
+                              child: const Icon(Icons.search, color: Colors.grey),
+                            ),
+                            Expanded(
+                              child: TextField(
+                                onChanged: (value) {
+                                  setState(() {
+                                    filteredInstitutions = institutionNames
+                                        .where((institution) => institution.toLowerCase().contains(value.toLowerCase()))
+                                        .toList();
+                                  });
+                                },
+                                decoration: InputDecoration(
+                                  hintText: "Search",
+                                  border: InputBorder.none,
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: context.setHeight(1),
+                                    horizontal: context.setWidth(2),
+                                  ),
+                                ),
+                                style: TextStyle(fontSize: context.setWidth(4)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: context.setHeight(2)),
+                    Expanded(
+                      child: Scrollbar(
+                        thumbVisibility: true,
+                        thickness: 8.0,
+                        radius: const Radius.circular(10),
+                        child: ListView.builder(
+                          itemCount: filteredInstitutions.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(vertical: context.setHeight(1)),
+                              child: Center(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      selectedInstitution = filteredInstitutions[index];
+                                    });
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: context.setHeight(1.5),
+                                      horizontal: context.setWidth(4),
+                                    ),
+                                    constraints: BoxConstraints(
+                                      minWidth: context.setWidth(40),
+                                      maxWidth: context.setWidth(80),
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFD4CFE8),
+                                      borderRadius: BorderRadius.circular(context.setWidth(6)),
+                                    ),
+                                    child: Text(
+                                      filteredInstitutions[index],
+                                      style: TextStyle(
+                                        fontSize: context.setWidth(4),
+                                        color: const Color(0xFF1D1B20),
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   Widget _loginPrompt(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(top: context.setHeight(2)),
@@ -761,7 +958,7 @@ class _SignUpViewState extends State<SignUpView> {
             name: _nameController.text,
             phone: _fullPhoneNumber,
             specialty: widget.userType == UserEnum.Doctor ? _specialtyController.text : '',
-            workplace: widget.userType == UserEnum.Doctor ? _workplaceController.text : '',
+            workplace: widget.userType == UserEnum.Doctor ? selectedInstitution! : '',
             type: widget.userType,
           )
       );
