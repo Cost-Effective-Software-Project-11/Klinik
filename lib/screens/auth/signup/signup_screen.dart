@@ -6,7 +6,7 @@ import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 import '../../../enums/status_enum.dart';
-import '../../../enums/user_enum.dart';
+import '../../../enums/user_type_enum.dart';
 import '../../../locale/l10n/app_locale.dart';
 import '../../../repos/authentication/authentication_repository.dart';
 import '../../../routes/app_routes.dart';
@@ -15,7 +15,7 @@ import 'package:iconly/iconly.dart';
 import 'bloc/signup_bloc.dart';
 
 class SignUpScreen extends StatelessWidget {
-  final UserEnum userType;
+  final UserType userType;
 
   const SignUpScreen({required this.userType, super.key});
 
@@ -31,7 +31,7 @@ class SignUpScreen extends StatelessWidget {
 }
 
 class SignUpView extends StatefulWidget {
-  final UserEnum userType;
+  final UserType userType;
 
   const SignUpView({required this.userType, super.key});
 
@@ -70,7 +70,7 @@ class _SignUpViewState extends State<SignUpView> {
     _confirmPasswordController.addListener(_updateSubmitButtonState);
     loadInstitutions();
 
-    if (widget.userType == UserEnum.Doctor) {
+    if (widget.userType == UserType.doctor) {
       _specialtyController.addListener(_updateSubmitButtonState);
       _workplaceController.addListener(_updateSubmitButtonState);
     }
@@ -118,7 +118,7 @@ class _SignUpViewState extends State<SignUpView> {
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 title: Text(
-                  widget.userType == UserEnum.Doctor
+                  widget.userType == UserType.doctor
                       ? AppLocale.of(context)!.doctorSignUpTitle
                       : AppLocale.of(context)!.patientSignUpTitle,
                   style: TextStyle(
@@ -199,7 +199,7 @@ class _SignUpViewState extends State<SignUpView> {
               _emailController,
               keyboardType: TextInputType.emailAddress
           ),
-          if (widget.userType == UserEnum.Doctor) ...[
+          if (widget.userType == UserType.doctor) ...[
             _buildInstitutionDropdown(context),
           ],
           _buildPhoneField(context),
@@ -938,7 +938,7 @@ class _SignUpViewState extends State<SignUpView> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
 
-    if (widget.userType == UserEnum.Doctor) {
+    if (widget.userType == UserType.doctor) {
       _specialtyController.removeListener(_updateSubmitButtonState);
       _workplaceController.removeListener(_updateSubmitButtonState);
 
@@ -957,8 +957,8 @@ class _SignUpViewState extends State<SignUpView> {
             password: _passwordController.text,
             name: _nameController.text,
             phone: _fullPhoneNumber,
-            specialty: widget.userType == UserEnum.Doctor ? _specialtyController.text : '',
-            workplace: widget.userType == UserEnum.Doctor ? selectedInstitution! : '',
+            specialty: widget.userType == UserType.doctor ? _specialtyController.text : '',
+            workplace: widget.userType == UserType.doctor ? selectedInstitution! : '',
             type: widget.userType,
           )
       );
