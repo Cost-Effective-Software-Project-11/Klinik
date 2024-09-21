@@ -47,7 +47,6 @@ class _SignUpViewState extends State<SignUpView> {
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _specialtyController = TextEditingController();
   final TextEditingController _workplaceController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -71,7 +70,6 @@ class _SignUpViewState extends State<SignUpView> {
     loadInstitutions();
 
     if (widget.userType == UserType.doctor) {
-      _specialtyController.addListener(_updateSubmitButtonState);
       _workplaceController.addListener(_updateSubmitButtonState);
     }
   }
@@ -359,11 +357,6 @@ class _SignUpViewState extends State<SignUpView> {
       case 'Confirm Password':
         if (_passwordController.text != value) {
           return 'Passwords do not match';
-        }
-        break;
-      case 'Specialty':
-        if (value.length < 3) {
-          return 'Specialty must be at least 3 characters long';
         }
         break;
       case 'Workplace':
@@ -939,10 +932,8 @@ class _SignUpViewState extends State<SignUpView> {
     _confirmPasswordController.dispose();
 
     if (widget.userType == UserType.doctor) {
-      _specialtyController.removeListener(_updateSubmitButtonState);
       _workplaceController.removeListener(_updateSubmitButtonState);
 
-      _specialtyController.dispose();
       _workplaceController.dispose();
     }
 
@@ -957,7 +948,7 @@ class _SignUpViewState extends State<SignUpView> {
             password: _passwordController.text,
             name: _nameController.text,
             phone: _fullPhoneNumber,
-            specialty: widget.userType == UserType.doctor ? _specialtyController.text : '',
+            specialty: "",
             workplace: widget.userType == UserType.doctor ? selectedInstitution! : '',
             type: widget.userType,
           )
