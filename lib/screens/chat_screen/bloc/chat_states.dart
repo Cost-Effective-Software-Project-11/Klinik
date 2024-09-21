@@ -20,7 +20,7 @@ class UsersLoadedState extends ChatStates{
   UsersLoadedState(this.users, this.lastMessages,this.unreadCount);
 
   @override
-  List<Object> get props => [users, lastMessages ?? <String, String?>{},unreadCount];
+  List<Object> get props => [users, lastMessages,unreadCount];
 }
 
 class ErrorState extends ChatStates{

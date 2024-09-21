@@ -53,6 +53,18 @@ class _ChatScreen extends StatelessWidget {
         appBar: AppBar(
           scrolledUnderElevation: 0,
           backgroundColor: Colors.transparent,
+          leading: Align(
+            alignment: Alignment.center,
+            child: Transform.scale(
+              scale: 2.7,
+              child: IconButton(
+                icon: const Icon(Icons.navigate_before, color: Colors.black),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
           centerTitle: true,
           title: Text(
             AppLocale.of(context)!.messages,
@@ -73,7 +85,9 @@ class _ChatScreen extends StatelessWidget {
               ],
             );
           } else {
-            return Text(AppLocale.of(context)!.no_data);
+            return Align(
+                alignment:Alignment.center,
+                child: Text(AppLocale.of(context)!.no_data));
           }
         }),
       ),

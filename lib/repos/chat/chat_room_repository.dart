@@ -316,8 +316,8 @@ class ChatRepository {
 
       final unreadMessagesCount = querySnapshot.docs.length;
 
-      // If the count is greater than or equal to 2, return 3 (because we want at most 3)
-      return unreadMessagesCount >= 2 ? 3 : unreadMessagesCount;
+      // If the count is greater than 2, return 3 (because we want at most 3)
+      return unreadMessagesCount > 2 ? 3 : unreadMessagesCount;
     } catch (e) {
       _logger.e('Error fetching unread message count: $e', error: e);
       return 0;
