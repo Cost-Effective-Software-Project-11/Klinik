@@ -34,7 +34,7 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
       // Get the current user ID
       final currentUserId = authRepository.currentUser?.uid;
       if (currentUserId == null) {
-        emit(PersonalChatErrorState('User is not logged in'));
+        emit(const PersonalChatErrorState('User is not logged in'));
         return;
       }
 
@@ -44,6 +44,7 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
         receiverId: event.receiverId,
         messageContent: event.messageContent,
         timestamp: event.timestamp,
+        isRead: false
       );
 
       // Send the message using the repository
@@ -54,25 +55,36 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
   }
 
   Future<void> _onGetMessages(
-      GetMessagesEvent event, Emitter<PersonalChatState> emit) async {
+      GetMessagesEvent event,
+      Emitter<PersonalChatState> emit
+      ) async {
     try {
       final currentUserId = authRepository.currentUser?.uid;
       if (currentUserId == null) {
         emit(const PersonalChatErrorState('User is not logged in'));
         return;
       }
-
       _messagesSubscription?.cancel();
 
       _messagesSubscription = chatRoomRepository
           .getMessagesStream(currentUserId, event.chatParticipantTwoId)
           .listen((messages) {
+
+        if (isClosed) return; // Check if Bloc is closed before adding an event
+
         add(MessagesUpdated(messages: messages));
       });
     } catch (e) {
       emit(PersonalChatErrorState('Error fetching messages: $e'));
     }
   }
+
+  @override
+  Future<void> close() {
+    _messagesSubscription?.cancel();
+    return super.close();
+  }
+
 
   void _onMessagesUpdated(
       MessagesUpdated event, Emitter<PersonalChatState> emit) {

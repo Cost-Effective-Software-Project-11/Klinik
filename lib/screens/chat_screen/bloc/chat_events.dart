@@ -5,6 +5,6 @@ abstract class ChatEvents extends Equatable {
   List<Object> get props => [];
 }
 
-class GetAllUsers extends ChatEvents {
-  GetAllUsers();
+class GetUsersInChatWithCurrentUser extends ChatEvents {
+  GetUsersInChatWithCurrentUser();
 }

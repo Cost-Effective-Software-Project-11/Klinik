@@ -8,6 +8,7 @@ class Message extends Equatable {
   final String receiverId;
   final String messageContent;
   final Timestamp timestamp;
+  final bool isRead;
 
   // Constructor
   const Message({
@@ -16,15 +17,18 @@ class Message extends Equatable {
     required this.receiverId,
     required this.messageContent,
     required this.timestamp,
+    required this.isRead
   });
 
   // Convert a Firestore document to a Message instance
-  factory Message.fromMap(Map<String, dynamic> map) {
+  factory Message.fromMap(Map<String, dynamic> map,String messageId) {
     return Message(
+      messageId: messageId,
       senderId: map['senderId'] as String,
       receiverId: map['receiverId'] as String,
       messageContent: map['messageContent'] as String,
       timestamp: map['timestamp'] as Timestamp,
+      isRead: map['isRead'] as bool? ?? false, // Handle null values
     );
   }
 
@@ -35,9 +39,10 @@ class Message extends Equatable {
       'receiverId': receiverId,
       'messageContent': messageContent,
       'timestamp': timestamp,
+      'isRead': isRead,
     };
   }
 
   @override
-  List<Object?> get props => [senderId, receiverId, messageContent,timestamp];
+  List<Object?> get props => [senderId, receiverId, messageContent,timestamp,isRead];
 }

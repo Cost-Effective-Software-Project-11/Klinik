@@ -101,9 +101,9 @@ class ChatRepository {
   }
 
   Stream<List<Message>> getMessagesStream(
-    String currentUserId,
-    String chatParticipantTwoId,
-  ) async* {
+      String currentUserId,
+      String chatParticipantTwoId,
+      ) async* {
     try {
       int limit = 15;
       final chatRoomId = await findChatRoomId(
@@ -111,8 +111,7 @@ class ChatRepository {
       );
 
       if (chatRoomId == null) {
-        _logger.e(
-            'No chat room found for participants $currentUserId and $chatParticipantTwoId.');
+        _logger.e('No chat room found for participants $currentUserId and $chatParticipantTwoId.');
         yield [];
         return;
       }
@@ -123,19 +122,32 @@ class ChatRepository {
           .orderBy('timestamp', descending: true)
           .limit(limit);
 
-      yield* query.snapshots().map((snapshot) {
-        return snapshot.docs.map((doc) {
-          final data = doc.data() as Map<String, dynamic>;
-
-          return Message(
-            messageId: doc.id,
-            senderId: data['senderId'] as String,
-            receiverId: data['receiverId'] as String,
-            messageContent: data['messageContent'] as String,
-            timestamp: data['timestamp'] as Timestamp,
-          );
+      await for (var snapshot in query.snapshots()) {
+        List<Message> messages = snapshot.docs.map((doc) {
+          return Message.fromMap(doc.data() as Map<String, dynamic>, doc.id);
         }).toList();
-      });
+
+        // Mark unread messages as read if the current user is the receiver
+        List<Message> unreadMessages = messages.where((message) =>
+        message.receiverId == currentUserId && !message.isRead).toList();
+
+        if (unreadMessages.isNotEmpty) {
+          WriteBatch batch = _firestore.batch();
+
+          for (var message in unreadMessages) {
+            DocumentReference messageRef = _firestore
+                .collection('chat_rooms')
+                .doc(chatRoomId)
+                .collection('messages')
+                .doc(message.messageId);
+
+            batch.update(messageRef, {'isRead': true});
+          }
+
+          await batch.commit();
+        }
+        yield messages;
+      }
     } catch (e) {
       _logger.e('Error fetching messages stream: $e', error: e);
       yield [];
@@ -174,16 +186,30 @@ class ChatRepository {
           .limit(limit)
           .get();
 
-      final messages = querySnapshot.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        return Message(
-          messageId: doc.id,
-          senderId: data['senderId'] as String,
-          receiverId: data['receiverId'] as String,
-          messageContent: data['messageContent'] as String,
-          timestamp: data['timestamp'] as Timestamp,
-        );
+      List<Message> messages = querySnapshot.docs.map((doc) {
+        return Message.fromMap(doc.data(), doc.id);
       }).toList();
+
+      // Mark unread messages as read if the current user is the receiver
+      List<Message> unreadMessages = messages.where((message) =>
+      message.receiverId == currentUserId && !message.isRead).toList();
+
+      if (unreadMessages.isNotEmpty) {
+        WriteBatch batch = _firestore.batch();
+
+        for (var message in unreadMessages) {
+          DocumentReference messageRef = _firestore
+              .collection('chat_rooms')
+              .doc(chatRoomId)
+              .collection('messages')
+              .doc(message.messageId);
+
+          batch.update(messageRef, {'isRead': true});
+        }
+
+        await batch.commit();
+        _logger.d('Marked ${unreadMessages.length} messages as read.');
+      }
 
       _logger.d('Fetched ${messages.length} more messages.');
       return messages;
@@ -192,6 +218,7 @@ class ChatRepository {
       return [];
     }
   }
+
 
   Future<String?> findChatRoomId({required List<String> participants}) async {
     try {
@@ -228,4 +255,73 @@ class ChatRepository {
       return null;
     }
   }
+
+  Future<Message?> getLastMessageFromChatRoom(String currentUserId,String chatPartnerId) async {
+    try {
+      final chatRoomId=await findChatRoomId(participants: [currentUserId, chatPartnerId]);
+
+       final chatRoomDoc = await _firestore.collection('chat_rooms').doc(chatRoomId).get();
+
+      if (chatRoomDoc.exists) {
+        final messagesSnapshot = await _firestore
+            .collection('chat_rooms')
+            .doc(chatRoomId)
+            .collection('messages')
+            .orderBy('timestamp', descending: true)
+            .limit(1)
+            .get();
+
+        // Check if there are any messages
+        if (messagesSnapshot.docs.isNotEmpty) {
+          // Get the first (most recent) message document
+          final lastMessageDoc = messagesSnapshot.docs.first;
+
+          // Get the document data and the document ID (messageId)
+          final lastMessageData = lastMessageDoc.data();
+          final messageId = lastMessageDoc.id;  // This is the doc ID
+
+          // Convert the message data into a Message model with messageId
+          return Message.fromMap(lastMessageData, messageId);
+        }
+      }
+
+    } on FirebaseException catch (e) {
+      _logger.e('FirebaseException: ${e.message}', error: e);
+    } catch (e, stack) {
+      _logger.e('Exception while fetching last message: $e', error: e, stackTrace: stack);
+    }
+
+    return null;
+  }
+
+  Future<int> getUnreadMessagesCount(String currentUserId, String chatPartnerId) async {
+    try {
+      // Find the chat room between the current user and chat partner
+      final chatRoomId = await findChatRoomId(
+        participants: [currentUserId, chatPartnerId],
+      );
+
+      if (chatRoomId == null) {
+        _logger.e('No chat room found for participants $currentUserId and $chatPartnerId.');
+        return 0;
+      }
+      final querySnapshot = await _firestore
+          .collection('chat_rooms')
+          .doc(chatRoomId)
+          .collection('messages')
+          .where('senderId', isEqualTo: chatPartnerId)
+          .where('isRead', isEqualTo: false)
+          .limit(3)
+          .get();
+
+      final unreadMessagesCount = querySnapshot.docs.length;
+
+      // If the count is greater than 2, return 3 (because we want at most 3)
+      return unreadMessagesCount > 2 ? 3 : unreadMessagesCount;
+    } catch (e) {
+      _logger.e('Error fetching unread message count: $e', error: e);
+      return 0;
+    }
+  }
+
 }

@@ -77,4 +77,58 @@ class UserRepository {
     }
     return userList;
   }
+
+  Future<List<User>> getUsersInChatWith(String currentUserId) async {
+    List<User> userList = [];
+    try {
+      // Query chat_rooms where currentUserId is a participant
+      final chatRoomCollection = await _firestore
+          .collection("chat_rooms")
+          .where('participants', arrayContains: currentUserId)
+          .get();
+
+      // Extract the userIds of the other participants
+      Set<String> participantIds = {};
+
+      chatRoomCollection.docs.forEach((element) {
+        List<dynamic> participants = element.data()['participants'];
+        participants.forEach((participantId) {
+          if(participantId!=currentUserId)
+            {
+              participantIds.add(participantId);
+            }
+        });
+      });
+
+      // Query the users collection to get the users with the participantIds
+      if (participantIds.isNotEmpty) {
+        final userCollection = await _firestore
+            .collection("users")
+            .where(FieldPath.documentId, whereIn: participantIds.toList())
+            .get();
+
+        // Convert documents to User objects
+        userCollection.docs.forEach((element) {
+          final user = User.fromMap(element.data());
+          final userWithId = User(
+            id: element.id,
+            email: user.email,
+            name: user.name,
+            phone: user.phone,
+            speciality: user.speciality,
+            type: user.type,
+            workplace: user.workplace,
+          );
+          userList.add(userWithId);
+        });
+      }
+      return userList;
+    } on FirebaseException catch (e) {
+      _logger.e('FirebaseException: ${e.message}', error: e);
+    } catch (e, stack) {
+      _logger.e('Exception while fetching users: $e',
+          error: e, stackTrace: stack);
+    }
+    return userList;
+  }
 }
