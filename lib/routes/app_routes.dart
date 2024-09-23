@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import '../enums/user_type_enum.dart';
 import '../screens/auth/login/login_screen.dart';
-import '../screens/auth/signup/doctor-signup_screen.dart';
-import '../screens/auth/signup/patient-signup_screen.dart';
+import '../screens/auth/signup/signup_screen.dart';
 import '../screens/home/doctor/doctor_screen.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/chat_screen/chat_screen.dart';
@@ -20,8 +20,7 @@ class AppRoutes {
   static const String trials = '/trials';
   static const String appSettings = '/settings';
   static const String createTrials = '/create_trials';
-  static const String signupDoctor = '/signup_doctor';
-  static const String signupPatient = '/signup_patient';
+  static const String signup = '/signup';
   static const String doctorDetail = '/doctorDetail';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -40,10 +39,11 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
       case createTrials:
         return MaterialPageRoute(builder: (_) => const CreateTrialsScreen());
-      case signupDoctor:
-        return MaterialPageRoute(builder: (_) => const DoctorSignUpScreen());
-      case signupPatient:
-        return MaterialPageRoute(builder: (_) => const PatientSignUpScreen());
+      case signup:
+        final args = settings.arguments as UserType;
+        return MaterialPageRoute(
+          builder: (_) => SignUpScreen(userType: args),
+        );
       case chat:
         return MaterialPageRoute(builder: (_) => const ChatScreen());
       case doctorDetail:

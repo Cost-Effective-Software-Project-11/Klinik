@@ -6,16 +6,18 @@ import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 import '../../../enums/status_enum.dart';
+import '../../../enums/user_type_enum.dart';
 import '../../../locale/l10n/app_locale.dart';
 import '../../../repos/authentication/authentication_repository.dart';
 import '../../../routes/app_routes.dart';
-import '../../../utils/image_utils.dart';
 import 'package:iconly/iconly.dart';
 
 import 'bloc/signup_bloc.dart';
 
-class DoctorSignUpScreen extends StatelessWidget {
-  const DoctorSignUpScreen({super.key});
+class SignUpScreen extends StatelessWidget {
+  final UserType userType;
+
+  const SignUpScreen({required this.userType, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,19 +25,21 @@ class DoctorSignUpScreen extends StatelessWidget {
       create: (context) => SignupBloc(
         authenticationRepository: RepositoryProvider.of<AuthenticationRepository>(context),
       ),
-      child: const DoctorSignUpView(),
+      child: SignUpView(userType: userType),
     );
   }
 }
 
-class DoctorSignUpView extends StatefulWidget {
-  const DoctorSignUpView({super.key});
+class SignUpView extends StatefulWidget {
+  final UserType userType;
+
+  const SignUpView({required this.userType, super.key});
 
   @override
-  _DoctorSignUpViewState createState() => _DoctorSignUpViewState();
+  _SignUpViewState createState() => _SignUpViewState();
 }
 
-class _DoctorSignUpViewState extends State<DoctorSignUpView> {
+class _SignUpViewState extends State<SignUpView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
@@ -43,16 +47,17 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _workplaceController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
 
   bool _isFormFilled = false;
 
+  String _fullPhoneNumber = '';
+
   List<String> institutionNames = [];
   String? selectedInstitution;
-
-  String _fullPhoneNumber = '';
 
   @override
   void initState() {
@@ -63,6 +68,10 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
     _passwordController.addListener(_updateSubmitButtonState);
     _confirmPasswordController.addListener(_updateSubmitButtonState);
     loadInstitutions();
+
+    if (widget.userType == UserType.doctor) {
+      _workplaceController.addListener(_updateSubmitButtonState);
+    }
   }
 
   Future<void> loadInstitutions() async {
@@ -98,16 +107,18 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
         },
         child: Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(context.setHeight(10)),
+            preferredSize: Size.fromHeight(context.setHeight(7)),
             child: Padding(
-              padding: EdgeInsets.only(top: context.setHeight(4), bottom: context.setHeight(2)),
+              padding: EdgeInsets.only(top: context.setHeight(1), bottom: context.setHeight(1)),
               child: AppBar(
                 leading: IconButton(
                   icon: Icon(Icons.navigate_before, color: const Color(0xFF1D1B20), size: context.setWidth(8)),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 title: Text(
-                  AppLocale.of(context)!.doctorSignUpTitle,
+                  widget.userType == UserType.doctor
+                      ? AppLocale.of(context)!.doctorSignUpTitle
+                      : AppLocale.of(context)!.patientSignUpTitle,
                   style: TextStyle(
                     color: const Color(0xFF1D1B20),
                     fontSize: context.setWidth(5),
@@ -154,8 +165,6 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
                       _buildSignUpForm(context),
                       _termsAndPrivacyPolicy(context),
                       _buildSignUpButton(context),
-                      _buildOrSeparator(context),
-                      _buildGoogleSignUpButton(context),
                       _loginPrompt(context),
                     ],
                   ),
@@ -171,12 +180,43 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
       padding: EdgeInsets.symmetric(horizontal: context.setWidth(2.5), vertical: context.setHeight(1)),
       child: Column(
         children: [
-          _buildInputField(context, AppLocale.of(context)!.name, Icons.account_circle, AppLocale.of(context)!.enterYourName, false, _nameController),
-          _buildInputField(context, AppLocale.of(context)!.email, IconlyBold.message, AppLocale.of(context)!.email_placeholder, false, _emailController),
-          _buildInstitutionDropdown(context),
+          _buildInputField(
+              context,
+              AppLocale.of(context)!.name,
+              Icons.account_circle,
+              AppLocale.of(context)!.enterYourName,
+              false,
+              _nameController,
+              keyboardType: TextInputType.name
+          ),
+          _buildInputField(
+              context, AppLocale.of(context)!.email,
+              IconlyBold.message,
+              AppLocale.of(context)!.email_placeholder,
+              false,
+              _emailController,
+              keyboardType: TextInputType.emailAddress
+          ),
+          if (widget.userType == UserType.doctor) ...[
+            _buildInstitutionDropdown(context),
+          ],
           _buildPhoneField(context),
-          _buildInputField(context, AppLocale.of(context)!.password, IconlyBold.lock, AppLocale.of(context)!.password_placeholder, true, _passwordController, _togglePasswordVisibility),
-          _buildInputField(context, AppLocale.of(context)!.confirm_password, IconlyBold.unlock, AppLocale.of(context)!.confirmYourPassword, true, _confirmPasswordController, _toggleConfirmPasswordVisibility),
+          _buildInputField(
+              context,
+              AppLocale.of(context)!.password,
+              IconlyBold.lock,
+              AppLocale.of(context)!.password_placeholder,
+              true, _passwordController,
+              toggleVisibility: _togglePasswordVisibility
+          ),
+          _buildInputField(
+              context,
+              AppLocale.of(context)!.confirm_password,
+              IconlyBold.unlock,
+              AppLocale.of(context)!.confirmYourPassword,
+              true,
+              _confirmPasswordController,
+              toggleVisibility: _toggleConfirmPasswordVisibility),
         ],
       ),
     );
@@ -188,8 +228,10 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
       IconData icon,
       String placeholder,
       bool isPassword,
-      TextEditingController controller,
-      [VoidCallback? toggleVisibility]
+      TextEditingController controller, {
+        VoidCallback? toggleVisibility,
+        TextInputType keyboardType = TextInputType.text,
+      }
       ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,7 +260,7 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
                   Expanded(
                     child: TextFormField(
                       controller: controller,
-                      obscureText: isPassword ? (label == "Password" ? !_passwordVisible : !_confirmPasswordVisible) : false,
+                      obscureText: isPassword ? (label == AppLocale.of(context)!.password ? !_passwordVisible : !_confirmPasswordVisible) : false,
                       decoration: InputDecoration(
                         hintText: placeholder,
                         hintStyle: TextStyle(color: const Color(0x6649454F), fontSize: context.setWidth(4)),
@@ -226,7 +268,7 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
                         contentPadding: EdgeInsets.symmetric(vertical: context.setHeight(2), horizontal: context.setWidth(3)),
                         suffixIcon: isPassword ? IconButton(
                           icon: Icon(
-                              (label == "Password" ? _passwordVisible : _confirmPasswordVisible)
+                              (label == AppLocale.of(context)!.password ? _passwordVisible : _confirmPasswordVisible)
                                   ? Icons.visibility
                                   : Icons.visibility_off),
                           onPressed: toggleVisibility,
@@ -235,6 +277,10 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
                       ),
                       textAlign: TextAlign.left,
                       validator: (value) => _validateField(value, label),
+                      onFieldSubmitted: (value) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                      },
+                      keyboardType: keyboardType,
                     ),
                   ),
                 ],
@@ -299,8 +345,8 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
         }
         break;
       case 'Phone':
-        if (value.length > 10) {
-          return 'Phone number can be maximum 10 digits long';
+        if (value.length > 16) {
+          return 'Phone number can be maximum 16 digits long';
         }
         break;
       case 'Password':
@@ -311,6 +357,11 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
       case 'Confirm Password':
         if (_passwordController.text != value) {
           return 'Passwords do not match';
+        }
+        break;
+      case 'Workplace':
+        if (value.length < 3) {
+          return 'Workplace must be at least 3 characters long';
         }
         break;
     }
@@ -384,6 +435,86 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPhoneField(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Stack(
+          alignment: Alignment.centerLeft,
+          children: [
+            Container(
+              width: context.setWidth(90),
+              height: 60,
+              margin: EdgeInsets.only(top: context.setHeight(1)),
+              decoration: ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  side: const BorderSide(color: Color(0xFF79747E)),
+                ),
+                color: const Color(0xFFFEF7FF),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(left: context.setWidth(3)),
+                    alignment: Alignment.centerLeft,
+                    child: Icon(IconlyBold.call, color: const Color(0xFF49454F), size: context.setWidth(6)),
+                  ),
+                  Expanded(
+                    child: IntlPhoneField(
+                      decoration: InputDecoration(
+                        hintText: AppLocale.of(context)!.enterYourPhone,
+                        hintStyle: TextStyle(color: const Color(0x6649454F), fontSize: context.setWidth(4)),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(vertical: context.setHeight(1), horizontal: context.setWidth(3)),
+                        counter: const SizedBox.shrink(),
+                      ),
+                      initialCountryCode: 'BG',
+                      dropdownIcon: const Icon(Icons.arrow_drop_down, color: Color(0xFF49454F)),
+                      dropdownTextStyle: TextStyle(fontSize: context.setWidth(4), color: const Color(0xFF49454F)),
+                      controller: _phoneController,
+                      onChanged: (phone) {
+                        _fullPhoneNumber = phone.completeNumber;
+                      },
+                      autovalidateMode: AutovalidateMode.disabled,
+                      validator: (value) {
+                        return _validateField(value as String?, 'Phone');
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              top: context.setHeight(-1.2),
+              left: context.setWidth(4),
+              child: Container(
+                padding: EdgeInsets.all(context.setWidth(1.6)),
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: Text(
+                  'Phone',
+                  style: TextStyle(
+                    color: const Color(0xFF49454F),
+                    fontSize: context.setWidth(3.5),
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: context.setWidth(5), top: context.setHeight(0.3)),
+          child: Text(
+            _phoneController.value.text.isEmpty || _validateField(_phoneController.value.text, 'Phone') == null ? "" :
+            _validateField(_phoneController.value.text, 'Phone')!,
+            style: TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
+          ),
+        ),
+      ],
     );
   }
 
@@ -563,183 +694,6 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
     );
   }
 
-  Widget _buildOrSeparator(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: context.setHeight(1.25)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            width: context.setWidth(35),
-            height: 1,
-            color: const Color(0x661D1B20),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: context.setWidth(2)),
-            child: Text(
-              AppLocale.of(context)!.or,
-              style: TextStyle(
-                color: const Color(0x661D1B20),
-                fontSize: context.setWidth(4),
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ),
-          Container(
-            width: context.setWidth(35),
-            height: 1,
-            color: const Color(0x661D1B20),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildGoogleSignUpButton(BuildContext context) {
-    return Container(
-      width: context.setWidth(80),
-      height: 60,
-      margin: EdgeInsets.only(top: context.setHeight(1.25), bottom: context.setHeight(2.5)),
-      decoration: BoxDecoration(
-        color: const Color(0xFF6750A4),
-        borderRadius: BorderRadius.circular(context.setHeight(6.5)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            width: context.setWidth(6),
-            height: context.setHeight(3),
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(ImageUtils.googleLogo),
-                fit: BoxFit.fill,
-              ),
-            ),
-          ),
-          SizedBox(width: context.setWidth(2.5)),
-          Text(
-            AppLocale.of(context)!.signUpWithGoogle,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: context.setWidth(3.5),
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPhoneField(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Stack(
-          alignment: Alignment.centerLeft,
-          children: [
-            Container(
-              width: context.setWidth(90),
-              height: 60,
-              margin: EdgeInsets.only(top: context.setHeight(1)),
-              decoration: ShapeDecoration(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  side: const BorderSide(color: Color(0xFF79747E)),
-                ),
-                color: const Color(0xFFFEF7FF),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(left: context.setWidth(3)),
-                    alignment: Alignment.centerLeft,
-                    child: Icon(IconlyBold.call, color: const Color(0xFF49454F), size: context.setWidth(6)),
-                  ),
-                  Expanded(
-                    child: IntlPhoneField(
-                      decoration: InputDecoration(
-                        hintText: AppLocale.of(context)!.enterYourPhone,
-                        hintStyle: TextStyle(color: const Color(0x6649454F), fontSize: context.setWidth(4)),
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(vertical: context.setHeight(1), horizontal: context.setWidth(3)),
-                        counter: const SizedBox.shrink(),
-                      ),
-                      initialCountryCode: 'BG',
-                      dropdownIcon: const Icon(Icons.arrow_drop_down, color: Color(0xFF49454F)),
-                      dropdownTextStyle: TextStyle(fontSize: context.setWidth(4), color: const Color(0xFF49454F)),
-                      controller: _phoneController,
-                      onChanged: (phone) {
-                        _fullPhoneNumber = phone.completeNumber;
-                      },
-                      autovalidateMode: AutovalidateMode.disabled,
-                      validator: (value) {
-                        return _validateField(value as String?, 'Phone');
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              top: context.setHeight(-1.2),
-              left: context.setWidth(4),
-              child: Container(
-                padding: EdgeInsets.all(context.setWidth(1.6)),
-                color: Theme.of(context).scaffoldBackgroundColor,
-                child: Text(
-                  'Phone',
-                  style: TextStyle(
-                    color: const Color(0xFF49454F),
-                    fontSize: context.setWidth(3.5),
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        Padding(
-          padding: EdgeInsets.only(left: context.setWidth(5), top: context.setHeight(0.3)),
-          child: Text(
-            _phoneController.value.text.isEmpty || _validateField(_phoneController.value.text, 'Phone') == null ? "" :
-            _validateField(_phoneController.value.text, 'Phone')!,
-            style: TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _loginPrompt(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: context.setHeight(2)),
-      child: RichText(
-        text: TextSpan(
-          style: TextStyle(
-              color: const Color(0xFF1D1B20),
-              fontSize: context.setWidth(3.5),
-              fontFamily: 'Roboto'
-          ),
-          children: <TextSpan>[
-            TextSpan(text: '${AppLocale.of(context)!.alreadyHaveAccount} '),
-            TextSpan(
-              text: AppLocale.of(context)!.login,
-              style: TextStyle(
-                color: const Color(0xFF6750A4),
-                fontSize: context.setWidth(3.5),
-              ),
-              recognizer: TapGestureRecognizer()..onTap = () {
-                Navigator.of(context).pushNamed(AppRoutes.login);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildInstitutionDropdown(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -819,7 +773,7 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        List<String> filteredInstitutions = List.from(institutionNames); // Initialize with all institutions
+        List<String> filteredInstitutions = List.from(institutionNames);
 
         return StatefulBuilder(
           builder: (context, setState) {
@@ -832,7 +786,7 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
                 height: context.setHeight(40),
                 padding: EdgeInsets.all(context.setWidth(5)),
                 decoration: BoxDecoration(
-                  color: Color(0xFFE0DBE9),
+                  color: const Color(0xFFE0DBE9),
                   borderRadius: BorderRadius.circular(context.setWidth(8)),
                 ),
                 child: Column(
@@ -842,14 +796,14 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
                       child: Container(
                         height: context.setHeight(6),
                         decoration: BoxDecoration(
-                          color: Color(0xFFD7CFE2),
+                          color: const Color(0xFFD7CFE2),
                           borderRadius: BorderRadius.circular(context.setWidth(6)),
                         ),
                         child: Row(
                           children: [
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: context.setWidth(2)),
-                              child: Icon(Icons.search, color: Colors.grey),
+                              child: const Icon(Icons.search, color: Colors.grey),
                             ),
                             Expanded(
                               child: TextField(
@@ -861,7 +815,7 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
                                   });
                                 },
                                 decoration: InputDecoration(
-                                  hintText: "Searchh",
+                                  hintText: "Search",
                                   border: InputBorder.none,
                                   isDense: true,
                                   contentPadding: EdgeInsets.symmetric(
@@ -901,18 +855,18 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
                                       horizontal: context.setWidth(4),
                                     ),
                                     constraints: BoxConstraints(
-                                      minWidth: context.setWidth(40), // minimum width for small names
-                                      maxWidth: context.setWidth(80), // maximum width for larger names
+                                      minWidth: context.setWidth(40),
+                                      maxWidth: context.setWidth(80),
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Color(0xFFD4CFE8),
+                                      color: const Color(0xFFD4CFE8),
                                       borderRadius: BorderRadius.circular(context.setWidth(6)),
                                     ),
                                     child: Text(
                                       filteredInstitutions[index],
                                       style: TextStyle(
                                         fontSize: context.setWidth(4),
-                                        color: Color(0xFF1D1B20),
+                                        color: const Color(0xFF1D1B20),
                                         fontWeight: FontWeight.w500,
                                       ),
                                       textAlign: TextAlign.center,
@@ -935,6 +889,34 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
     );
   }
 
+  Widget _loginPrompt(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(top: context.setHeight(2)),
+      child: RichText(
+        text: TextSpan(
+          style: TextStyle(
+              color: const Color(0xFF1D1B20),
+              fontSize: context.setWidth(3.5),
+              fontFamily: 'Roboto'
+          ),
+          children: <TextSpan>[
+            TextSpan(text: '${AppLocale.of(context)!.alreadyHaveAccount} '),
+            TextSpan(
+              text: AppLocale.of(context)!.login,
+              style: TextStyle(
+                color: const Color(0xFF6750A4),
+                fontSize: context.setWidth(3.5),
+              ),
+              recognizer: TapGestureRecognizer()..onTap = () {
+                Navigator.of(context).pushNamed(AppRoutes.login);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   void dispose() {
     _nameController.removeListener(_updateSubmitButtonState);
@@ -948,6 +930,13 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+
+    if (widget.userType == UserType.doctor) {
+      _workplaceController.removeListener(_updateSubmitButtonState);
+
+      _workplaceController.dispose();
+    }
+
     super.dispose();
   }
 
@@ -960,8 +949,8 @@ class _DoctorSignUpViewState extends State<DoctorSignUpView> {
             name: _nameController.text,
             phone: _fullPhoneNumber,
             specialty: "",
-            type: 'Doctor',
-            workplace: selectedInstitution!,
+            workplace: widget.userType == UserType.doctor ? selectedInstitution! : '',
+            type: widget.userType,
           )
       );
     }
