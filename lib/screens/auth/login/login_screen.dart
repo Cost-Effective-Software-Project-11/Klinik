@@ -7,8 +7,7 @@ import 'package:flutter_gp5/routes/app_routes.dart';
 import 'package:flutter_gp5/screens/auth/password/forgot_password_screen.dart';
 import 'package:iconly/iconly.dart';
 import '../../../repos/authentication/authentication_repository.dart';
-import '../../../utils/image_utils.dart';
-import '../../starting_screen/starting_screen.dart';
+import '../../../widgets/register_as_dialog.dart';
 import 'bloc/login_bloc.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -124,7 +123,7 @@ class _LoginScreenState extends State<_LoginScreen> {
                   Color(0xFFD5EAE9),
                   Color(0xFFA1D2CE)
                 ],
-                stops: [0.3, 0.5, 0.9],
+                stops: [0.4, 0.5, 0.9],
               ),
             ),
             child: Padding(
@@ -154,8 +153,6 @@ class _LoginScreenState extends State<_LoginScreen> {
                           _forgotPasswordButton(context),
                           _rememberMeField(),
                           _buildLoginButton(),
-                          _buildOrSeparator(context),
-                          _buildGoogleSignUpButton(context),
                           _signupRow(context),
                         ],
                       ),
@@ -257,9 +254,7 @@ class _LoginScreenState extends State<_LoginScreen> {
                       ),
                       textAlign: TextAlign.left,
                       validator: (value) => _validateField(value, label),
-
                       // Dismiss the keyboard on tap or submission
-
                       onFieldSubmitted: (value) {
                         FocusManager.instance.primaryFocus?.unfocus();
                       },
@@ -398,76 +393,6 @@ class _LoginScreenState extends State<_LoginScreen> {
     );
   }
 
-  Widget _buildOrSeparator(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: context.setHeight(1.25)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            width: context.setWidth(35),
-            height: 1,
-            color: const Color(0x661D1B20),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: context.setWidth(2)),
-            child: Text(
-              AppLocale.of(context)!.or,
-              style: TextStyle(
-                color: const Color(0x661D1B20),
-                fontSize: context.setWidth(4),
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ),
-          Container(
-            width: context.setWidth(35),
-            height: 1,
-            color: const Color(0x661D1B20),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildGoogleSignUpButton(BuildContext context) {
-    return Container(
-      width: context.setWidth(80),
-      height: 60,
-      margin: EdgeInsets.only(
-          top: context.setHeight(1.25), bottom: context.setHeight(2.5)),
-      decoration: BoxDecoration(
-        color: const Color(0xFF6750A4),
-        borderRadius: BorderRadius.circular(context.setHeight(6.5)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            width: context.setWidth(6),
-            height: context.setHeight(3),
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(ImageUtils.googleLogo),
-                fit: BoxFit.fill,
-              ),
-            ),
-          ),
-          SizedBox(width: context.setWidth(2.5)),
-          Text(
-            AppLocale.of(context)!.signUpWithGoogle,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: context.setWidth(3.5),
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _submitForm() {
     if (_formKey.currentState!.validate() && _isFormFilled) {
       context.read<LoginBloc>().add(LoginSubmitted(
@@ -531,6 +456,15 @@ class _LoginScreenState extends State<_LoginScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  showRegisterAsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const RegisterAsDialog();
+      },
     );
   }
 }

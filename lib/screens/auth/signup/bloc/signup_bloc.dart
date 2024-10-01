@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_gp5/enums/status_enum.dart';
+import 'package:flutter_gp5/enums/user_type_enum.dart';
 import '../../../../repos/authentication/authentication_repository.dart';
 
 part 'signup_event.dart';
@@ -34,7 +35,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
         name: event.name,
         phone: event.phone,
         specialty: event.specialty,
-        type: event.type,
+        type: event.type.toString(),
         workplace: event.workplace,
       );
       emit(state.copyWith(status: StatusEnum.success)); // Emit success if signup is successful

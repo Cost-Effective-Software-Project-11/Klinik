@@ -8,7 +8,7 @@ class HomeRepository {
 
   Future<List<Doctor>> fetchDoctors() async {
     try {
-      final querySnapshot = await _firestore.collection('users').where('type', isEqualTo: 'Doctor').get();
+      final querySnapshot = await _firestore.collection('users').where('type', isEqualTo: 'UserType.doctor').get();
       return querySnapshot.docs.map((doc) {
         return Doctor.fromFirestore(doc.data(), doc.id);
       }).toList();

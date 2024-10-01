@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../locale/l10n/app_locale.dart';
 import '../../routes/app_routes.dart';
 import '../../utils/image_utils.dart';
+import 'package:flutter_gp5/widgets/register_as_dialog.dart';
 
 class StartingScreen extends StatelessWidget {
   const StartingScreen({super.key});
@@ -78,7 +79,7 @@ class StartingScreen extends StatelessWidget {
                 ),
               ),
               child: MaterialButton(
-                onPressed: () => showRegisterAsDialog(context),
+                onPressed: () => _showRegisterAsDialog(context),
                 child: Center(
                   child: Text(AppLocale.of(context)!.signup,
                     style: const TextStyle(
@@ -99,62 +100,16 @@ class StartingScreen extends StatelessWidget {
   }
 }
 
-void showRegisterAsDialog(BuildContext context) {
+
+void _showRegisterAsDialog(BuildContext context) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        child: Container(
-          width: 304,
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                height: 72,
-                padding: const EdgeInsets.only(top: 24, left: 24, right: 24, bottom: 16),
-                decoration: const BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(width: 1, color: Colors.black),
-                  ),
-                ),
-                child: Text(AppLocale.of(context)!.registerAs,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Color(0xFF1D1B20),
-                    fontSize: 24,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              buildOptionButton(context, AppLocale.of(context)!.patient, () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pushNamed(AppRoutes.signupPatient);
-              }),
-              const SizedBox(height: 16),
-              buildOptionButton(context, AppLocale.of(context)!.doctor, () {
-                Navigator.of(context). pop();
-                Navigator.of(context).pushNamed(AppRoutes.signupDoctor);
-              }),
-              const SizedBox(height: 24),
-            ],
-          ),
-        ),
-      );
+      return const RegisterAsDialog();
     },
   );
 }
+
 
 Widget buildOptionButton(BuildContext context, String title, VoidCallback onPressed) {
   return Container(

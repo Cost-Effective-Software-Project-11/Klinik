@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:iconly/iconly.dart';
 import '../locale/l10n/app_locale.dart';
-import '../repos/authentication/authentication_repository.dart';
 import '../routes/app_routes.dart';
 
 class BottomNavigationBar extends StatelessWidget {
@@ -12,8 +10,6 @@ class BottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authRepo = RepositoryProvider.of<AuthenticationRepository>(context);
-
     return Container(
       height: context.setHeight(8),
       decoration: const BoxDecoration(color: Color(0xFFECE6F0)),
@@ -47,7 +43,7 @@ class BottomNavigationBar extends StatelessWidget {
             index: 2,
             isActive: currentIndex == 2,
             onTap: () {
-              Navigator.pushReplacementNamed(context, AppRoutes.home);
+              Navigator.pushNamed(context, AppRoutes.home);
             },
           ),
           buildNavItem(
@@ -57,7 +53,7 @@ class BottomNavigationBar extends StatelessWidget {
             index: 3,
             isActive: currentIndex == 3,
             onTap: () {
-              Navigator.pushReplacementNamed(context, AppRoutes.chat);
+              Navigator.pushNamed(context, AppRoutes.chat);
             },
           ),
           buildNavItem(
@@ -68,8 +64,6 @@ class BottomNavigationBar extends StatelessWidget {
             isActive: currentIndex == 4,
             onTap: () async {
               try {
-                await authRepo.logOut();
-                Navigator.pushReplacementNamed(context, AppRoutes.start);
               } catch (error) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${AppLocale.of(context)!.logoutFailed}: $error')));
               }

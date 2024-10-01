@@ -1,44 +1,53 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter_gp5/models/message_model.dart';
 import 'package:flutter_gp5/repos/user/user_repository.dart';
 import 'package:flutter_gp5/screens/chat_screen/bloc/chat_states.dart';
 
 import '../../../repos/authentication/authentication_repository.dart';
+import '../../../repos/chat/chat_room_repository.dart';
 import 'chat_events.dart';
 
 class ChatBloc extends Bloc<ChatEvents, ChatStates> {
   final UserRepository userRepository;
+  final ChatRepository chatRoomRepository;
   final AuthenticationRepository authRepo;
 
-  ChatBloc({required this.userRepository, required this.authRepo})
+  ChatBloc({required this.userRepository, required this.authRepo,required this.chatRoomRepository,})
       : super(UsersLoadingState()) {
-    on<GetAllUsers>(_onGetAllUsers);
+    on<GetUsersInChatWithCurrentUser>(getUsersInChatWithCurrentUser);
   }
 
-  Future<void> _onGetAllUsers(
-      GetAllUsers event, Emitter<ChatStates> emit) async {
+  Future<void> getUsersInChatWithCurrentUser(
+      GetUsersInChatWithCurrentUser event, Emitter<ChatStates> emit) async {
     emit(UsersLoadingState());
     try {
-      final data = await userRepository.getAll();
+      final currentUserId = authRepo.currentUser?.uid;
+      if (currentUserId != null) {
+        // Fetch users in chat with the current user
+        final chatPartners = await userRepository.getUsersInChatWith(currentUserId);
 
-      final userEmail = authRepo.currentUser?.email;
+        if (chatPartners.isEmpty) {
+          emit(ErrorState("No users found in chat."));
+          return;
+        }
+        // Initialize the lastMessages map
+        final lastMessages = <String, Message?>{};
+        final unreadCount = <String, int>{};
 
-      if (data.isEmpty) {
-        emit(ErrorState("Collection is Empty"));
-        return;
-      }
-      if (userEmail == null) {
-        emit(ErrorState("Collection is Empty"));
+        // Fetch the last message for each user
+        for (var chatPartner in chatPartners) {
+          final lastMessageObject = await chatRoomRepository.getLastMessageFromChatRoom(currentUserId,chatPartner.id);
+          lastMessages[chatPartner.id] = lastMessageObject;
+          unreadCount[chatPartner.id]= await chatRoomRepository.getUnreadMessagesCount(currentUserId, chatPartner.id);
+        }
+        emit(UsersLoadedState(chatPartners,lastMessages,unreadCount));
       } else {
-        // Filter out the current user from the list
-        final filteredUsers = data
-            .where((user) => user.email.toLowerCase() != userEmail.toLowerCase())
-            .toList();
-
-        // Emit the loaded state with filtered data
-        emit(UsersLoadedState(filteredUsers));
+        emit(ErrorState("Current user not found."));
       }
     } catch (e) {
       emit(ErrorState(e.toString()));
     }
   }
+
 }
+
