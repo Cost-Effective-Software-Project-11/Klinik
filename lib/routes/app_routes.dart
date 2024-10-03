@@ -7,7 +7,6 @@ import '../screens/home/home_screen.dart';
 import '../screens/chat_screen/chat_screen.dart';
 import '../screens/starting_screen/starting_screen.dart';
 import '../screens/create_trials/create_trials_screen.dart';
-import '../screens/patient_trials/patient_trials_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/splash/splash_screen.dart';
 import '../screens/trials/trials_screen.dart';
