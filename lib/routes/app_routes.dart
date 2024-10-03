@@ -10,6 +10,7 @@ import '../screens/create_trials/create_trials_screen.dart';
 import '../screens/patient_trials/patient_trials_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/splash/splash_screen.dart';
+import '../screens/trials/trials_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -34,7 +35,7 @@ class AppRoutes {
       case login:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case trials:
-        return MaterialPageRoute(builder: (_) => const PatientTrialsScreen());
+        return MaterialPageRoute(builder: (_) => const TrialsScreen());
       case appSettings:
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
       case createTrials:
