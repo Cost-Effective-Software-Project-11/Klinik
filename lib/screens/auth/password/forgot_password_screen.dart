@@ -127,27 +127,27 @@ class _ResetPasswordState extends State<ResetPassword> {
           labelText: AppLocale.of(context)!.email,
           enabledBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20)),
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30)),
               borderSide: BorderSide(color: Colors.grey)),
           focusedBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20)),
+                topLeft: Radius.circular(30),
+                topRight: Radius.circular(30),
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30)),
             borderSide: BorderSide(
               color: Colors.blue,
             ),
           ),
           errorBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20),
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30),
             ),
             borderSide: BorderSide(
               color: Colors.red,
@@ -155,10 +155,10 @@ class _ResetPasswordState extends State<ResetPassword> {
           ),
           focusedErrorBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20),
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30),
             ),
             borderSide: BorderSide(
               color: Colors.red,
@@ -210,7 +210,7 @@ class _ResetPasswordState extends State<ResetPassword> {
 
         return SizedBox(
           width: context.setWidth(80),
-          height: context.setHeight(6),
+          height: context.setHeight(10),
           child: ElevatedButton(
             onPressed: () async {
               if (_formKey.currentState?.validate() == true) {

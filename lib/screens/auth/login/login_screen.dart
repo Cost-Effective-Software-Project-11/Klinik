@@ -76,6 +76,7 @@ class _LoginScreenState extends State<_LoginScreen> {
             padding: EdgeInsets.only(
                 top: context.setHeight(1), bottom: context.setHeight(1)),
             child: AppBar(
+              backgroundColor:  Colors.transparent,
               leading: IconButton(
                 icon: Icon(Icons.navigate_before,
                     color: const Color(0xFF1D1B20), size: context.setWidth(8)),
@@ -95,7 +96,6 @@ class _LoginScreenState extends State<_LoginScreen> {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              backgroundColor: Colors.transparent,
               surfaceTintColor: Colors.white,
               elevation: 0,
               centerTitle: true,
