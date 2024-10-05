@@ -38,7 +38,7 @@ class _ResetPasswordState extends State<ResetPassword> {
       create: (context) => EmailBloc(FirebaseAuth.instance),
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
+          backgroundColor:  Colors.transparent,
           centerTitle: true,
           elevation: 0,
           title: Text(
