@@ -39,7 +39,6 @@ class _LoginScreenState extends State<_LoginScreen> {
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
   bool _passwordVisible = false;
-  bool _rememberMe = false;
   bool _isFormFilled = false;
 
   @override
@@ -77,6 +76,7 @@ class _LoginScreenState extends State<_LoginScreen> {
             padding: EdgeInsets.only(
                 top: context.setHeight(1), bottom: context.setHeight(1)),
             child: AppBar(
+              backgroundColor:  Colors.transparent,
               leading: IconButton(
                 icon: Icon(Icons.navigate_before,
                     color: const Color(0xFF1D1B20), size: context.setWidth(8)),
@@ -96,7 +96,6 @@ class _LoginScreenState extends State<_LoginScreen> {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              backgroundColor: Colors.transparent,
               surfaceTintColor: Colors.white,
               elevation: 0,
               centerTitle: true,
@@ -151,7 +150,6 @@ class _LoginScreenState extends State<_LoginScreen> {
                         children: [
                           _buildSignUpForm(context),
                           _forgotPasswordButton(context),
-                          _rememberMeField(),
                           _buildLoginButton(),
                           _signupRow(context),
                         ],
@@ -415,49 +413,6 @@ class _LoginScreenState extends State<_LoginScreen> {
     );
   }
 
-  Widget _rememberMeField() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Transform.scale(
-            scale: 1.2,
-            child: Checkbox(
-              value: _rememberMe,
-              activeColor: const Color(0xFF6750A4),
-              onChanged: (bool? value) {
-                setState(() {
-                  _rememberMe = value!;
-                });
-              },
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                _rememberMe = !_rememberMe;
-              });
-            },
-            child: Text(
-              AppLocale.of(context)!.remember_me,
-              style: const TextStyle(
-                color: Color(0xFF1D1B20),
-                fontSize: 16,
-                fontFamily: 'Roboto',
-                fontWeight: FontWeight.w400,
-                height: 1.4,
-                letterSpacing: 0.25,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   showRegisterAsDialog(BuildContext context) {
     showDialog(
