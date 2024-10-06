@@ -14,7 +14,9 @@ class StorageService {
     File file = File(filePath);
     try {
       // Create a reference to the location in Firebase Storage
-      final storageRef = _storage.ref().child('chat_files/$chatRoomId/${path.basename(filePath)}');
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('chat_files/$chatRoomId/${path.basename(filePath)}');
 
       // Upload the file
       final uploadTask = storageRef.putFile(file);
@@ -125,7 +127,7 @@ class StorageService {
     await requestStoragePermission();
     try {
       // Create a reference to the file in Firebase Storage
-      Reference ref = _storage.ref().child('chat_files/$chatRoomId/$fileName');
+      Reference ref = FirebaseStorage.instance.ref().child('chat_files/$chatRoomId/$fileName');
 
       // Hardcoded path to the "Downloads" directory on Android
       String downloadsDir = '/storage/emulated/0/Download';
@@ -147,6 +149,8 @@ class StorageService {
       print('Error downloading file: $e');
     }
   }
+
+
 
   Future<void> requestStoragePermission() async {
     // Check the current status of manage external storage permission
@@ -173,4 +177,6 @@ class StorageService {
       await openAppSettings();
     }
   }
+
+
 }

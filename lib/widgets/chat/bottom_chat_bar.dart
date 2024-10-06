@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import '../../models/message_model.dart';
 import '../../screens/chat_screen/bloc_personal_chat/personal_chat_bloc.dart';
+import '../../services/storage_service.dart';
 
 class BottomChatBar extends StatelessWidget {
   BottomChatBar({
@@ -26,8 +27,6 @@ class BottomChatBar extends StatelessWidget {
         color: Colors.white,
         child: BlocBuilder<PersonalChatBloc, PersonalChatState>(
           builder: (context, state) {
-            final hasFile = state.filePath.isNotEmpty;
-
             return Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -35,8 +34,7 @@ class BottomChatBar extends StatelessWidget {
                   iconSize: 28,
                   icon: const Icon(Icons.attach_file, color: Colors.black),
                   onPressed: () {
-                    // Trigger the file picking event in the BLoC
-                    context.read<PersonalChatBloc>().add(UploadFileAndSendMessageEvent());
+                    context.read<PersonalChatBloc>().add(GetFilePath());
                   },
                 ),
                 IconButton(
@@ -46,7 +44,7 @@ class BottomChatBar extends StatelessWidget {
                     print('Camera icon pressed');
                   },
                 ),
-                SizedBox(width: context.setWidth(3)),
+                 SizedBox(width: context.setWidth(3)),
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
@@ -66,33 +64,44 @@ class BottomChatBar extends StatelessWidget {
                               minLines: 1,
                               maxLines: null,
                               textAlign: TextAlign.left,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 border: InputBorder.none,
-                                hintText: hasFile
-                                    ? 'File selected: ${state.filePath.split('/').last}'
-                                    : 'Type a message',
-                                hintStyle: const TextStyle(color: Colors.grey),
-                                prefixIcon: hasFile
-                                    ? const Icon(Icons.insert_drive_file, color: Colors.black)
-                                    : null,
+                                hintText: 'Type a message',
+                                hintStyle: TextStyle(color: Colors.grey),
                               ),
                             ),
                           ),
                           IconButton(
                             iconSize: 28,
                             icon: const Icon(Icons.send_sharp, color: Colors.black),
-                            onPressed: () {
+                            onPressed: () async {
+                              final filePath = state.filePath;
                               final hasText = messageController.text.trim().isNotEmpty;
+                              final hasFile = filePath.isNotEmpty;
 
                               if (hasText || hasFile) {
-                                // Send message event if there is text or a file
+                                String? fileDownloadUrl;
+                                String? fileName;
+                                if (hasFile) {
+                                  fileName = filePath.split('/').last;
+                                  fileDownloadUrl = await StorageService().uploadFileAndReturnDownloadURL(filePath, state.chatRoomId);
+                                }
+
+                                // Determine the message type based on whether there is text and/or a file
+                                final messageType = hasText && fileDownloadUrl != null
+                                    ? MessageType.textAndFile
+                                    : hasFile
+                                    ? MessageType.file
+                                    : MessageType.text;
+
+                                // Dispatch the SendMessageEvent with the correct message type
                                 context.read<PersonalChatBloc>().add(SendMessageEvent(
                                   receiverId: chatPartnerId,
                                   messageContent: hasText ? messageController.text : '',
-                                  messageType: hasFile ? MessageType.file : MessageType.text,
+                                  messageType: messageType, // Pass the message type
                                   timestamp: Timestamp.fromDate(DateTime.now()),
-                                  filePath: hasFile ? state.filePath : '',
-                                  fileName: hasFile ? state.filePath.split('/').last : '',
+                                  filePath: fileDownloadUrl ?? '',
+                                  fileName: fileName ?? '',
                                 ));
 
                                 // Scroll to bottom after sending the message
@@ -107,9 +116,7 @@ class BottomChatBar extends StatelessWidget {
                                 });
 
                                 // Clear the text input after sending the message
-                                if (!hasFile) {
-                                  messageController.clear();
-                                }
+                                messageController.clear();
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('Please enter a message or select a file.')),
