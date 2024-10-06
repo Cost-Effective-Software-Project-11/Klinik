@@ -541,7 +541,7 @@ class HomeScreen extends StatelessWidget {
 
             return Container(
               width: context.setWidth(100),
-              height: context.setHeight(22),
+              height: context.setHeight(28),
               decoration: const BoxDecoration(
                 color: Colors.transparent,
               ),
