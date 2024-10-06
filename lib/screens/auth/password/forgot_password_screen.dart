@@ -210,7 +210,7 @@ class _ResetPasswordState extends State<ResetPassword> {
 
         return SizedBox(
           width: context.setWidth(80),
-          height: context.setHeight(10),
+          height: 60,
           child: ElevatedButton(
             onPressed: () async {
               if (_formKey.currentState?.validate() == true) {

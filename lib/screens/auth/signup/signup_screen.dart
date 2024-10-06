@@ -513,8 +513,6 @@ class _SignUpViewState extends State<SignUpView> {
     );
   }
 
-
-
   void _showTermsDialog(BuildContext context) {
     showDialog(
       context: context,
