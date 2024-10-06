@@ -42,7 +42,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(context.setHeight(7)),
+        preferredSize: Size.fromHeight(context.setHeight(8)),
         child: Padding(
           padding: EdgeInsets.only(top: context.setHeight(3)),
           child: AppBar(
@@ -111,7 +111,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget buttonRow(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: context.setWidth(5), vertical: context.setHeight(1)),
+      padding: EdgeInsets.symmetric(horizontal: context.setWidth(1), vertical: context.setHeight(1)),
       child: Column(
         children: [
           Row(
@@ -416,7 +416,7 @@ class HomeScreen extends StatelessWidget {
               },
               child: Container(
                 width: context.setWidth(100),
-                height: context.setHeight(22),
+                height: context.setHeight(24),
                 decoration: const BoxDecoration(
                   color: Colors.transparent,
                 ),
