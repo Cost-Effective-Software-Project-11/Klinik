@@ -26,6 +26,11 @@ dependencies:
   flutter_bloc: ^8.1.1
   country_flags: ^3.0.0
   material_design_icons_flutter: ^7.0.7296
+  firebase_storage: ^11.7.7
+  file_picker: ^8.0.7
+  image_picker: ^1.1.2
+  path: ^1.9.0
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:
@@ -45,5 +50,4 @@ flutter:
     - assets/images/klinik-logo-03.png
     - assets/images/klinik-logo-04.png
     - assets/images/home.png
-
     - assets/images/msg.png

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_gp5/services/storage_service.dart';
 
 import '../../../models/chat_room_model.dart';
 import '../../../models/message_model.dart';
@@ -26,38 +27,39 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
     on<UpdateTextMessageEvent>(_onUpdateTextMessage);
     on<MessagesUpdated>(_onMessagesUpdated);
     on<LoadMoreMessagesEvent>(_onLoadMoreMessages);
+    on<GetFilePath>(_onGetFilePath);
+    on<DownloadFile>(_onDownloadFile);
   }
 
   Future<void> _onSendMessage(
       SendMessageEvent event, Emitter<PersonalChatState> emit) async {
     try {
-      // Get the current user ID
       final currentUserId = authRepository.currentUser?.uid;
       if (currentUserId == null) {
         emit(const PersonalChatErrorState('User is not logged in'));
         return;
       }
 
-      // Create the new Message object using the event data
       final newMessage = Message(
         senderId: currentUserId,
+        messageType: event.messageType,
+        fileName: event.fileName,
         receiverId: event.receiverId,
-        messageContent: event.messageContent,
+        messageContent: event.messageContent ?? '',
         timestamp: event.timestamp,
-        isRead: false
+        isRead: false,
       );
 
-      // Send the message using the repository
+
       await chatRoomRepository.sendMessage(newMessage);
     } catch (e) {
       emit(PersonalChatErrorState('Error sending message: $e'));
     }
   }
 
+
   Future<void> _onGetMessages(
-      GetMessagesEvent event,
-      Emitter<PersonalChatState> emit
-      ) async {
+      GetMessagesEvent event, Emitter<PersonalChatState> emit) async {
     try {
       final currentUserId = authRepository.currentUser?.uid;
       if (currentUserId == null) {
@@ -69,8 +71,7 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
       _messagesSubscription = chatRoomRepository
           .getMessagesStream(currentUserId, event.chatParticipantTwoId)
           .listen((messages) {
-
-        if (isClosed) return; // Check if Bloc is closed before adding an event
+        if (isClosed) return;
 
         add(MessagesUpdated(messages: messages));
       });
@@ -84,7 +85,6 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
     _messagesSubscription?.cancel();
     return super.close();
   }
-
 
   void _onMessagesUpdated(
       MessagesUpdated event, Emitter<PersonalChatState> emit) {
@@ -108,24 +108,29 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
       );
 
       // Call repository to create the chat room with the model if such chat room doesn't exist
-      await chatRoomRepository.createChatRoom(chatRoom);
-      emit(PersonalChatState());
+      final chatRoomId = await chatRoomRepository.createChatRoom(chatRoom);
+      if (chatRoomId != null) {
+        emit(PersonalChatState(chatRoomId: chatRoomId));
+      } else {
+        emit(const PersonalChatState());
+      }
     } catch (e) {
       emit(PersonalChatErrorState('Error creating chat room: $e'));
     }
   }
 
-  void _onUpdateTextMessage(UpdateTextMessageEvent event, Emitter<PersonalChatState> emit) {
+  void _onUpdateTextMessage(
+      UpdateTextMessageEvent event, Emitter<PersonalChatState> emit) {
     final textMessageInput = event.textMessageInput;
     emit(state.copyWith(textMessageInput: textMessageInput));
   }
 
-  Future<void> _onLoadMoreMessages(LoadMoreMessagesEvent event, Emitter<PersonalChatState> emit) async {
+  Future<void> _onLoadMoreMessages(
+      LoadMoreMessagesEvent event, Emitter<PersonalChatState> emit) async {
+    if (state.isLoadingMessages == true || state.messagesList.isEmpty) return;
 
-    if (state.isLoadingMessages==true || state.messagesList.isEmpty) return;
-
-    emit(state.copyWith(
-      isLoadingMessages: true),
+    emit(
+      state.copyWith(isLoadingMessages: true),
     );
 
     try {
@@ -150,5 +155,48 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
     }
   }
 
+  Future<void> _onGetFilePath(GetFilePath event, Emitter<PersonalChatState> emit) async {
+    try {
+      final currentUserId = authRepository.currentUser?.uid;
+      final storageService = StorageService();
+
+      if (currentUserId == null) {
+        emit(const PersonalChatErrorState('User is not logged in'));
+        return;
+      }
+
+      final String? filePath = await storageService.pickFilePath();
+      if (filePath != null) {
+        emit(state.copyWith(filePath: filePath));
+        print(state.filePath);
+      } else {
+        emit(const PersonalChatErrorState('No file selected'));
+      }
+    } catch (e) {
+      emit(PersonalChatErrorState('Error uploading file: $e'));
+    }
+  }
+
+  Future<void> _onDownloadFile(DownloadFile event, Emitter<PersonalChatState> emit) async {
+    try {
+      final currentUserId = authRepository.currentUser?.uid;
+      final storageService = StorageService();
+
+      // Check if the user is logged in
+      if (currentUserId == null) {
+        emit(const PersonalChatErrorState('User is not logged in'));
+        return;
+      }
+
+      // Ensure event.fileName is not null or empty
+      if (event.fileName.isEmpty) {
+        emit(const PersonalChatErrorState('File name cannot be empty'));
+        return;
+      }
+      await storageService.downloadFile(event.fileName, event.chatRoomId);
+    } catch (e) {
+      emit(PersonalChatErrorState('Error downloading file: $e'));
+    }
+  }
 
 }
