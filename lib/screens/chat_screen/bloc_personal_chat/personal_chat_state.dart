@@ -5,41 +5,57 @@ class PersonalChatState extends Equatable {
     this.currentUserId = '',
     this.chatParticipantTwoId = '',
     this.textMessageInput = '',
+    this.filePath = '',
     this.messagesList = const [],
-    this.isLoadingMessages=false
+    this.isLoadingMessages = false,
+    this.chatRoomId = '',
   });
 
   final List<Message> messagesList;
   final String currentUserId;
+  final String filePath;
   final String chatParticipantTwoId;
   final String textMessageInput;
   final bool isLoadingMessages;
+  final String chatRoomId;
 
   PersonalChatState copyWith({
     List<Message>? messagesList,
     String? currentUserId,
+    String? filePath,
     String? chatParticipantTwoId,
     String? textMessageInput,
     bool? isLoadingMessages,
+    String? chatRoomId,
   }) {
     return PersonalChatState(
       messagesList: messagesList ?? this.messagesList,
       currentUserId: currentUserId ?? this.currentUserId,
       chatParticipantTwoId: chatParticipantTwoId ?? this.chatParticipantTwoId,
       textMessageInput: textMessageInput ?? this.textMessageInput,
+      filePath: filePath ?? this.filePath,
       isLoadingMessages: isLoadingMessages ?? this.isLoadingMessages,
+      chatRoomId: chatRoomId ?? this.chatRoomId,
     );
   }
 
   @override
-  List<Object> get props => [messagesList, currentUserId, chatParticipantTwoId,textMessageInput,isLoadingMessages];
+  List<Object> get props => [
+    messagesList,
+    currentUserId,
+    chatParticipantTwoId,
+    textMessageInput,
+    isLoadingMessages,
+    chatRoomId,
+    filePath,
+  ];
 }
 
 class PersonalChatLoadingState extends PersonalChatState {
   const PersonalChatLoadingState();
 
   @override
-  List<Object> get props=> [];
+  List<Object> get props => [];
 }
 
 class PersonalChatErrorState extends PersonalChatState {
