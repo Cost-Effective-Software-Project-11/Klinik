@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/repos/authentication/authentication_repository.dart';
 import 'package:flutter_gp5/repos/chat/chat_room_repository.dart';
 import 'package:flutter_gp5/screens/chat_screen/bloc_personal_chat/personal_chat_bloc.dart';
-import 'package:flutter_gp5/services/storage_service.dart';
 import 'package:flutter_gp5/widgets/chat/bottom_chat_bar.dart';
 import 'package:flutter_gp5/widgets/chat/chat_app_bar.dart';
 import 'package:flutter_gp5/utils/image_utils.dart';
@@ -23,7 +22,6 @@ class PersonalChatScreen extends StatelessWidget {
 
     return BlocProvider(
       create: (context) => PersonalChatBloc(
-        storageService: context.read<StorageService>(),
         authRepository: context.read<AuthenticationRepository>(),
         chatRoomRepository: context.read<ChatRepository>(),
       )
@@ -99,55 +97,11 @@ class _PersonalChatBody extends StatelessWidget {
                       ),
                     ),
                   Expanded(
-                    child: Stack(
-                      children: [
-                        ChatMessageList(
-                          messages: state.messagesList,
-                          scrollController: scrollController,
-                          chatPartner: chatPartner,
-                          chatRoomId: state.chatRoomId,
-                        ),
-                        // Show the small loading bar at the center of the screen when sending a file
-                        if (state.isSendingFile)
-                          Center(
-                            child: Container(
-                              color: Colors.black.withOpacity(0.6), // Semi-transparent background
-                              padding: const EdgeInsets.all(16.0),
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min, // Centers content within the row
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                                  SizedBox(width: 10),
-                                  Text(
-                                    'Sending file...',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        // Show loading indicator for downloading a file
-                        if (state.isDownloadingFile)
-                          Center(
-                            child: Container(
-                              color: Colors.black.withOpacity(0.6), // Semi-transparent background
-                              padding: const EdgeInsets.all(16.0),
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min, // Centers content within the row
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                                  SizedBox(width: 10),
-                                  Text(
-                                    'Downloading file...',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                      ],
+                    child: ChatMessageList(
+                      messages: state.messagesList,
+                      scrollController: scrollController,
+                      chatPartner: chatPartner,
+                      chatRoomId: state.chatRoomId,
                     ),
                   ),
                 ],
@@ -159,8 +113,10 @@ class _PersonalChatBody extends StatelessWidget {
     );
   }
 
+
+
   Widget _loadingIndicator(BuildContext context) {
-    return Column(
+    return  Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
