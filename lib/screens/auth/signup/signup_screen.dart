@@ -458,19 +458,14 @@ class _SignUpViewState extends State<SignUpView> {
               ),
               child: Row(
                 children: [
-                  Container(
-                    margin: EdgeInsets.only(left: context.setWidth(3)),
-                    alignment: Alignment.centerLeft,
-                    child: Icon(IconlyBold.call, color: const Color(0xFF49454F), size: context.setWidth(6)),
-                  ),
                   Expanded(
                     child: IntlPhoneField(
                       decoration: InputDecoration(
                         hintText: AppLocale.of(context)!.enterYourPhone,
                         hintStyle: TextStyle(color: const Color(0x6649454F), fontSize: context.setWidth(4)),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(vertical: context.setHeight(1), horizontal: context.setWidth(3)),
                         counter: const SizedBox.shrink(),
+
                       ),
                       initialCountryCode: 'BG',
                       dropdownIcon: const Icon(Icons.arrow_drop_down, color: Color(0xFF49454F)),
@@ -517,6 +512,8 @@ class _SignUpViewState extends State<SignUpView> {
       ],
     );
   }
+
+
 
   void _showTermsDialog(BuildContext context) {
     showDialog(
