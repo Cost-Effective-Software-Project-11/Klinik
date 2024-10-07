@@ -2,10 +2,8 @@ part of 'trials_bloc.dart';
 
 abstract class TrialEvent {}
 
-// Event to load the form data (categories, conditions, medications)
 class LoadTrialForm extends TrialEvent {}
 
-// Event to create a new trial
 class CreateTrial extends TrialEvent {
   final String title;
   final String category;
@@ -15,6 +13,7 @@ class CreateTrial extends TrialEvent {
   final String description;
   final List<String> eligibilityCriteria;
   final List<QuestionnaireSection> questionnaireSections;
+  final String doctorId;
 
   CreateTrial({
     required this.title,
@@ -24,9 +23,9 @@ class CreateTrial extends TrialEvent {
     required this.duration,
     required this.description,
     required this.eligibilityCriteria,
-    required this.questionnaireSections, // Add the questionnaire sections
+    required this.questionnaireSections,
+    required this.doctorId,
   });
 }
 
-// Event to fetch the list of trials
 class FetchTrials extends TrialEvent {}

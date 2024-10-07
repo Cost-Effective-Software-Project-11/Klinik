@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
+import 'package:flutter_gp5/screens/trials/repository/trials_repository.dart';
 import '../../widgets/bottom_nav_bar.dart' as custom;
 import 'create_trials/create_trials_screen.dart';
+import 'models/trial_model.dart';
 
 class TrialsScreenWrapper extends StatefulWidget {
   const TrialsScreenWrapper({super.key});
@@ -11,14 +13,42 @@ class TrialsScreenWrapper extends StatefulWidget {
 }
 
 class _TrialsScreenWrapperState extends State<TrialsScreenWrapper> {
+  List<Trial> unpublishedTrials = [];
+  List<Trial> publishedTrials = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchTrials();
+  }
+
+  Future<void> fetchTrials() async {
+    try {
+      List<Trial> allTrials = await TrialRepository().fetchTrials(); // Ensure this method exists in your repository
+      setState(() {
+        unpublishedTrials = allTrials.where((trial) => !trial.isPublished).toList();
+        publishedTrials = allTrials.where((trial) => trial.isPublished).toList();
+      });
+    } catch (e) {
+      // Handle error
+      print("Error fetching trials: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const TrialsScreen();
+    return TrialsScreen(
+      unpublishedTrials: unpublishedTrials,
+      publishedTrials: publishedTrials,
+    );
   }
 }
 
 class TrialsScreen extends StatelessWidget {
-  const TrialsScreen({super.key});
+  final List<Trial> unpublishedTrials;
+  final List<Trial> publishedTrials;
+
+  const TrialsScreen({super.key, required this.unpublishedTrials, required this.publishedTrials});
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +82,27 @@ class TrialsScreen extends StatelessWidget {
       body: Stack(
         children: [
           backgroundDecoration(),
+          FutureBuilder<List<Trial>>(
+            future: TrialRepository().fetchTrials(),
+            builder: (context, snapshot) {
+              print('ConnectionState: ${snapshot.connectionState}');
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                print('Error: ${snapshot.error}');
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                print('No trials found');
+                return const Center(child: Text('No trials available'));
+              } else {
+                final allTrials = snapshot.data!;
+                final unpublishedTrials = allTrials.where((trial) => !trial.isPublished).toList();
+                final publishedTrials = allTrials.where((trial) => trial.isPublished).toList();
+
+                return buildTrialLists(context, unpublishedTrials, publishedTrials);
+              }
+            },
+          ),
           Positioned(
             bottom: context.setHeight(0),
             left: MediaQuery.of(context).size.width * 0.5 - 86,
@@ -61,6 +112,82 @@ class TrialsScreen extends StatelessWidget {
       ),
       bottomNavigationBar: const custom.BottomNavigationBar(currentIndex: 0),
     );
+  }
+
+  Widget buildTrialLists(BuildContext context, List<Trial> unpublishedTrials, List<Trial> publishedTrials) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Unpublished', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            for (var trial in unpublishedTrials) buildTrialCard(context, trial, false),
+            const SizedBox(height: 16),
+            const Text('Published', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            for (var trial in publishedTrials) buildTrialCard(context, trial, true),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildTrialCard(BuildContext context, Trial trial, bool isPublished) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              trial.title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(trial.description),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (!isPublished)
+                  ElevatedButton(
+                    onPressed: () async {
+                      // Call the publish function
+                      await publishTrial(context, trial.id);
+                    },
+                    child: const Text('Publish'),
+                  ),
+                if (isPublished)
+                  const Text('Published', style: TextStyle(color: Colors.green)),
+                ElevatedButton(
+                  onPressed: () {
+                    // Handle trial preview
+                    // e.g. Navigator.of(context).push to trial details page
+                  },
+                  child: const Text('Preview'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> publishTrial(BuildContext context, String trialId) async {
+    try {
+      // Call the repository method to publish the trial
+      await TrialRepository().publishTrial(trialId);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Trial published successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to publish trial')),
+      );
+    }
   }
 
   Widget backgroundDecoration() {

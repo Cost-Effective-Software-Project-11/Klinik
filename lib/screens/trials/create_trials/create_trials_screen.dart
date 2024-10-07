@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
@@ -84,6 +85,8 @@ class _CreateTrialScreenState extends State<CreateTrialScreen> {
       return;
     }
 
+    final doctorId = getLoggedInDoctorId();
+
     // Dispatch the CreateTrial event
     BlocProvider.of<TrialBloc>(context).add(
       CreateTrial(
@@ -95,8 +98,18 @@ class _CreateTrialScreenState extends State<CreateTrialScreen> {
         description: description,
         eligibilityCriteria: eligibilityCriteria,
         questionnaireSections: questionnaireSections,
+        doctorId: doctorId,
       ),
     );
+  }
+
+  String getLoggedInDoctorId() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      return user.uid;
+    } else {
+      throw Exception('No user is logged in');
+    }
   }
 
   @override

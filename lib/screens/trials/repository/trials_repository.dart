@@ -41,6 +41,8 @@ class TrialRepository {
     required String duration,
     required String description,
     required List<String> eligibilityCriteria,
+    required String doctorId,
+    bool isPublished = false,
   }) async {
     return await _firestore.collection('trials').add({
       'title': title,
@@ -50,6 +52,8 @@ class TrialRepository {
       'duration': duration,
       'description': description,
       'eligibilityCriteria': eligibilityCriteria,
+      'doctorId': doctorId,
+      'isPublished': isPublished,
     });
   }
 
@@ -80,7 +84,20 @@ class TrialRepository {
   }
 
   Future<List<Trial>> fetchTrials() async {
-    final snapshot = await _firestore.collection('trials').get();
-    return snapshot.docs.map((doc) => Trial.fromFirestore(doc)).toList();
+    try {
+      // Simulating Firestore fetch logic
+      final querySnapshot = await FirebaseFirestore.instance.collection('trials').get();
+      return querySnapshot.docs.map((doc) => Trial.fromFirestore(doc)).toList();
+    } catch (e) {
+      // Log and rethrow any errors encountered during the fetch
+      print('Error fetching trials: $e');
+      throw e; // This ensures FutureBuilder will go to the `hasError` state
+    }
+  }
+
+  Future<void> publishTrial(String trialId) async {
+    await _firestore.collection('trials').doc(trialId).update({
+      'isPublished': true,
+    });
   }
 }

@@ -9,6 +9,8 @@ class Trial {
   final String duration;
   final String description;
   final List<String> eligibilityCriteria;
+  final String doctorId;
+  final bool isPublished;
 
   Trial({
     required this.id,
@@ -19,19 +21,25 @@ class Trial {
     required this.duration,
     required this.description,
     required this.eligibilityCriteria,
+    required this.doctorId,
+    required this.isPublished,
   });
 
   factory Trial.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
+    print('Fetched data: $data'); // Add this line to log the data
+
     return Trial(
       id: doc.id,
-      title: data['title'],
-      category: data['category'],
-      disease: data['disease'],
-      medication: data['medication'],
-      duration: data['duration'],
-      description: data['description'],
-      eligibilityCriteria: List<String>.from(data['eligibilityCriteria']),
+      title: data['title'] ?? 'Untitled Trial',
+      category: data['category'] ?? 'Uncategorized',
+      disease: data['disease'] as String?,
+      medication: data['medication'] as String?,
+      duration: data['duration'] ?? 'Not specified',
+      description: data['description'] ?? 'No description',
+      eligibilityCriteria: List<String>.from(data['eligibilityCriteria'] ?? []), // Pay attention to this line
+      doctorId: data['doctorId'] ?? 'Unknown Doctor',
+      isPublished: data['isPublished'] ?? false,
     );
   }
 }

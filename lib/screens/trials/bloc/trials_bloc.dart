@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/trial_model.dart';
 import '../questionnaire.dart';
@@ -10,7 +11,6 @@ class TrialBloc extends Bloc<TrialEvent, TrialState> {
   final TrialRepository repository;
 
   TrialBloc(this.repository) : super(TrialInitial()) {
-    // Load the form with categories, conditions, and medications
     on<LoadTrialForm>((event, emit) async {
       try {
         final categories = await repository.fetchCategories();
@@ -23,9 +23,20 @@ class TrialBloc extends Bloc<TrialEvent, TrialState> {
       }
     });
 
+    String getLoggedInDoctorId() {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        return user.uid;
+      } else {
+        throw Exception('No user is logged in');
+      }
+    }
+
     // Handle creating a trial
     on<CreateTrial>((event, emit) async {
       emit(TrialLoading());
+
+      final doctorId = getLoggedInDoctorId();
 
       try {
         // Step 1: Create the trial in Firebase and get the DocumentReference
@@ -37,6 +48,8 @@ class TrialBloc extends Bloc<TrialEvent, TrialState> {
           duration: event.duration,
           description: event.description,
           eligibilityCriteria: event.eligibilityCriteria,
+          doctorId: doctorId,
+          isPublished: false,
         );
 
         final trialId = trialDoc.id; // Get the trial ID from the DocumentReference

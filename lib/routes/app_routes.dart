@@ -34,7 +34,7 @@ class AppRoutes {
       case login:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case trials:
-        return MaterialPageRoute(builder: (_) => const TrialsScreen());
+        return MaterialPageRoute(builder: (_) => const TrialsScreenWrapper());
       case appSettings:
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
       case createTrials:
