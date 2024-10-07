@@ -39,7 +39,10 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
         emit(const PersonalChatErrorState('User is not logged in'));
         return;
       }
-
+      if(event.fileName!='')
+      {
+        emit(state.copyWith(isSendingFile: true));
+      }
       final newMessage = Message(
         senderId: currentUserId,
         messageType: event.messageType,
@@ -49,9 +52,8 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
         timestamp: event.timestamp,
         isRead: false,
       );
-
-
       await chatRoomRepository.sendMessage(newMessage);
+      emit(state.copyWith(filePath: '', isSendingFile: false));
     } catch (e) {
       emit(PersonalChatErrorState('Error sending message: $e'));
     }
