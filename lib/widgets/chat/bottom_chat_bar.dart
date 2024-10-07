@@ -27,6 +27,7 @@ class BottomChatBar extends StatelessWidget {
         color: Colors.white,
         child: BlocBuilder<PersonalChatBloc, PersonalChatState>(
           builder: (context, state) {
+            final hasFile = state.filePath.isNotEmpty;
             return Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -64,10 +65,13 @@ class BottomChatBar extends StatelessWidget {
                               minLines: 1,
                               maxLines: null,
                               textAlign: TextAlign.left,
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 border: InputBorder.none,
-                                hintText: 'Type a message',
-                                hintStyle: TextStyle(color: Colors.grey),
+                                hintText: hasFile ? 'File selected: ${state.filePath.split('/').last}' : 'Type a message',
+                                hintStyle: const TextStyle(color: Colors.grey),
+                                prefixIcon: hasFile
+                                    ? const Icon(Icons.insert_drive_file, color: Colors.black)
+                                    : null,
                               ),
                             ),
                           ),

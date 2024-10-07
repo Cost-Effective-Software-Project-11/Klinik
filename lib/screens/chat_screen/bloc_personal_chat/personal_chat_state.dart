@@ -8,6 +8,7 @@ class PersonalChatState extends Equatable {
     this.filePath = '',
     this.messagesList = const [],
     this.isLoadingMessages = false,
+    this.isSendingFile = false,
     this.chatRoomId = '',
   });
 
@@ -17,6 +18,7 @@ class PersonalChatState extends Equatable {
   final String chatParticipantTwoId;
   final String textMessageInput;
   final bool isLoadingMessages;
+  final bool isSendingFile;
   final String chatRoomId;
 
   PersonalChatState copyWith({
@@ -26,6 +28,7 @@ class PersonalChatState extends Equatable {
     String? chatParticipantTwoId,
     String? textMessageInput,
     bool? isLoadingMessages,
+    bool? isSendingFile,
     String? chatRoomId,
   }) {
     return PersonalChatState(
@@ -35,6 +38,7 @@ class PersonalChatState extends Equatable {
       textMessageInput: textMessageInput ?? this.textMessageInput,
       filePath: filePath ?? this.filePath,
       isLoadingMessages: isLoadingMessages ?? this.isLoadingMessages,
+      isSendingFile: isSendingFile ?? this.isSendingFile,
       chatRoomId: chatRoomId ?? this.chatRoomId,
     );
   }
@@ -46,6 +50,7 @@ class PersonalChatState extends Equatable {
     chatParticipantTwoId,
     textMessageInput,
     isLoadingMessages,
+    isSendingFile,
     chatRoomId,
     filePath,
   ];
