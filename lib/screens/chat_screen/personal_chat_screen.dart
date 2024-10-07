@@ -97,11 +97,35 @@ class _PersonalChatBody extends StatelessWidget {
                       ),
                     ),
                   Expanded(
-                    child: ChatMessageList(
-                      messages: state.messagesList,
-                      scrollController: scrollController,
-                      chatPartner: chatPartner,
-                      chatRoomId: state.chatRoomId,
+                    child: Stack(
+                      children: [
+                        ChatMessageList(
+                          messages: state.messagesList,
+                          scrollController: scrollController,
+                          chatPartner: chatPartner,
+                          chatRoomId: state.chatRoomId,
+                        ),
+                        // Show the small loading bar at the center of the screen when sending a file
+                        if (state.isSendingFile)
+                          Center(
+                            child: Container(
+                              color: Colors.black.withOpacity(0.6), // Semi-transparent background
+                              padding: const EdgeInsets.all(16.0),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min, // Centers content within the row
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    'Sending file...',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                 ],
@@ -113,10 +137,8 @@ class _PersonalChatBody extends StatelessWidget {
     );
   }
 
-
-
   Widget _loadingIndicator(BuildContext context) {
-    return  Column(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
