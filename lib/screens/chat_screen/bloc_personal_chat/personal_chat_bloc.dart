@@ -42,8 +42,22 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
         return;
       }
 
+      // First, pick the file
+      final String? filePath = await storageService.pickFilePath();
+
+      // Check if the user canceled the file picker
+      if (filePath == null) {
+        print('No file selected. User canceled the operation.');
+        return; // Exit early without changing the state
+      }
+
+      // Set the isSendingFile state to true while uploading
       emit(state.copyWith(isSendingFile: true));
-      final String? downloadUrl = await storageService.pickAndUploadFile(state.chatRoomId);
+
+      // Attempt to upload the selected file
+      final String? downloadUrl = await storageService.uploadFileAndReturnDownloadURL(filePath, state.chatRoomId);
+
+      // Check if the file was uploaded successfully
       if (downloadUrl != null) {
         // If the file uploaded successfully, create and send the message
         String fileName = getFileNameFromUrl(downloadUrl);
@@ -57,19 +71,27 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
           isRead: false,
         );
 
+        // Send the message to the chat room
         await chatRoomRepository.sendMessage(newMessage);
 
+        // Update state to reflect successful send and clear file path
         emit(state.copyWith(
           filePath: '',
           isSendingFile: false,
         ));
       } else {
-        emit(const PersonalChatErrorState('File upload failed'));
+        // Handle upload failure
+        emit(state.copyWith(
+          isSendingFile: false, // Reset sending state
+        ));
+        emit(const PersonalChatErrorState('File upload failed.'));
       }
     } catch (e) {
       emit(PersonalChatErrorState('Error uploading file: $e'));
     }
   }
+
+
 
   Future<void> _onSendMessage(
       SendMessageEvent event, Emitter<PersonalChatState> emit) async {
