@@ -3,7 +3,6 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_gp5/services/storage_service.dart';
-
 import '../../../models/chat_room_model.dart';
 import '../../../models/message_model.dart';
 import '../../../repos/authentication/authentication_repository.dart';
@@ -15,11 +14,13 @@ part 'personal_chat_state.dart';
 class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
   StreamSubscription<List<Message>>? _messagesSubscription;
   final ChatRepository chatRoomRepository;
+  final StorageService storageService;
   final AuthenticationRepository authRepository;
 
   PersonalChatBloc({
     required this.chatRoomRepository,
     required this.authRepository,
+    required this.storageService,
   }) : super(const PersonalChatState()) {
     on<SendMessageEvent>(_onSendMessage);
     on<GetMessagesEvent>(_onGetMessages);
@@ -27,8 +28,47 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
     on<UpdateTextMessageEvent>(_onUpdateTextMessage);
     on<MessagesUpdated>(_onMessagesUpdated);
     on<LoadMoreMessagesEvent>(_onLoadMoreMessages);
-    on<GetFilePath>(_onGetFilePath);
     on<DownloadFile>(_onDownloadFile);
+    on<UploadFileAndSendMessageEvent>(_onUploadFileAndSendMessage);
+  }
+
+  Future<void> _onUploadFileAndSendMessage(
+      UploadFileAndSendMessageEvent event, Emitter<PersonalChatState> emit) async {
+    try {
+      final currentUserId = authRepository.currentUser?.uid;
+
+      if (currentUserId == null) {
+        emit(const PersonalChatErrorState('User is not logged in'));
+        return;
+      }
+
+      emit(state.copyWith(isSendingFile: true));
+      final String? downloadUrl = await storageService.pickAndUploadFile(state.chatRoomId);
+      if (downloadUrl != null) {
+        // If the file uploaded successfully, create and send the message
+        String fileName = getFileNameFromUrl(downloadUrl);
+        final newMessage = Message(
+          senderId: currentUserId,
+          messageType: MessageType.file,
+          fileName: fileName,
+          receiverId: state.chatPartnerId,
+          messageContent: '',
+          timestamp: Timestamp.fromDate(DateTime.now()),
+          isRead: false,
+        );
+
+        await chatRoomRepository.sendMessage(newMessage);
+
+        emit(state.copyWith(
+          filePath: '',
+          isSendingFile: false,
+        ));
+      } else {
+        emit(const PersonalChatErrorState('File upload failed'));
+      }
+    } catch (e) {
+      emit(PersonalChatErrorState('Error uploading file: $e'));
+    }
   }
 
   Future<void> _onSendMessage(
@@ -101,10 +141,10 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
         emit(const PersonalChatErrorState('User is not logged in'));
         return;
       }
-      final chatParticipantId = event.chatParticipantTwoId;
+      final chatPartnerId = event.chatParticipantTwoId;
 
       final chatRoom = ChatRoomModel(
-        participants: [currentUserId, chatParticipantId],
+        participants: [currentUserId, chatPartnerId],
         lastMessage: '',
         timestamp: Timestamp.now(),
       );
@@ -112,7 +152,7 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
       // Call repository to create the chat room with the model if such chat room doesn't exist
       final chatRoomId = await chatRoomRepository.createChatRoom(chatRoom);
       if (chatRoomId != null) {
-        emit(PersonalChatState(chatRoomId: chatRoomId));
+        emit(PersonalChatState(chatRoomId: chatRoomId,chatPartnerId:chatPartnerId));
       } else {
         emit(const PersonalChatState());
       }
@@ -157,40 +197,18 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
     }
   }
 
-  Future<void> _onGetFilePath(GetFilePath event, Emitter<PersonalChatState> emit) async {
-    try {
-      final currentUserId = authRepository.currentUser?.uid;
-      final storageService = StorageService();
-
-      if (currentUserId == null) {
-        emit(const PersonalChatErrorState('User is not logged in'));
-        return;
-      }
-
-      final String? filePath = await storageService.pickFilePath();
-      if (filePath != null) {
-        emit(state.copyWith(filePath: filePath));
-        print(state.filePath);
-      } else {
-        emit(const PersonalChatErrorState('No file selected'));
-      }
-    } catch (e) {
-      emit(PersonalChatErrorState('Error uploading file: $e'));
-    }
-  }
-
   Future<void> _onDownloadFile(DownloadFile event, Emitter<PersonalChatState> emit) async {
+    final currentUserId = authRepository.currentUser?.uid;
+
+    // Check if the user is logged in
+    if (currentUserId == null) {
+      emit(const PersonalChatErrorState('User is not logged in'));
+      return;
+    }
+    emit(state.copyWith(isDownloadingFile: true));
     try {
-      final currentUserId = authRepository.currentUser?.uid;
-      final storageService = StorageService();
+      emit(state.copyWith(isDownloadingFile: true));
 
-      // Check if the user is logged in
-      if (currentUserId == null) {
-        emit(const PersonalChatErrorState('User is not logged in'));
-        return;
-      }
-
-      // Ensure event.fileName is not null or empty
       if (event.fileName.isEmpty) {
         emit(const PersonalChatErrorState('File name cannot be empty'));
         return;
@@ -198,7 +216,31 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
       await storageService.downloadFile(event.fileName, event.chatRoomId);
     } catch (e) {
       emit(PersonalChatErrorState('Error downloading file: $e'));
+    } finally {
+      emit(state.copyWith(isDownloadingFile: false));
     }
+  }
+
+  String getFileNameFromUrl(String url) {
+    // Parse the URL
+    final uri = Uri.parse(url);
+
+    // Extract the path from the URL
+    final path = uri.path;
+
+    // Decode the URL-encoded path
+    final decodedPath = Uri.decodeFull(path);
+
+    // Split the decoded path by '/' and return the last segment
+    final pathSegments = decodedPath.split('/');
+
+    // Check if the pathSegments list is not empty
+    if (pathSegments.isNotEmpty) {
+      // Return the last segment which is the file name
+      return pathSegments.last; // This will give you the file name
+    }
+
+    return '';
   }
 
 }

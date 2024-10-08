@@ -191,8 +191,6 @@ Widget buildLoadedChatWidgets(BuildContext context, List<User> chatPartners,
       itemBuilder: (context, index) {
         final chatPartner = chatPartners[index];
         final lastMessage = lastMessages[chatPartner.id];
-        final lastMessageContent =
-            lastMessage?.messageContent ?? "No messages yet";
         final unreadMessagesCount = unreadMessages[chatPartner.id];
         final isRead = lastMessage?.isRead ?? false;
         final messageSender = lastMessage?.senderId;
@@ -236,7 +234,7 @@ Widget buildLoadedChatWidgets(BuildContext context, List<User> chatPartners,
                         child: Icon(
                           Icons.person,
                           size: context.setHeight(
-                              5), // Adjust the size according to your needs
+                              5),
                         ),
                       ),
                       Column(
@@ -254,14 +252,18 @@ Widget buildLoadedChatWidgets(BuildContext context, List<User> chatPartners,
                           ),
                           SizedBox(height: context.setHeight(0.8)),
                           Text(
-                            lastMessageContent,
+                            (lastMessage != null && lastMessage.messageContent.isNotEmpty)
+                                ? lastMessage.messageContent
+                                : (lastMessage != null && lastMessage.fileName != null
+                                ? lastMessage.fileName!
+                                : 'No message available'),
                             style: TextStyle(
                               fontSize: 13,
                               color: (messageSender != chatPartner.id)
                                   ? Colors.grey
                                   : (!isRead)
-                                      ? const Color(0xFF4A454D)
-                                      : Colors.grey,
+                                  ? const Color(0xFF4A454D)
+                                  : Colors.grey,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
