@@ -80,8 +80,9 @@ class MessagesUpdated extends PersonalChatEvent {
   List<Object> get props => [messages];
 }
 
-class GetFilePath extends PersonalChatEvent {
-  GetFilePath();
+class UploadFileAndSendMessageEvent extends PersonalChatEvent {
+
+  UploadFileAndSendMessageEvent();
 }
 
 class DownloadFile extends PersonalChatEvent {

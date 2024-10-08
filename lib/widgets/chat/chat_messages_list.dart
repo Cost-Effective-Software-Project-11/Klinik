@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/models/user.dart';
 import '../../models/message_model.dart';
-import '../../repos/authentication/authentication_repository.dart';
-import '../../repos/chat/chat_room_repository.dart';
 import '../../screens/chat_screen/bloc_personal_chat/personal_chat_bloc.dart';
 
 class ChatMessageList extends StatelessWidget {
@@ -22,12 +20,7 @@ class ChatMessageList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-  create: (context) => PersonalChatBloc(
-    authRepository: context.read<AuthenticationRepository>(),
-    chatRoomRepository: context.read<ChatRepository>(),
-  ),
-  child: ListView.builder(
+    return ListView.builder(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).size.height * 0.12,
         top: MediaQuery.of(context).size.height * 0.05,
@@ -38,8 +31,9 @@ class ChatMessageList extends StatelessWidget {
       itemBuilder: (context, index) {
         final message = messages[index];
         final isFromChatPartner = message.senderId == chatPartner.id;
-        final isPreviousMessageFromCurrentUser = index < messages.length - 1 &&
-            messages[index + 1].senderId != chatPartner.id;
+        final isPreviousMessageFromCurrentUser =
+            index < messages.length - 1 &&
+                messages[index + 1].senderId != chatPartner.id;
         final isCurrentMessageFromChatPartner = isFromChatPartner;
 
         return Column(
@@ -56,7 +50,7 @@ class ChatMessageList extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 20,
                   backgroundImage:
-                  NetworkImage('https://via.placeholder.com/150'),
+                      NetworkImage('https://via.placeholder.com/150'),
                 ),
               ),
             Align(
@@ -69,8 +63,10 @@ class ChatMessageList extends StatelessWidget {
                   horizontal: MediaQuery.of(context).size.height * 0.02,
                 ),
                 padding: EdgeInsets.symmetric(
-                  vertical: MediaQuery.of(context).size.height * 0.015, // Dynamic vertical padding
-                  horizontal: MediaQuery.of(context).size.width * 0.03, // Dynamic horizontal padding
+                  vertical: MediaQuery.of(context).size.height *
+                      0.015, // Dynamic vertical padding
+                  horizontal: MediaQuery.of(context).size.width *
+                      0.03, // Dynamic horizontal padding
                 ),
                 decoration: BoxDecoration(
                   color: isCurrentMessageFromChatPartner
@@ -87,51 +83,60 @@ class ChatMessageList extends StatelessWidget {
                         : Radius.zero,
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (message.messageType != MessageType.text && message.fileName!=null) ...[
-                      GestureDetector(
-                        onTap: () {
-                          context.read<PersonalChatBloc>().add(DownloadFile(fileName: message.fileName!,chatRoomId: chatRoomId));
-                          print("File tapped: ${message.fileName}");
-                        },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.description,
+                child: BlocBuilder<PersonalChatBloc, PersonalChatState>(
+                  builder: (context, state) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (message.messageType != MessageType.text &&
+                            message.fileName != null) ...[
+                          GestureDetector(
+                            onTap: () {
+                              context.read<PersonalChatBloc>().add(
+                                  DownloadFile(
+                                      fileName: message.fileName!,
+                                      chatRoomId: chatRoomId));
+                              print("File tapped: ${message.fileName}");
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  Icons.description,
+                                  color: Colors.black,
+                                  size: 25,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  message.fileName != null
+                                      ? '#${message.fileName!}'
+                                      : 'File',
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        if (message.messageContent.isNotEmpty) ...[
+                          Text(
+                            message.messageContent,
+                            style: const TextStyle(
                               color: Colors.black,
-                              size: 25,
                             ),
-                            const SizedBox(width: 8),
-                            Text(
-                              message.fileName != null ? '#${message.fileName!}' : 'File',
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                    if (message.messageContent.isNotEmpty) ...[
-                      Text(
-                        message.messageContent,
-                        style: const TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ],
+                          ),
+                        ],
+                      ],
+                    );
+                  },
                 ),
               ),
             ),
           ],
         );
       },
-    ),
-);
+    );
   }
 }

@@ -9,6 +9,32 @@ class StorageService {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final ImagePicker _imagePicker = ImagePicker();
 
+
+  Future<String?> pickAndUploadFile(String chatRoomId) async {
+    try {
+      // Pick the file using FilePicker
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'docx', 'doc',],
+      );
+
+      if (result != null && result.files.single.path != null) {
+        String filePath = result.files.single.path!;
+
+        // Upload the selected file to Firebase Storage
+        String? downloadUrl = await uploadFileAndReturnDownloadURL(filePath, chatRoomId);
+
+        // Return the download URL
+        return downloadUrl;
+      } else {
+        print('No file selected.');
+        return null;
+      }
+    } catch (e) {
+      print("Error picking or uploading file: $e");
+      return null;
+    }
+  }
   /// Uploads a file to Firebase Storage and returns the download URL
   Future<String?> uploadFileAndReturnDownloadURL(String filePath, String chatRoomId) async {
     File file = File(filePath);
