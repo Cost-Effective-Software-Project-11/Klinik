@@ -3,22 +3,24 @@ part of 'personal_chat_bloc.dart';
 class PersonalChatState extends Equatable {
   const PersonalChatState({
     this.currentUserId = '',
-    this.chatParticipantTwoId = '',
+    this.chatPartnerId = '',
     this.textMessageInput = '',
     this.filePath = '',
     this.messagesList = const [],
     this.isLoadingMessages = false,
     this.isSendingFile = false,
+    this.isDownloadingFile = false,
     this.chatRoomId = '',
   });
 
   final List<Message> messagesList;
   final String currentUserId;
   final String filePath;
-  final String chatParticipantTwoId;
+  final String chatPartnerId;
   final String textMessageInput;
   final bool isLoadingMessages;
   final bool isSendingFile;
+  final bool isDownloadingFile;
   final String chatRoomId;
 
   PersonalChatState copyWith({
@@ -29,16 +31,18 @@ class PersonalChatState extends Equatable {
     String? textMessageInput,
     bool? isLoadingMessages,
     bool? isSendingFile,
+    bool? isDownloadingFile,
     String? chatRoomId,
   }) {
     return PersonalChatState(
       messagesList: messagesList ?? this.messagesList,
       currentUserId: currentUserId ?? this.currentUserId,
-      chatParticipantTwoId: chatParticipantTwoId ?? this.chatParticipantTwoId,
+      chatPartnerId: chatParticipantTwoId ?? this.chatPartnerId,
       textMessageInput: textMessageInput ?? this.textMessageInput,
       filePath: filePath ?? this.filePath,
       isLoadingMessages: isLoadingMessages ?? this.isLoadingMessages,
       isSendingFile: isSendingFile ?? this.isSendingFile,
+      isDownloadingFile: isDownloadingFile ?? this.isDownloadingFile,
       chatRoomId: chatRoomId ?? this.chatRoomId,
     );
   }
@@ -47,12 +51,14 @@ class PersonalChatState extends Equatable {
   List<Object> get props => [
     messagesList,
     currentUserId,
-    chatParticipantTwoId,
+    chatPartnerId,
     textMessageInput,
     isLoadingMessages,
     isSendingFile,
+    isDownloadingFile,
     chatRoomId,
     filePath,
+
   ];
 }
 

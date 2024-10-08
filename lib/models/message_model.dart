@@ -4,8 +4,8 @@ import 'package:equatable/equatable.dart';
 enum MessageType {
   text,
   file,
-  textAndFile,
 }
+
 class Message extends Equatable {
   final String? messageId;
   final String? senderId;
@@ -20,9 +20,9 @@ class Message extends Equatable {
   const Message({
     this.messageId,
     this.senderId,
-    this.fileName,
     required this.receiverId,
     required this.messageType,
+    this.fileName,
     required this.messageContent,
     required this.timestamp,
     required this.isRead,
@@ -62,10 +62,8 @@ class Message extends Equatable {
         return 'text';
       case MessageType.file:
         return 'file';
-      case MessageType.textAndFile:
-        return 'textAndFile';
       default:
-        return 'text';
+        return 'text'; // Fallback to text if not recognized
     }
   }
 
@@ -76,13 +74,11 @@ class Message extends Equatable {
         return MessageType.text;
       case 'file':
         return MessageType.file;
-      case 'textAndFile':
-        return MessageType.textAndFile;
       default:
-        return MessageType.text;
+        return MessageType.text; // Fallback to text if not recognized
     }
   }
 
   @override
-  List<Object?> get props => [senderId, receiverId, messageContent, timestamp, isRead, messageType,fileName];
+  List<Object?> get props => [senderId, receiverId, messageContent, timestamp, isRead, messageType, fileName];
 }
