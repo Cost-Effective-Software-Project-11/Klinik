@@ -1,59 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/screens/trials/repository/trials_repository.dart';
 import '../../widgets/bottom_nav_bar.dart' as custom;
+import 'bloc/trials_bloc.dart';
 import 'create_trials/create_trials_screen.dart';
 import 'models/trial_model.dart';
 
-class TrialsScreenWrapper extends StatefulWidget {
+class TrialsScreenWrapper extends StatelessWidget {
   const TrialsScreenWrapper({super.key});
 
   @override
-  _TrialsScreenWrapperState createState() => _TrialsScreenWrapperState();
-}
-
-class _TrialsScreenWrapperState extends State<TrialsScreenWrapper> {
-  List<Trial> unpublishedTrials = [];
-  List<Trial> publishedTrials = [];
-
-  @override
-  void initState() {
-    super.initState();
-    fetchTrials();
-  }
-
-  Future<void> fetchTrials() async {
-    try {
-      List<Trial> allTrials = await TrialRepository().fetchTrials(); // Ensure this method exists in your repository
-      setState(() {
-        unpublishedTrials = allTrials.where((trial) => !trial.isPublished).toList();
-        publishedTrials = allTrials.where((trial) => trial.isPublished).toList();
-      });
-    } catch (e) {
-      // Handle error
-      print("Error fetching trials: $e");
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return TrialsScreen(
-      unpublishedTrials: unpublishedTrials,
-      publishedTrials: publishedTrials,
+    return BlocProvider(
+      create: (context) => TrialBloc(TrialRepository())..add(FetchTrials()),
+      child: const TrialsScreen(),
     );
   }
 }
 
 class TrialsScreen extends StatelessWidget {
-  final List<Trial> unpublishedTrials;
-  final List<Trial> publishedTrials;
-
-  const TrialsScreen({super.key, required this.unpublishedTrials, required this.publishedTrials});
+  const TrialsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(context.setHeight(7)),
         child: Padding(
@@ -81,26 +53,20 @@ class TrialsScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          backgroundDecoration(),
-          FutureBuilder<List<Trial>>(
-            future: TrialRepository().fetchTrials(),
-            builder: (context, snapshot) {
-              print('ConnectionState: ${snapshot.connectionState}');
-              if (snapshot.connectionState == ConnectionState.waiting) {
+          Positioned.fill(child: backgroundDecoration()),
+          BlocBuilder<TrialBloc, TrialState>(
+            builder: (context, state) {
+              if (state is TrialLoading) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                print('Error: ${snapshot.error}');
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                print('No trials found');
-                return const Center(child: Text('No trials available'));
-              } else {
-                final allTrials = snapshot.data!;
-                final unpublishedTrials = allTrials.where((trial) => !trial.isPublished).toList();
-                final publishedTrials = allTrials.where((trial) => trial.isPublished).toList();
+              } else if (state is TrialFormError) {
+                return Center(child: Text('Error: ${state.message}'));
+              } else if (state is TrialsLoaded) {
+                final unpublishedTrials = state.trials.where((trial) => !trial.isPublished).toList();
+                final publishedTrials = state.trials.where((trial) => trial.isPublished).toList();
 
                 return buildTrialLists(context, unpublishedTrials, publishedTrials);
               }
+              return const Center(child: Text('No trials available'));
             },
           ),
           Positioned(
@@ -113,7 +79,6 @@ class TrialsScreen extends StatelessWidget {
       bottomNavigationBar: const custom.BottomNavigationBar(currentIndex: 0),
     );
   }
-
   Widget buildTrialLists(BuildContext context, List<Trial> unpublishedTrials, List<Trial> publishedTrials) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -153,41 +118,16 @@ class TrialsScreen extends StatelessWidget {
                 if (!isPublished)
                   ElevatedButton(
                     onPressed: () async {
-                      // Call the publish function
-                      await publishTrial(context, trial.id);
+                      print ("publish button clicked");
                     },
                     child: const Text('Publish'),
                   ),
-                if (isPublished)
-                  const Text('Published', style: TextStyle(color: Colors.green)),
-                ElevatedButton(
-                  onPressed: () {
-                    // Handle trial preview
-                    // e.g. Navigator.of(context).push to trial details page
-                  },
-                  child: const Text('Preview'),
-                ),
               ],
             ),
           ],
         ),
       ),
     );
-  }
-
-  Future<void> publishTrial(BuildContext context, String trialId) async {
-    try {
-      // Call the repository method to publish the trial
-      await TrialRepository().publishTrial(trialId);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Trial published successfully!')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to publish trial')),
-      );
-    }
   }
 
   Widget backgroundDecoration() {
@@ -207,62 +147,63 @@ class TrialsScreen extends StatelessWidget {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) => const CreateTrialScreen()));
       },
       child: Container(
-      width: 180,
-      height: 90,
-      padding: const EdgeInsets.only(top: 8, left: 16, right: 16, bottom: 4),
-      decoration: const ShapeDecoration(
-        color: Color(0xE5FEF7FF),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(200),
-            topRight: Radius.circular(200),
+        width: 180,
+        height: 90,
+        padding: const EdgeInsets.only(top: 8, left: 16, right: 16, bottom: 4),
+        decoration: const ShapeDecoration(
+          color: Color(0xE5FEF7FF),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(200),
+              topRight: Radius.circular(200),
+            ),
           ),
+          shadows: [
+            BoxShadow(
+              color: Color(0x3F000000),
+              blurRadius: 8,
+              offset: Offset(0, 1),
+              spreadRadius: 0,
+            ),
+          ],
         ),
-        shadows: [
-          BoxShadow(
-            color: Color(0x3F000000),
-            blurRadius: 8,
-            offset: Offset(0, 1),
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            width: 46,
-            height: 46,
-            decoration: ShapeDecoration(
-              color: const Color(0xFF6750A4),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(100),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              width: 46,
+              height: 46,
+              decoration: ShapeDecoration(
+                color: const Color(0xFF6750A4),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100),
+                ),
+              ),
+              child: const Center(
+                child: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                  size: 24,
+                ),
               ),
             ),
-            child: const Center(
-              child: Icon(
-                Icons.add,
-                color: Colors.white,
-                size: 24,
+            const SizedBox(height: 4),
+            const Text(
+              'Create New Trial',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.50,
               ),
             ),
-          ),
-          const SizedBox(height: 4),
-          const Text(
-            'Create New Trial',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 16,
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.w400,
-              letterSpacing: 0.50,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ));
+    );
   }
 }

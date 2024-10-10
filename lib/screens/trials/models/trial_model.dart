@@ -27,8 +27,6 @@ class Trial {
 
   factory Trial.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-    print('Fetched data: $data'); // Add this line to log the data
-
     return Trial(
       id: doc.id,
       title: data['title'] ?? 'Untitled Trial',
@@ -37,7 +35,10 @@ class Trial {
       medication: data['medication'] as String?,
       duration: data['duration'] ?? 'Not specified',
       description: data['description'] ?? 'No description',
-      eligibilityCriteria: List<String>.from(data['eligibilityCriteria'] ?? []), // Pay attention to this line
+      eligibilityCriteria: (data['eligibilityCriteria'] is Iterable)
+          ? List<String>.from(data['eligibilityCriteria'])
+          : [],
+
       doctorId: data['doctorId'] ?? 'Unknown Doctor',
       isPublished: data['isPublished'] ?? false,
     );

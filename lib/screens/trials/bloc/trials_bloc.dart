@@ -76,5 +76,16 @@ class TrialBloc extends Bloc<TrialEvent, TrialState> {
         emit(TrialFormError("Failed to fetch trials"));
       }
     });
+    on<PublishTrial>((event, emit) async {
+      emit(TrialLoading());
+
+      try {
+        await repository.publishTrial(event.trialId);
+        final updatedTrials = await repository.fetchTrials();
+        emit(TrialsLoaded(updatedTrials));
+      } catch (e) {
+        emit(TrialFormError("Failed to publish trial"));
+      }
+    });
   }
 }

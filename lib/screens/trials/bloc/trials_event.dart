@@ -29,3 +29,9 @@ class CreateTrial extends TrialEvent {
 }
 
 class FetchTrials extends TrialEvent {}
+
+class PublishTrial extends TrialEvent {
+  final String trialId;
+  PublishTrial(this.trialId);
+  List<Object> get props => [trialId];
+}
