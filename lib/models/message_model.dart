@@ -1,11 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
-// Define the Message model class
+enum MessageType {
+  text,
+  file,
+}
+
 class Message extends Equatable {
   final String? messageId;
   final String? senderId;
   final String receiverId;
+  final MessageType messageType;
+  final String? fileName;
   final String messageContent;
   final Timestamp timestamp;
   final bool isRead;
@@ -15,20 +21,24 @@ class Message extends Equatable {
     this.messageId,
     this.senderId,
     required this.receiverId,
+    required this.messageType,
+    this.fileName,
     required this.messageContent,
     required this.timestamp,
-    required this.isRead
+    required this.isRead,
   });
 
   // Convert a Firestore document to a Message instance
-  factory Message.fromMap(Map<String, dynamic> map,String messageId) {
+  factory Message.fromMap(Map<String, dynamic> map, String messageId) {
     return Message(
       messageId: messageId,
-      senderId: map['senderId'] as String,
+      senderId: map['senderId'] as String?,
+      fileName: map['fileName'] as String?,
       receiverId: map['receiverId'] as String,
+      messageType: _messageTypeFromString(map['messageType'] as String),
       messageContent: map['messageContent'] as String,
       timestamp: map['timestamp'] as Timestamp,
-      isRead: map['isRead'] as bool? ?? false, // Handle null values
+      isRead: map['isRead'] as bool? ?? false,
     );
   }
 
@@ -37,12 +47,38 @@ class Message extends Equatable {
     return {
       'senderId': senderId,
       'receiverId': receiverId,
+      'fileName': fileName,
+      'messageType': _messageTypeToString(messageType),
       'messageContent': messageContent,
       'timestamp': timestamp,
       'isRead': isRead,
     };
   }
 
+  // Convert MessageType enum to string for Firestore
+  static String _messageTypeToString(MessageType messageType) {
+    switch (messageType) {
+      case MessageType.text:
+        return 'text';
+      case MessageType.file:
+        return 'file';
+      default:
+        return 'text'; // Fallback to text if not recognized
+    }
+  }
+
+  // Convert string from Firestore to MessageType enum
+  static MessageType _messageTypeFromString(String messageType) {
+    switch (messageType) {
+      case 'text':
+        return MessageType.text;
+      case 'file':
+        return MessageType.file;
+      default:
+        return MessageType.text; // Fallback to text if not recognized
+    }
+  }
+
   @override
-  List<Object?> get props => [senderId, receiverId, messageContent,timestamp,isRead];
+  List<Object?> get props => [senderId, receiverId, messageContent, timestamp, isRead, messageType, fileName];
 }

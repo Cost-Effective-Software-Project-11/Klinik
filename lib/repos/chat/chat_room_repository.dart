@@ -13,7 +13,7 @@ class ChatRepository {
   })  : _firestore = firestore ?? FirebaseFirestore.instance,
         _logger = logger ?? Logger();
 
-  Future<void> createChatRoom(ChatRoomModel chatRoom) async {
+  Future<String?> createChatRoom(ChatRoomModel chatRoom) async {
     try {
       // Check if a chat room with these participants already exists
       final searchedChatRoom =
@@ -34,13 +34,17 @@ class ChatRepository {
 
         // Retrieve the generated chatId and log the success
         String chatId = docRef.id;
+
         _logger.i('Chat room $chatId created successfully.');
+        return chatId;
       } else {
         _logger.i('Chat room already exists.');
+        return searchedChatRoom;
       }
     } catch (e) {
       _logger.e('Error creating chat room: $e', error: e);
     }
+    return null;
   }
 
   Future<void> updateChatRoomLastMessageAndTimeStamp({
@@ -126,10 +130,9 @@ class ChatRepository {
         List<Message> messages = snapshot.docs.map((doc) {
           return Message.fromMap(doc.data() as Map<String, dynamic>, doc.id);
         }).toList();
-
-        // Mark unread messages as read if the current user is the receiver
         List<Message> unreadMessages = messages.where((message) =>
         message.receiverId == currentUserId && !message.isRead).toList();
+
 
         if (unreadMessages.isNotEmpty) {
           WriteBatch batch = _firestore.batch();

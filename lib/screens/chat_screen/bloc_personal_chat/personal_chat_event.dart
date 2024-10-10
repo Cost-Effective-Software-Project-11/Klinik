@@ -7,15 +7,26 @@ abstract class PersonalChatEvent extends Equatable {
 
 class SendMessageEvent extends PersonalChatEvent {
   final String receiverId;
-  final String messageContent;
+  final String? messageContent;
+  final MessageType messageType;
   final Timestamp timestamp;
+  final String? filePath;
+  final String? fileName;
 
   SendMessageEvent({
     required this.receiverId,
-    required this.messageContent,
+    this.messageContent,
+    required this.messageType, // MessageType enum
     required this.timestamp,
+    this.filePath,
+    this.fileName,
   });
+
+  @override
+  List<Object> get props => [receiverId, messageContent ?? '', messageType, timestamp,filePath??'',fileName??''];
 }
+
+
 
 class GetMessagesEvent extends PersonalChatEvent {
   final List<Message>? messages;
@@ -67,4 +78,17 @@ class MessagesUpdated extends PersonalChatEvent {
 
   @override
   List<Object> get props => [messages];
+}
+
+class UploadFileAndSendMessageEvent extends PersonalChatEvent {
+
+  UploadFileAndSendMessageEvent();
+}
+
+class DownloadFile extends PersonalChatEvent {
+  final String fileName;
+  final String chatRoomId;
+  DownloadFile({required this.fileName,required this.chatRoomId});
+  @override
+  List<Object> get props => [fileName,chatRoomId];
 }

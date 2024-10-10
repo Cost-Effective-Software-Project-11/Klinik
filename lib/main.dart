@@ -1,9 +1,11 @@
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_gp5/repos/chat/chat_room_repository.dart';
 import 'package:flutter_gp5/screens/home/bloc/home_bloc.dart';
 import 'package:flutter_gp5/screens/home/repository/home_repository.dart';
+import 'package:flutter_gp5/services/storage_service.dart';
 
 import 'firebase_options.dart';
 import 'locale/l10n/app_locale.dart';
@@ -15,9 +17,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  await FirebaseAppCheck.instance.activate(androidProvider: AndroidProvider.playIntegrity);
+
   runApp(const MyApp());
 }
 
@@ -52,8 +56,12 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider<UserRepository>(
           create: (_) => UserRepository(),
         ),
-    RepositoryProvider<ChatRepository>(
-    create: (_) => ChatRepository()),
+        RepositoryProvider<ChatRepository>(
+          create: (_) => ChatRepository(),
+        ),
+        RepositoryProvider<StorageService>(
+          create: (_) => StorageService(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -62,7 +70,6 @@ class _MyAppState extends State<MyApp> {
           ),
           BlocProvider<HomeBloc>(
             create: (context) => HomeBloc(HomeRepository())..add(LoadInitialData()),
-            child: const MyApp(),
           ),
         ],
         child: MaterialApp(
