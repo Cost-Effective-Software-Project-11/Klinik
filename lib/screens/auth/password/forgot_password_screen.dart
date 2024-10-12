@@ -38,7 +38,7 @@ class _ResetPasswordState extends State<ResetPassword> {
       create: (context) => EmailBloc(FirebaseAuth.instance),
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
+          backgroundColor:  Colors.transparent,
           centerTitle: true,
           elevation: 0,
           title: Text(
@@ -116,6 +116,8 @@ class _ResetPasswordState extends State<ResetPassword> {
   }
 
   Widget _emailTextFormField() {
+    const borderRadius = Radius.circular(30);
+
     return SizedBox(
       width: context.setWidth(80),
       child: TextFormField(
@@ -127,27 +129,27 @@ class _ResetPasswordState extends State<ResetPassword> {
           labelText: AppLocale.of(context)!.email,
           enabledBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20)),
+                  topLeft: borderRadius,
+                  topRight: borderRadius,
+                  bottomLeft: borderRadius,
+                  bottomRight: borderRadius),
               borderSide: BorderSide(color: Colors.grey)),
           focusedBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20)),
+                topLeft: borderRadius,
+                topRight: borderRadius,
+                bottomLeft: borderRadius,
+                bottomRight: borderRadius),
             borderSide: BorderSide(
               color: Colors.blue,
             ),
           ),
           errorBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20),
+              topLeft: borderRadius,
+              topRight: borderRadius,
+              bottomLeft: borderRadius,
+              bottomRight: borderRadius,
             ),
             borderSide: BorderSide(
               color: Colors.red,
@@ -155,10 +157,10 @@ class _ResetPasswordState extends State<ResetPassword> {
           ),
           focusedErrorBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20),
+              topLeft: borderRadius,
+              topRight: borderRadius,
+              bottomLeft: borderRadius,
+              bottomRight: borderRadius,
             ),
             borderSide: BorderSide(
               color: Colors.red,
@@ -210,7 +212,7 @@ class _ResetPasswordState extends State<ResetPassword> {
 
         return SizedBox(
           width: context.setWidth(80),
-          height: context.setHeight(6),
+          height: 60,
           child: ElevatedButton(
             onPressed: () async {
               if (_formKey.currentState?.validate() == true) {

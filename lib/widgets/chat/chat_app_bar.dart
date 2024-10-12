@@ -11,10 +11,11 @@ class ChatAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppBar(
       forceMaterialTransparency: true,
+      backgroundColor: Colors.transparent,
       toolbarHeight: context.setHeight(10),
       leadingWidth: context.setWidth(8),
       leading: Align(
-        alignment: Alignment.center,
+        alignment: Alignment.centerLeft,
         child: Transform.scale(
           scale: 2.7,
           child: IconButton(
@@ -29,7 +30,7 @@ class ChatAppBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const CircleAvatar(
-            radius: 30,
+            radius: 35,
             backgroundImage: NetworkImage('https://via.placeholder.com/150'),
           ),
           SizedBox(width: context.setWidth(2)),
