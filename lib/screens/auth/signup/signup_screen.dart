@@ -778,8 +778,8 @@ class _SignUpViewState extends State<SignUpView> {
                 borderRadius: BorderRadius.circular(context.setWidth(8)),
               ),
               child: Container(
-                width: context.setWidth(85),
-                height: context.setHeight(40),
+                width: context.setWidth(90),
+                height: context.setHeight(75),
                 padding: EdgeInsets.all(context.setWidth(5)),
                 decoration: BoxDecoration(
                   color: const Color(0xFFE0DBE9),
@@ -788,7 +788,7 @@ class _SignUpViewState extends State<SignUpView> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: context.setWidth(2)),
+                      padding: EdgeInsets.symmetric(horizontal: context.setWidth(1)),
                       child: Container(
                         height: context.setHeight(6),
                         decoration: BoxDecoration(
@@ -852,7 +852,7 @@ class _SignUpViewState extends State<SignUpView> {
                                     ),
                                     constraints: BoxConstraints(
                                       minWidth: context.setWidth(40),
-                                      maxWidth: context.setWidth(80),
+                                      maxWidth: context.setWidth(90),
                                     ),
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFD4CFE8),
