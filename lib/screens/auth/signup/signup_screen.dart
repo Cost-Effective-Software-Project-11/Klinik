@@ -656,10 +656,10 @@ class _SignUpViewState extends State<SignUpView> {
   }
 
   Widget _buildSignUpButton(BuildContext context) {
-    Color buttonColor = _isFormFilled ? const Color(0xFF6750A4) : Colors.grey;
+    Color buttonColor = _isFormFilled ? const Color(0xFF6750A4) : Colors.white54;
 
     return Container(
-      width: context.setWidth(80),
+      width: context.setWidth(90),
       height: 60,
       margin: EdgeInsets.only(
           top: context.setHeight(2.5),
