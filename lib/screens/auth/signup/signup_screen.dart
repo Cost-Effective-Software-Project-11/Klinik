@@ -756,7 +756,8 @@ class _SignUpViewState extends State<SignUpView> {
         Padding(
           padding: EdgeInsets.only(left: context.setWidth(5), top: context.setHeight(0.3)),
           child: Text(
-            selectedInstitution == null ? "Workplace is required" : "",
+            _phoneController.value.text.isEmpty || _validateField(_workplaceController.value.text, 'Workplace') == null ? "" :
+            _validateField(_phoneController.value.text, 'Workplace')!,
             style: TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
           ),
         ),
