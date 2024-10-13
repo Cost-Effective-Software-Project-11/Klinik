@@ -9,6 +9,8 @@ part 'trials_state.dart';
 
 class TrialBloc extends Bloc<TrialEvent, TrialState> {
   final TrialRepository repository;
+  List<Trial> allTrials = [];
+  String searchQuery = '';
 
   TrialBloc(this.repository) : super(TrialInitial()) {
     on<LoadTrialForm>((event, emit) async {
@@ -66,19 +68,51 @@ class TrialBloc extends Bloc<TrialEvent, TrialState> {
       }
     });
 
+    List<Trial> _filterTrials(String query, List<Trial> trials) {
+      return trials.where((trial) {
+        final matchesTitle = trial.title.toLowerCase().contains(query.toLowerCase());
+        final matchesDescription = trial.description.toLowerCase().contains(query.toLowerCase());
+        return matchesTitle || matchesDescription;
+      }).toList();
+    }
+
+    on<UpdateTrialSearchQuery>((event, emit) {
+      searchQuery = event.query;
+      final filteredTrials = _filterTrials(searchQuery, allTrials);
+      final currentState = state;
+
+      if (currentState is TrialsLoaded) {
+        emit(currentState.copyWith(trials: filteredTrials, searchQuery: searchQuery));
+      } else {
+        emit(TrialsLoaded(filteredTrials, searchQuery: searchQuery));
+      }
+    });
+
+    on<ClearsFilters>((event, emit) {
+      searchQuery = ''; // Clear the search query
+
+      // Emit the state with all trials (i.e., reset to unfiltered)
+      if (allTrials.isNotEmpty) {
+        emit(TrialsLoaded(List.from(allTrials))); // Ensure all trials are reloaded
+      } else {
+        emit(TrialFormError("No trials available"));
+      }
+    });
+
     // Handle fetching all trials
     on<FetchTrials>((event, emit) async {
       emit(TrialLoading());
       try {
         final trials = await repository.fetchTrials();
+        allTrials = trials;
         emit(TrialsLoaded(trials));
       } catch (e) {
         emit(TrialFormError("Failed to fetch trials"));
       }
     });
+
     on<PublishTrial>((event, emit) async {
       emit(TrialLoading());
-
       try {
         await repository.publishTrial(event.trialId);
         final updatedTrials = await repository.fetchTrials();

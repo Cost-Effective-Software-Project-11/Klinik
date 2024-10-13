@@ -5,6 +5,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_gp5/repos/chat/chat_room_repository.dart';
 import 'package:flutter_gp5/screens/home/bloc/home_bloc.dart';
 import 'package:flutter_gp5/screens/home/repository/home_repository.dart';
+import 'package:flutter_gp5/screens/trials/bloc/trials_bloc.dart';
+import 'package:flutter_gp5/screens/trials/repository/trials_repository.dart';
 import 'package:flutter_gp5/services/storage_service.dart';
 
 import 'firebase_options.dart';
@@ -62,6 +64,9 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider<StorageService>(
           create: (_) => StorageService(),
         ),
+        RepositoryProvider<TrialRepository>(
+          create: (_) => TrialRepository(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -70,6 +75,9 @@ class _MyAppState extends State<MyApp> {
           ),
           BlocProvider<HomeBloc>(
             create: (context) => HomeBloc(HomeRepository())..add(LoadInitialData()),
+          ),
+          BlocProvider<TrialBloc>(
+            create: (context) => TrialBloc(context.read<TrialRepository>())..add(FetchTrials()), // Add the TrialBloc
           ),
         ],
         child: MaterialApp(

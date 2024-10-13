@@ -1,8 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/screens/trials/repository/trials_repository.dart';
+import 'package:iconly/iconly.dart';
+import '../../locale/l10n/app_locale.dart';
 import '../../widgets/bottom_nav_bar.dart' as custom;
+import '../home/bloc/home_bloc.dart';
 import 'bloc/trials_bloc.dart';
 import 'create_trials/create_trials_screen.dart';
 import 'models/trial_model.dart';
@@ -19,81 +23,235 @@ class TrialsScreenWrapper extends StatelessWidget {
   }
 }
 
-class TrialsScreen extends StatelessWidget {
+class TrialsScreen extends StatefulWidget {
   const TrialsScreen({super.key});
+
+  @override
+  _TrialsScreenState createState() => _TrialsScreenState();
+}
+
+class _TrialsScreenState extends State<TrialsScreen> {
+  final TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: false,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(context.setHeight(7)),
-        child: Padding(
-          padding: EdgeInsets.only(top: context.setHeight(3)),
-          child: AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Color(0xFF1D1B20)),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            title: Text(
-              'Trials',
-              style: TextStyle(
-                color: const Color(0xFF1D1B20),
-                fontSize: context.setWidth(5),
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            centerTitle: true,
-          ),
-        ),
+      appBar: AppBar(
+        title: const Text('Trials'),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
+      extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          Positioned.fill(child: backgroundDecoration()),
-          BlocBuilder<TrialBloc, TrialState>(
-            builder: (context, state) {
-              if (state is TrialLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is TrialFormError) {
-                return Center(child: Text('Error: ${state.message}'));
-              } else if (state is TrialsLoaded) {
-                final unpublishedTrials = state.trials.where((trial) => !trial.isPublished).toList();
-                final publishedTrials = state.trials.where((trial) => trial.isPublished).toList();
+          backgroundDecoration(),
+          SafeArea(
+            child: Column(
+              children: [
+                // Search Bar
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: context.setWidth(5), vertical: context.setHeight(1)),
+                  child: searchAndFilterSection(context),
+                ),
+                // Trial list with Tab section
+                Expanded(
+                  child: BlocBuilder<TrialBloc, TrialState>(
+                    builder: (context, state) {
+                      if (state is TrialLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state is TrialFormError) {
+                        return Center(child: Text('Error: ${state.message}'));
+                      } else if (state is TrialsLoaded) {
+                        final unpublishedTrials = state.trials.where((trial) => !trial.isPublished).toList();
+                        final publishedTrials = state.trials.where((trial) => trial.isPublished).toList();
+                        final doctorId = getLoggedInDoctorId();
+                        final myTrials = state.trials.where((trial) => trial.doctorId == doctorId).toList();
 
-                return buildTrialLists(context, unpublishedTrials, publishedTrials);
-              }
-              return const Center(child: Text('No trials available'));
-            },
-          ),
-          Positioned(
-            bottom: context.setHeight(0),
-            left: MediaQuery.of(context).size.width * 0.5 - 86,
-            child: createNewTrialButton(context),
+                        return Column(
+                          children: [
+                            Expanded(
+                              child: tabSection(context, unpublishedTrials, publishedTrials, myTrials),
+                            ),
+                            createNewTrialButton(context), // Custom create button
+                          ],
+                        );
+                      }
+                      return const Center(child: Text('No trials available'));
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
       bottomNavigationBar: const custom.BottomNavigationBar(currentIndex: 0),
     );
   }
-  Widget buildTrialLists(BuildContext context, List<Trial> unpublishedTrials, List<Trial> publishedTrials) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Unpublished', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            for (var trial in unpublishedTrials) buildTrialCard(context, trial, false),
-            const SizedBox(height: 16),
-            const Text('Published', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            for (var trial in publishedTrials) buildTrialCard(context, trial, true),
-          ],
-        ),
+
+  Widget searchAndFilterSection(BuildContext context) {
+    return Container(
+      width: context.setWidth(90),
+      height: context.setHeight(6),
+      margin: EdgeInsets.symmetric(horizontal: context.setWidth(5), vertical: context.setHeight(1)),
+      decoration: BoxDecoration(
+        color: const Color(0xFFECE6F0),
+        borderRadius: BorderRadius.circular(context.setWidth(8)),
       ),
+      child: Row(
+        children: [
+          IconButton(
+            icon: Icon(IconlyBold.filter_2, color: const Color(0xFF49454F), size: context.setWidth(6)),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text(AppLocale.of(context)!.clearFiltersTitle),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text(AppLocale.of(context)!.clearAll),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text(AppLocale.of(context)!.confirm),
+                                content: Text(AppLocale.of(context)!.clearAllFiltersConfirmation),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text(AppLocale.of(context)!.yes),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      context.read<TrialBloc>().add(ClearsFilters());
+                                      searchController.clear();
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: Text(AppLocale.of(context)!.no),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      ),
+                      TextButton(
+                        child: Text(AppLocale.of(context)!.close),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+          Expanded(
+            child: Stack(
+              alignment: Alignment.centerRight,
+              children: [
+                TextField(
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search Trials',
+                    border: InputBorder.none,
+                    hintStyle: TextStyle(
+                      color: const Color(0x6649454F),
+                      fontSize: context.setWidth(5),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  onSubmitted: (value) {
+                    context.read<TrialBloc>().add(UpdateTrialSearchQuery(value.trim()));
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.search, color: const Color(0xFF49454F), size: context.setWidth(6)),
+                  onPressed: () {
+                    context.read<TrialBloc>().add(UpdateTrialSearchQuery(searchController.text.trim()));
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  // Tab section for switching between Browse and My Trials
+  Widget tabSection(BuildContext context, List<Trial> unpublishedTrials, List<Trial> publishedTrials, List<Trial> myTrials) {
+    return DefaultTabController(
+      length: 2,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TabBar(
+            indicatorSize: TabBarIndicatorSize.tab,
+            indicator: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: const Color(0xFF6750A4),
+                  width: context.setWidth(0.7),
+                ),
+              ),
+            ),
+            labelColor: const Color(0xFF1D1B20),
+            unselectedLabelColor: const Color(0xFF49454F),
+            labelStyle: TextStyle(
+              fontSize: context.setWidth(5),
+              fontWeight: FontWeight.w500,
+            ),
+            tabs: [
+              Tab(text: 'Browse'),
+              Tab(text: 'My Trials'),
+            ],
+          ),
+          Expanded(
+            child: TabBarView(
+              children: [
+                // Browse Tab (shows unpublished and published trials)
+                buildBrowseView(context, unpublishedTrials, publishedTrials),
+                // My Trials Tab (shows only the trials created by the doctor)
+                buildMyTrialsView(context, myTrials),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Browse view shows both published and unpublished trials
+  Widget buildBrowseView(BuildContext context, List<Trial> unpublishedTrials, List<Trial> publishedTrials) {
+    return ListView(
+      padding: const EdgeInsets.all(16.0),
+      children: [
+        const Text('Unpublished Trials', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        for (var trial in unpublishedTrials) buildTrialCard(context, trial, false),
+        const SizedBox(height: 16),
+        const Text('Published Trials', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        for (var trial in publishedTrials) buildTrialCard(context, trial, true),
+      ],
+    );
+  }
+
+  // My Trials view shows only the logged-in doctor's trials
+  Widget buildMyTrialsView(BuildContext context, List<Trial> myTrials) {
+    return ListView(
+      padding: const EdgeInsets.all(16.0),
+      children: [
+        const Text('My Trials', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        for (var trial in myTrials) buildTrialCard(context, trial, trial.isPublished),
+      ],
     );
   }
 
@@ -112,35 +270,20 @@ class TrialsScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Text(trial.description),
             const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                if (!isPublished)
-                  ElevatedButton(
-                    onPressed: () async {
-                      print ("publish button clicked");
-                    },
-                    child: const Text('Publish'),
-                  ),
-              ],
-            ),
+            if (!isPublished)
+              ElevatedButton(
+                onPressed: () {
+                  print("Publish button clicked for ${trial.title}");
+                },
+                child: const Text('Publish'),
+              ),
           ],
         ),
       ),
     );
   }
 
-  Widget backgroundDecoration() {
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/home.png'),
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
-  }
-
+  // Custom Create New Trial Button
   Widget createNewTrialButton(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -205,5 +348,27 @@ class TrialsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  // Background decoration (reused from HomeScreen)
+  Widget backgroundDecoration() {
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/home.png'),
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  // Mock function to get the logged-in doctor's ID
+  String getLoggedInDoctorId() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      return user.uid;
+    } else {
+      throw Exception('No user is logged in');
+    }
   }
 }

@@ -35,3 +35,10 @@ class PublishTrial extends TrialEvent {
   PublishTrial(this.trialId);
   List<Object> get props => [trialId];
 }
+
+class UpdateTrialSearchQuery extends TrialEvent {
+  final String query;
+  UpdateTrialSearchQuery(this.query);
+}
+
+class ClearsFilters extends TrialEvent {}

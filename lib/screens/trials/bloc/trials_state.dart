@@ -21,8 +21,19 @@ class TrialFormLoaded extends TrialState {
 // State when the trials are successfully loaded
 class TrialsLoaded extends TrialState {
   final List<Trial> trials;
+  final String searchQuery;
 
-  TrialsLoaded(this.trials);
+  TrialsLoaded(this.trials, {this.searchQuery = ''});
+
+  TrialsLoaded copyWith({
+    List<Trial>? trials,
+    String? searchQuery,
+  }) {
+    return TrialsLoaded(
+      trials ?? this.trials,
+      searchQuery: searchQuery ?? this.searchQuery,
+    );
+  }
 }
 
 // State when a trial is successfully created
