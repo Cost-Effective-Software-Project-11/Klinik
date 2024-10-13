@@ -698,7 +698,7 @@ class _SignUpViewState extends State<SignUpView> {
           children: [
             Container(
               width: context.setWidth(90),
-              height: 60,
+              height: 70,
               margin: EdgeInsets.only(top: context.setHeight(1)),
               decoration: ShapeDecoration(
                 shape: RoundedRectangleBorder(
@@ -712,7 +712,7 @@ class _SignUpViewState extends State<SignUpView> {
                 child: Row(
                   children: [
                     Container(
-                      margin: EdgeInsets.only(left: context.setWidth(3)),
+                      margin: EdgeInsets.only(left: context.setWidth(2.8)),
                       alignment: Alignment.centerLeft,
                       child: Icon(IconlyBold.bag_2, color: const Color(0xFF49454F), size: context.setWidth(6)),
                     ),
@@ -736,16 +736,16 @@ class _SignUpViewState extends State<SignUpView> {
               ),
             ),
             Positioned(
-              top: context.setHeight(-1.2),
+              top: context.setHeight(-1.6),
               left: context.setWidth(4),
               child: Container(
-                padding: EdgeInsets.all(context.setWidth(1.6)),
+                padding: EdgeInsets.all(context.setWidth(1.2)),
                 color: Theme.of(context).scaffoldBackgroundColor,
                 child: Text(
                   'Workplace',
                   style: TextStyle(
                     color: const Color(0xFF49454F),
-                    fontSize: context.setWidth(3.5),
+                    fontSize: context.setWidth(3.4),
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   ),
                 ),
