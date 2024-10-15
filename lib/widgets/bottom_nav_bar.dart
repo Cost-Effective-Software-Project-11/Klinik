@@ -23,7 +23,7 @@ class BottomNavigationBar extends StatelessWidget {
             index: 0,
             isActive: currentIndex == 0,
             onTap: () {
-              // Add your navigation logic here
+              Navigator.pushNamed(context, AppRoutes.trials);
             },
           ),
           buildNavItem(
