@@ -10,6 +10,7 @@ class Trial {
   final String description;
   final List<String> eligibilityCriteria;
   final String doctorId;
+  final String doctorName;
   final bool isPublished;
 
   Trial({
@@ -22,6 +23,7 @@ class Trial {
     required this.description,
     required this.eligibilityCriteria,
     required this.doctorId,
+    required this.doctorName,
     required this.isPublished,
   });
 
@@ -40,6 +42,7 @@ class Trial {
           : [],
 
       doctorId: data['doctorId'] ?? 'Unknown Doctor',
+      doctorName: data['doctorName'] ?? 'Unknown Doctor',
       isPublished: data['isPublished'] ?? false,
     );
   }

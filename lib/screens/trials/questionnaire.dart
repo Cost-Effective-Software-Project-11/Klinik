@@ -331,11 +331,13 @@ class _TrialQuestionnaireWidgetState extends State<TrialQuestionnaireWidget> {
 
 class QuestionnaireSection {
   final String title;
+  final String trialId;
   final String frequency;
   final List<Question> questions;
 
   QuestionnaireSection({
     required this.title,
+    this.trialId = '',
     required this.frequency,
     required this.questions,
   });

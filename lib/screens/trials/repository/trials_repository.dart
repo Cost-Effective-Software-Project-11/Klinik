@@ -33,6 +33,19 @@ class TrialRepository {
     }
   }
 
+  Future<String?> getDoctorUserName(String id) async {
+    try {
+      DocumentSnapshot userDoc = await _firestore.collection('users').doc(id).get();
+      if (userDoc.exists && userDoc.data() != null) {
+        Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+        return userData['name'] as String?;
+      }
+    } catch (e) {
+      print('Error getting user name: $e');
+    }
+    return null;
+  }
+
   Future<DocumentReference> createTrial({
     required String title,
     required String category,
@@ -44,6 +57,8 @@ class TrialRepository {
     required String doctorId,
     bool isPublished = false,
   }) async {
+
+    String? doctorName = await getDoctorUserName(doctorId);
     return await _firestore.collection('trials').add({
       'title': title,
       'category': category,
@@ -53,6 +68,7 @@ class TrialRepository {
       'description': description,
       'eligibilityCriteria': eligibilityCriteria,
       'doctorId': doctorId,
+      'doctorName': doctorName,
       'isPublished': isPublished,
     });
   }

@@ -6,7 +6,7 @@ import 'package:flutter_gp5/screens/trials/repository/trials_repository.dart';
 import 'package:iconly/iconly.dart';
 import '../../locale/l10n/app_locale.dart';
 import '../../widgets/bottom_nav_bar.dart' as custom;
-import '../home/bloc/home_bloc.dart';
+import '../Trial_Details/trial_details_screen.dart';
 import 'bloc/trials_bloc.dart';
 import 'create_trials/create_trials_screen.dart';
 import 'models/trial_model.dart';
@@ -256,28 +256,38 @@ class _TrialsScreenState extends State<TrialsScreen> {
   }
 
   Widget buildTrialCard(BuildContext context, Trial trial, bool isPublished) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              trial.title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(trial.description),
-            const SizedBox(height: 8),
-            if (!isPublished)
-              ElevatedButton(
-                onPressed: () {
-                  print("Publish button clicked for ${trial.title}");
-                },
-                child: const Text('Publish'),
+    return GestureDetector(
+      onTap : () async {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  TrialDetailsScreen(trial: trial,)),
+        );
+      },
+      child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                trial.title,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-          ],
+              const SizedBox(height: 8),
+              Text(trial.description),
+              const SizedBox(height: 8),
+              if (!isPublished)
+                ElevatedButton(
+                  onPressed: () {
+                    print("Publish button clicked for ${trial.title}");
+                  },
+                  child: const Text('Publish'),
+                ),
+            ],
+          ),
         ),
       ),
     );
