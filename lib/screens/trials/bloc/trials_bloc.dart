@@ -58,6 +58,7 @@ class TrialBloc extends Bloc<TrialEvent, TrialState> {
 
         // Step 2: Create the questionnaire, linked with the trialId
         await repository.createQuestionnaire(
+          trialTitle:event.title ,
           trialId: trialId,
           questionnaireSections: event.questionnaireSections, // Pass questionnaire data
         );

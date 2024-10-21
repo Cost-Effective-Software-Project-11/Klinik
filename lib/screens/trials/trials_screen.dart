@@ -255,14 +255,14 @@ class _TrialsScreenState extends State<TrialsScreen> {
     );
   }
 
-  Widget buildTrialCard(BuildContext context, Trial trial, bool isPublished) {
+  Widget buildTrialCard(BuildContext context, Trial trial, bool isPublished,) {
     return GestureDetector(
       onTap : () async {
         await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  TrialDetailsScreen(trial: trial,)),
+                  TrialDetailsScreen(trial: trial,questionnaireSection:)),
         );
       },
       child: Card(

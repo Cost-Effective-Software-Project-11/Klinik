@@ -75,12 +75,14 @@ class TrialRepository {
 
   Future<void> createQuestionnaire({
     required String trialId,
+    required String trialTitle,
     required List<QuestionnaireSection> questionnaireSections,
   }) async {
     // Format the questionnaire sections and questions for Firebase
     List<Map<String, dynamic>> formattedSections = questionnaireSections.map((section) {
       return {
         'title': section.title,
+        'trialTitle':trialTitle,
         'frequency': section.frequency,
         'questions': section.questions.map((question) {
           return {

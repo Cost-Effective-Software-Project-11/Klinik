@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/screens/trials/models/trial_model.dart';
+import 'package:flutter_gp5/screens/trials/trial_details/questionnaire_answer_screen.dart';
+
+import '../questionnaire.dart';
 
 class TrialDetailsScreen extends StatelessWidget {
   final Trial trial;
+  final QuestionnaireSection questionnaireSection;
 
-  const TrialDetailsScreen({super.key, required this.trial});
+  const TrialDetailsScreen({super.key, required this.trial, required this.questionnaireSection,});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +45,7 @@ class TrialDetailsScreen extends StatelessWidget {
               _buildEligibilityCriteria(trial.eligibilityCriteria,context),
               _buildQuestionnaireInfo(context),
               SizedBox(height: context.setHeight(4),),
-              _buildButtonSection(),
+              _buildButtonSection(context),
             ],
           ),
         ),
@@ -125,14 +129,14 @@ class TrialDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildButtonSection() {
+  Widget _buildButtonSection(BuildContext context) {
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _buildBackButton(),
           const SizedBox(width: 20),
-          _buildBeginTrialButton(),
+          _buildBeginTrialButton(context),
         ],
       ),
     );
@@ -153,10 +157,15 @@ class TrialDetailsScreen extends StatelessWidget {
     );
   }
 
-  ElevatedButton _buildBeginTrialButton() {
+  ElevatedButton _buildBeginTrialButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-
+         Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  QuestionnaireAnswerScreen(trialTitle: trial.title,questionnaireSection:questionnaireSection,)),
+        );
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFF6750A4),

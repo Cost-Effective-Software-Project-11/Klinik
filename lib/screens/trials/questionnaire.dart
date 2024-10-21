@@ -15,21 +15,12 @@ class _TrialQuestionnaireWidgetState extends State<TrialQuestionnaireWidget> {
   final TextEditingController answerController = TextEditingController();
   final TextEditingController customInputController = TextEditingController(); // Controller for custom count input
 
-  List<String> frequencies = [
-    'Daily',
-    'Every # days',
-    'Weekly',
-    'Every # Weeks',
-    'Monthly',
-    'Every # Months',
-    'At the end of the trial'
-  ];
+  Frequency selectedFrequency = Frequency.daily; // Default frequency
 
   void _addSection() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        String selectedFrequency = 'Daily';
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
@@ -37,28 +28,22 @@ class _TrialQuestionnaireWidgetState extends State<TrialQuestionnaireWidget> {
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  DropdownButtonFormField<String>(
+                  DropdownButtonFormField<Frequency>(
                     value: selectedFrequency,
-                    items: frequencies.map((frequency) {
-                      return DropdownMenuItem<String>(
+                    items: Frequency.values.map((frequency) {
+                      return DropdownMenuItem<Frequency>(
                         value: frequency,
-                        child: Text(frequency),
+                        child: Text(frequency.toDisplayString()),
                       );
                     }).toList(),
                     onChanged: (value) {
                       setState(() {
-                        selectedFrequency = value ?? 'Daily';
-                        sections.add(QuestionnaireSection(
-                          title: 'Section ${sections.length + 1}',
-                          frequency: 'Daily',
-                          questions: [],
-                        ));
-                        widget.onSectionsChanged(sections);
+                        selectedFrequency = value ?? Frequency.daily;
                       });
                     },
                     decoration: const InputDecoration(labelText: 'Fill frequency'),
                   ),
-                  if (selectedFrequency.contains('#')) // If the frequency has a '#', show custom input
+                  if (selectedFrequency.hasCustomInput()) // If the frequency has a custom input
                     TextField(
                       controller: customInputController,
                       decoration: const InputDecoration(hintText: 'Enter count (e.g., 4 days)'),
@@ -75,9 +60,9 @@ class _TrialQuestionnaireWidgetState extends State<TrialQuestionnaireWidget> {
                 ),
                 TextButton(
                   onPressed: () {
-                    String finalFrequency = selectedFrequency.contains('#')
-                        ? 'Every ${customInputController.text} ${selectedFrequency.split(' ')[2]}'
-                        : selectedFrequency;
+                    String finalFrequency = selectedFrequency.hasCustomInput()
+                        ? 'Every ${customInputController.text} ${selectedFrequency.getCustomUnit()}'
+                        : selectedFrequency.toDisplayString();
                     setState(() {
                       sections.add(QuestionnaireSection(
                         title: 'Section ${sections.length + 1}',
@@ -125,7 +110,8 @@ class _TrialQuestionnaireWidgetState extends State<TrialQuestionnaireWidget> {
             TextButton(
               onPressed: () {
                 setState(() {
-                  sections[sectionIndex].questions.add(Question(text: questionController.text, answers: [], answerType: ''));
+                  sections[sectionIndex].questions.add(
+                      Question(text: questionController.text, answers: [], answerType: AnswerType.singleChoice));
                   questionController.clear();
                 });
                 Navigator.of(context).pop();
@@ -145,7 +131,7 @@ class _TrialQuestionnaireWidgetState extends State<TrialQuestionnaireWidget> {
   }
 
   void _addAnswer(int sectionIndex, int questionIndex) {
-    String selectedAnswerType = 'Single choice';
+    AnswerType selectedAnswerType = AnswerType.singleChoice; // Default answer type
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -159,17 +145,17 @@ class _TrialQuestionnaireWidgetState extends State<TrialQuestionnaireWidget> {
                 decoration: const InputDecoration(hintText: 'Enter answer'),
               ),
               const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
+              DropdownButtonFormField<AnswerType>(
                 value: selectedAnswerType,
-                items: ['Single choice', 'Multi choice', 'Text field']
-                    .map((type) => DropdownMenuItem<String>(
-                  value: type,
-                  child: Text(type),
-                ))
-                    .toList(),
+                items: AnswerType.values.map((type) {
+                  return DropdownMenuItem<AnswerType>(
+                    value: type,
+                    child: Text(type.toDisplayString()),
+                  );
+                }).toList(),
                 onChanged: (value) {
                   setState(() {
-                    selectedAnswerType = value ?? 'Single choice';
+                    selectedAnswerType = value ?? AnswerType.singleChoice;
                   });
                 },
                 decoration: const InputDecoration(labelText: 'Answer Type'),
@@ -209,12 +195,12 @@ class _TrialQuestionnaireWidgetState extends State<TrialQuestionnaireWidget> {
       Question question = sections[sectionIndex].questions[questionIndex];
       Answer answer = question.answers[answerIndex];
 
-      if (question.answerType == 'Single choice') {
+      if (question.answerType == AnswerType.singleChoice) {
         for (var ans in question.answers) {
           ans.isSelected = false;
         }
         answer.isSelected = true;
-      } else if (question.answerType == 'Multi choice') {
+      } else if (question.answerType == AnswerType.multiChoice) {
         answer.isSelected = !answer.isSelected;
       }
     });
@@ -253,7 +239,7 @@ class _TrialQuestionnaireWidgetState extends State<TrialQuestionnaireWidget> {
                         final answerIndex = entry.key;
                         final answer = entry.value;
 
-                        if (question.answerType == 'Text field') {
+                        if (question.answerType == AnswerType.textField) {
                           // Show text field for "Text field" answer type
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -272,7 +258,7 @@ class _TrialQuestionnaireWidgetState extends State<TrialQuestionnaireWidget> {
                           // Show radio buttons for "Single choice" or checkboxes for "Multi choice"
                           return ListTile(
                             title: Text(answer.text),
-                            leading: question.answerType == 'Single choice'
+                            leading: question.answerType == AnswerType.singleChoice
                                 ? Radio<bool>(
                               value: true,
                               groupValue: answer.isSelected,
@@ -303,7 +289,7 @@ class _TrialQuestionnaireWidgetState extends State<TrialQuestionnaireWidget> {
                         ),
                         IconButton(
                           icon: const Icon(Icons.delete),
-                          onPressed: () => _deleteQuestion(sectionIndex, questionIndex), // Add delete question button here
+                          onPressed: () => _deleteQuestion(sectionIndex, questionIndex),
                         ),
                       ],
                     ),
@@ -329,15 +315,93 @@ class _TrialQuestionnaireWidgetState extends State<TrialQuestionnaireWidget> {
   }
 }
 
+// Enum to represent the frequencies
+enum Frequency {
+  daily,
+  everyNDays,
+  weekly,
+  everyNWeeks,
+  monthly,
+  everyNMonths,
+  endOfTrial;
+
+  // Helper method to convert the enum to a displayable string
+  String toDisplayString() {
+    switch (this) {
+      case Frequency.daily:
+        return 'Daily';
+      case Frequency.everyNDays:
+        return 'Every # days';
+      case Frequency.weekly:
+        return 'Weekly';
+      case Frequency.everyNWeeks:
+        return 'Every # Weeks';
+      case Frequency.monthly:
+        return 'Monthly';
+      case Frequency.everyNMonths:
+        return 'Every # Months';
+      case Frequency.endOfTrial:
+        return 'At the end of the trial';
+    }
+  }
+
+  // Check if the frequency has a custom input (like "Every # days")
+  bool hasCustomInput() {
+    return this == Frequency.everyNDays ||
+        this == Frequency.everyNWeeks ||
+        this == Frequency.everyNMonths;
+  }
+
+  // Get the unit for the custom input (e.g., "days" for "Every # days")
+  String getCustomUnit() {
+    switch (this) {
+      case Frequency.everyNDays:
+        return 'days';
+      case Frequency.everyNWeeks:
+        return 'weeks';
+      case Frequency.everyNMonths:
+        return 'months';
+      default:
+        return '';
+    }
+  }
+}
+
+enum AnswerType {
+  singleChoice,
+  multiChoice,
+  textField,
+  moodScale,
+  intensityScale;
+
+  String toDisplayString() {
+    switch (this) {
+      case AnswerType.singleChoice:
+        return 'Single choice';
+      case AnswerType.multiChoice:
+        return 'Multi choice';
+      case AnswerType.textField:
+        return 'Text field';
+      case AnswerType.moodScale:
+        return 'Mood scale (1-5)';
+      case AnswerType.intensityScale:
+        return 'Intensity scale (1-10)';
+    }
+  }
+}
+
+
 class QuestionnaireSection {
   final String title;
   final String trialId;
+  final String trialTitle;
   final String frequency;
   final List<Question> questions;
 
   QuestionnaireSection({
     required this.title,
     this.trialId = '',
+    this.trialTitle = '',
     required this.frequency,
     required this.questions,
   });
@@ -346,7 +410,7 @@ class QuestionnaireSection {
 class Question {
   final String text;
   final List<Answer> answers;
-  String answerType;
+  AnswerType answerType;
 
   Question({
     required this.text,
@@ -357,7 +421,7 @@ class Question {
 
 class Answer {
   late final String text;
-  final String answerType;
+  final AnswerType answerType;
   bool isSelected;
 
   Answer({
