@@ -404,14 +404,14 @@ class _SignUpViewState extends State<SignUpView> {
             child: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                style: TextStyle(color: Colors.black, fontSize: context.setWidth(3.5)),
+                style: TextStyle(color: Colors.black, fontSize: context.setWidth(4.5)),
                 children: [
                   TextSpan(text: '${AppLocale.of(context)!.agreeToTerms} '),
                   TextSpan(
                     text: '${AppLocale.of(context)!.termsOfService} ',
                     style: TextStyle(
                       color: const Color(0xFF6750A4),
-                      fontSize: context.setWidth(3.5),
+                      fontSize: context.setWidth(4.5),
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
@@ -423,7 +423,7 @@ class _SignUpViewState extends State<SignUpView> {
                     text: '${AppLocale.of(context)!.privacyPolicy} ',
                     style: TextStyle(
                       color: const Color(0xFF6750A4),
-                      fontSize: context.setWidth(3.5),
+                      fontSize: context.setWidth(4.5),
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
@@ -449,77 +449,6 @@ class _SignUpViewState extends State<SignUpView> {
       ),
     );
   }
-
-  // Widget _termsAndPrivacyPolicy(BuildContext context) {
-  //   return Container(
-  //     width: double.infinity,
-  //     padding: EdgeInsets.symmetric(horizontal: context.setWidth(10), vertical: context.setHeight(1)),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //       children: [
-  //         Transform.scale(
-  //           scale: 1.3,
-  //           child: Checkbox(
-  //             value: _isTermsAccepted,
-  //             onChanged: (bool? value) {
-  //               setState(() {
-  //                 _isTermsAccepted = value ?? false;
-  //                 _updateSubmitButtonState();
-  //               });
-  //             },
-  //             activeColor: const Color(0xFF6750A4),
-  //             shape: RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.circular(10),
-  //             ),
-  //           ),
-  //         ),
-  //         Expanded(
-  //           child: RichText(
-  //             textAlign: TextAlign.center,
-  //             text: TextSpan(
-  //               style: TextStyle(color: Colors.black, fontSize: context.setWidth(3.5)),
-  //               children: [
-  //                 TextSpan(text: '${AppLocale.of(context)!.agreeToTerms} '),
-  //                 TextSpan(
-  //                   text: '${AppLocale.of(context)!.termsOfService} ',
-  //                   style: TextStyle(
-  //                     color: const Color(0xFF6750A4),
-  //                     fontSize: context.setWidth(3.5),
-  //                   ),
-  //                   recognizer: TapGestureRecognizer()..onTap = () {
-  //                     _showTermsDialog(context);
-  //                   },
-  //                 ),
-  //                 TextSpan(text: '${AppLocale.of(context)!.and} '),
-  //                 TextSpan(
-  //                   text: '${AppLocale.of(context)!.privacyPolicy} ',
-  //                   style: TextStyle(
-  //                     color: const Color(0xFF6750A4),
-  //                     fontSize: context.setWidth(3.5),
-  //                   ),
-  //                   recognizer: TapGestureRecognizer()..onTap = () {
-  //                     _showPrivacyPolicyDialog(context);
-  //                   },
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //         Opacity(
-  //           opacity: 0,
-  //           child: Transform.scale(
-  //             scale: 1.3,
-  //             child: const Checkbox(
-  //               value: false,
-  //               onChanged: null,
-  //             ),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
 
   Widget _buildPhoneField(
       String label,
@@ -607,17 +536,103 @@ class _SignUpViewState extends State<SignUpView> {
     );
   }
 
+  //Code with colors opacity experiments
+  //void _showTermsDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return Dialog(
+  //         backgroundColor: Colors.white54.withOpacity(0.9), // Make the dialog itself transparent
+  //         child: Container(
+  //           child: AlertDialog(
+  //             backgroundColor: Colors.white24,
+  //             title: Text(
+  //               AppLocale.of(context)!.termsOfService,
+  //             ),
+  //             content: Container(
+  //               width: context.setWidth(80),
+  //               height: context.setHeight(55),
+  //               color: Colors.transparent.withOpacity(0.1),
+  //               child: Scrollbar(
+  //                 thumbVisibility: true,
+  //                 thickness: 4.0,
+  //                 radius: const Radius.circular(10),
+  //                 child: Padding(
+  //                   padding: EdgeInsets.only(right: context.setWidth(2)),
+  //                   child: SingleChildScrollView(
+  //                     child: ListBody(
+  //                       children: <Widget>[
+  //                         Text(AppLocale.of(context)!.signupAgreement),
+  //                         Text(AppLocale.of(context)!.termsConfidentiality),
+  //                         Text(AppLocale.of(context)!.termsServiceLimitations),
+  //                         Text(AppLocale.of(context)!.termsCompliance),
+  //                         Text(AppLocale.of(context)!.termsConsent),
+  //                         Text(AppLocale.of(context)!.termsReadComplete),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //             actions: <Widget>[
+  //               OutlinedButton(
+  //                 style: OutlinedButton.styleFrom(
+  //                   foregroundColor: const Color(0xFF6750A4),
+  //                   backgroundColor: Colors.white,
+  //                   side: BorderSide(color: Colors.black, width: context.setWidth(0.2)),
+  //                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+  //                   shape: RoundedRectangleBorder(
+  //                     borderRadius: BorderRadius.circular(20),
+  //                   ),
+  //                 ),
+  //                 onPressed: () {
+  //                   Navigator.of(context).pop();
+  //                 },
+  //                 child: Text(AppLocale.of(context)!.close),
+  //               ),
+  //               OutlinedButton(
+  //                 style: OutlinedButton.styleFrom(
+  //                   foregroundColor: Colors.white,
+  //                   backgroundColor: const Color(0xFF6750A4),
+  //                   side: BorderSide(color: const Color(0xFF6750A4), width: context.setWidth(0.2)),
+  //                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+  //                   shape: RoundedRectangleBorder(
+  //                     borderRadius: BorderRadius.circular(20),
+  //                   ),
+  //                 ),
+  //                 onPressed: () {
+  //                   Navigator.of(context).pop();
+  //                   _showPrivacyPolicyDialog(context);
+  //                 },
+  //                 child: Row(
+  //                   mainAxisSize: MainAxisSize.min,
+  //                   children: [
+  //                     Text(AppLocale.of(context)!.next),
+  //                     SizedBox(width: 8),
+  //                     Icon(Icons.arrow_forward, size: 18),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
+
   void _showTermsDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white54.withOpacity(0.9), // Make the dialog itself transparent
           title: Text(
               AppLocale.of(context)!.termsOfService
           ),
           content: Container(
             width: context.setWidth(80),
-            height: context.setHeight(25),
+            height: context.setHeight(55),
             child: Scrollbar(
               thumbVisibility: true,
               thickness: 4.0,
@@ -643,7 +658,6 @@ class _SignUpViewState extends State<SignUpView> {
             OutlinedButton(
               style: OutlinedButton.styleFrom(
                 foregroundColor: const Color(0xFF6750A4),
-                backgroundColor: Colors.white,
                 side: BorderSide(color: Colors.black, width: context.setWidth(0.2)),
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 shape: RoundedRectangleBorder(
@@ -669,7 +683,14 @@ class _SignUpViewState extends State<SignUpView> {
                 Navigator.of(context).pop();
                 _showPrivacyPolicyDialog(context);
               },
-              child: Text(AppLocale.of(context)!.next),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(AppLocale.of(context)!.next),
+                  SizedBox(width: 8), // Space between text and arrow
+                  Icon(Icons.arrow_forward, size: 18), // Add arrow icon
+                ],
+              ),
             ),
           ],
         );
@@ -682,10 +703,11 @@ class _SignUpViewState extends State<SignUpView> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white54.withOpacity(0.9), // Make the dialog itself transparent
           title: Text(AppLocale.of(context)!.privacyPolicy),
           content: Container(
             width: context.setWidth(80),
-            height: context.setHeight(25),
+            height: context.setHeight(55),
             child: Scrollbar(
               thumbVisibility: true,
               thickness: 4.0,
@@ -712,7 +734,6 @@ class _SignUpViewState extends State<SignUpView> {
             OutlinedButton(
               style: OutlinedButton.styleFrom(
                 foregroundColor: const Color(0xFF6750A4),
-                backgroundColor: Colors.white,
                 side: BorderSide(color: Colors.black, width: context.setWidth(0.2)),
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 shape: RoundedRectangleBorder(
@@ -776,7 +797,7 @@ class _SignUpViewState extends State<SignUpView> {
         child: Text(
           AppLocale.of(context)!.signup,
           style: TextStyle(
-            color: Colors.white,
+            color: Colors.grey.shade700,
             fontSize: context.setWidth(3.5),
             fontWeight: FontWeight.w500,
           ),
@@ -989,7 +1010,7 @@ class _SignUpViewState extends State<SignUpView> {
         text: TextSpan(
           style: TextStyle(
               color: const Color(0xFF1D1B20),
-              fontSize: context.setWidth(4),
+              fontSize: context.setWidth(4.5),
               fontFamily: 'Roboto'
           ),
           children: <TextSpan>[
@@ -998,7 +1019,7 @@ class _SignUpViewState extends State<SignUpView> {
               text: AppLocale.of(context)!.login,
               style: TextStyle(
                 color: const Color(0xFF6750A4),
-                fontSize: context.setWidth(4),
+                fontSize: context.setWidth(4.5),
               ),
               recognizer: TapGestureRecognizer()..onTap = () {
                 Navigator.of(context).pushNamed(AppRoutes.login);
