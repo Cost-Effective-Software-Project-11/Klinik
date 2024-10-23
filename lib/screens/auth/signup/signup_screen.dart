@@ -107,12 +107,12 @@ class _SignUpViewState extends State<SignUpView> {
         },
         child: Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(context.setHeight(7)),
+            preferredSize: Size.fromHeight(context.setHeight(8)),
             child: Padding(
-              padding: EdgeInsets.only(top: context.setHeight(1), bottom: context.setHeight(1)),
+              padding: EdgeInsets.only(top: context.setHeight(0), bottom: context.setHeight(0)),
               child: AppBar(
                 leading: IconButton(
-                  icon: Icon(Icons.navigate_before, color: const Color(0xFF1D1B20), size: context.setWidth(8)),
+                  icon: Icon(Icons.navigate_before, color: const Color(0xFF1D1B20), size: context.setHeight(7)),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 title: Text(
@@ -198,9 +198,16 @@ class _SignUpViewState extends State<SignUpView> {
               keyboardType: TextInputType.emailAddress
           ),
           if (widget.userType == UserType.doctor) ...[
-            _buildInstitutionDropdown(context),
+            _buildInstitutionDropdown(
+                context,
+            ),
           ],
-          _buildPhoneField(context),
+          _buildPhoneField(
+            AppLocale.of(context)!.phone,
+            AppLocale.of(context)!.phone_placeholder,
+            false,
+            _phoneController
+          ),
           _buildInputField(
               context,
               AppLocale.of(context)!.password,
@@ -263,7 +270,11 @@ class _SignUpViewState extends State<SignUpView> {
                       obscureText: isPassword ? (label == AppLocale.of(context)!.password ? !_passwordVisible : !_confirmPasswordVisible) : false,
                       decoration: InputDecoration(
                         hintText: placeholder,
-                        hintStyle: TextStyle(color: const Color(0x6649454F), fontSize: context.setWidth(4)),
+                        hintStyle: TextStyle(
+                            color: const Color(0x6649454F),
+                            fontSize: context.setWidth(4),
+                            fontWeight: FontWeight.normal
+                        ),
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.symmetric(vertical: context.setHeight(2), horizontal: context.setWidth(3)),
                         suffixIcon: isPassword ? IconButton(
@@ -377,8 +388,9 @@ class _SignUpViewState extends State<SignUpView> {
         children: [
           Transform.scale(
             scale: 1.3,
-            child: Checkbox(
-              value: _isTermsAccepted,
+            child: Radio<bool>(
+              value: true, // Radio button represents "Accepted" state
+              groupValue: _isTermsAccepted, // Current state
               onChanged: (bool? value) {
                 setState(() {
                   _isTermsAccepted = value ?? false;
@@ -386,9 +398,6 @@ class _SignUpViewState extends State<SignUpView> {
                 });
               },
               activeColor: const Color(0xFF6750A4),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
             ),
           ),
           Expanded(
@@ -404,9 +413,10 @@ class _SignUpViewState extends State<SignUpView> {
                       color: const Color(0xFF6750A4),
                       fontSize: context.setWidth(3.5),
                     ),
-                    recognizer: TapGestureRecognizer()..onTap = () {
-                      _showTermsDialog(context);
-                    },
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        _showTermsDialog(context);
+                      },
                   ),
                   TextSpan(text: '${AppLocale.of(context)!.and} '),
                   TextSpan(
@@ -415,9 +425,10 @@ class _SignUpViewState extends State<SignUpView> {
                       color: const Color(0xFF6750A4),
                       fontSize: context.setWidth(3.5),
                     ),
-                    recognizer: TapGestureRecognizer()..onTap = () {
-                      _showPrivacyPolicyDialog(context);
-                    },
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        _showPrivacyPolicyDialog(context);
+                      },
                   ),
                 ],
               ),
@@ -427,8 +438,9 @@ class _SignUpViewState extends State<SignUpView> {
             opacity: 0,
             child: Transform.scale(
               scale: 1.3,
-              child: const Checkbox(
+              child: const Radio<bool>(
                 value: false,
+                groupValue: false,
                 onChanged: null,
               ),
             ),
@@ -438,7 +450,86 @@ class _SignUpViewState extends State<SignUpView> {
     );
   }
 
-  Widget _buildPhoneField(BuildContext context) {
+  // Widget _termsAndPrivacyPolicy(BuildContext context) {
+  //   return Container(
+  //     width: double.infinity,
+  //     padding: EdgeInsets.symmetric(horizontal: context.setWidth(10), vertical: context.setHeight(1)),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       children: [
+  //         Transform.scale(
+  //           scale: 1.3,
+  //           child: Checkbox(
+  //             value: _isTermsAccepted,
+  //             onChanged: (bool? value) {
+  //               setState(() {
+  //                 _isTermsAccepted = value ?? false;
+  //                 _updateSubmitButtonState();
+  //               });
+  //             },
+  //             activeColor: const Color(0xFF6750A4),
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.circular(10),
+  //             ),
+  //           ),
+  //         ),
+  //         Expanded(
+  //           child: RichText(
+  //             textAlign: TextAlign.center,
+  //             text: TextSpan(
+  //               style: TextStyle(color: Colors.black, fontSize: context.setWidth(3.5)),
+  //               children: [
+  //                 TextSpan(text: '${AppLocale.of(context)!.agreeToTerms} '),
+  //                 TextSpan(
+  //                   text: '${AppLocale.of(context)!.termsOfService} ',
+  //                   style: TextStyle(
+  //                     color: const Color(0xFF6750A4),
+  //                     fontSize: context.setWidth(3.5),
+  //                   ),
+  //                   recognizer: TapGestureRecognizer()..onTap = () {
+  //                     _showTermsDialog(context);
+  //                   },
+  //                 ),
+  //                 TextSpan(text: '${AppLocale.of(context)!.and} '),
+  //                 TextSpan(
+  //                   text: '${AppLocale.of(context)!.privacyPolicy} ',
+  //                   style: TextStyle(
+  //                     color: const Color(0xFF6750A4),
+  //                     fontSize: context.setWidth(3.5),
+  //                   ),
+  //                   recognizer: TapGestureRecognizer()..onTap = () {
+  //                     _showPrivacyPolicyDialog(context);
+  //                   },
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //         Opacity(
+  //           opacity: 0,
+  //           child: Transform.scale(
+  //             scale: 1.3,
+  //             child: const Checkbox(
+  //               value: false,
+  //               onChanged: null,
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+
+  Widget _buildPhoneField(
+      String label,
+      String placeholder,
+      bool isPassword,
+      TextEditingController controller, {
+        VoidCallback? toggleVisibility,
+        TextInputType keyboardType = TextInputType.text,
+      }
+      ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -462,7 +553,11 @@ class _SignUpViewState extends State<SignUpView> {
                     child: IntlPhoneField(
                       decoration: InputDecoration(
                         hintText: AppLocale.of(context)!.enterYourPhone,
-                        hintStyle: TextStyle(color: const Color(0x6649454F), fontSize: context.setWidth(4)),
+                        hintStyle: TextStyle(
+                            color: const Color(0x6649454F),
+                            fontSize: context.setWidth(4),
+                            fontWeight: FontWeight.normal
+                        ),
                         border: InputBorder.none,
                         counter: const SizedBox.shrink(),
 
@@ -504,8 +599,7 @@ class _SignUpViewState extends State<SignUpView> {
         Padding(
           padding: EdgeInsets.only(left: context.setWidth(5), top: context.setHeight(0.3)),
           child: Text(
-            _phoneController.value.text.isEmpty || _validateField(_phoneController.value.text, 'Phone') == null ? "" :
-            _validateField(_phoneController.value.text, 'Phone')!,
+            controller.value.text.isEmpty || _validateField(controller.value.text, label) == null ? "" : _validateField(controller.value.text, label)!,
             style: TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
           ),
         ),
@@ -518,7 +612,9 @@ class _SignUpViewState extends State<SignUpView> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(AppLocale.of(context)!.termsOfService),
+          title: Text(
+              AppLocale.of(context)!.termsOfService
+          ),
           content: Container(
             width: context.setWidth(80),
             height: context.setHeight(25),
@@ -756,8 +852,9 @@ class _SignUpViewState extends State<SignUpView> {
         Padding(
           padding: EdgeInsets.only(left: context.setWidth(5), top: context.setHeight(0.3)),
           child: Text(
-            _phoneController.value.text.isEmpty || _validateField(_workplaceController.value.text, 'Workplace') == null ? "" :
-            _validateField(_phoneController.value.text, 'Workplace')!,
+            _validateField(_workplaceController.value.text, 'Workplace') == null ?
+            _validateField(_workplaceController.value.text, 'Workplace')!:""
+            ,
             style: TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
           ),
         ),
@@ -892,7 +989,7 @@ class _SignUpViewState extends State<SignUpView> {
         text: TextSpan(
           style: TextStyle(
               color: const Color(0xFF1D1B20),
-              fontSize: context.setWidth(3.5),
+              fontSize: context.setWidth(4),
               fontFamily: 'Roboto'
           ),
           children: <TextSpan>[
@@ -901,7 +998,7 @@ class _SignUpViewState extends State<SignUpView> {
               text: AppLocale.of(context)!.login,
               style: TextStyle(
                 color: const Color(0xFF6750A4),
-                fontSize: context.setWidth(3.5),
+                fontSize: context.setWidth(4),
               ),
               recognizer: TapGestureRecognizer()..onTap = () {
                 Navigator.of(context).pushNamed(AppRoutes.login);
