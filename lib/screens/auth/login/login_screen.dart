@@ -74,12 +74,12 @@ class _LoginScreenState extends State<_LoginScreen> {
           preferredSize: Size.fromHeight(context.setHeight(7)),
           child: Padding(
             padding: EdgeInsets.only(
-                top: context.setHeight(1), bottom: context.setHeight(1)),
+                top: context.setHeight(0), bottom: context.setHeight(0)),
             child: AppBar(
               backgroundColor:  Colors.transparent,
               leading: IconButton(
                 icon: Icon(Icons.navigate_before,
-                    color: const Color(0xFF1D1B20), size: context.setWidth(8)),
+                    color: const Color(0xFF1D1B20), size: context.setHeight(7)),
                 onPressed: () {
                   // Unfocus to dismiss the keyboard
                   FocusManager.instance.primaryFocus?.unfocus();
@@ -92,7 +92,7 @@ class _LoginScreenState extends State<_LoginScreen> {
                 AppLocale.of(context)!.login,
                 style: TextStyle(
                   color: const Color(0xFF1D1B20),
-                  fontSize: context.setWidth(5),
+                  fontSize: context.setWidth(6),
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -357,7 +357,7 @@ class _LoginScreenState extends State<_LoginScreen> {
     Color buttonColor = _isFormFilled ? const Color(0xFF6750A4) : Colors.grey;
 
     return Container(
-      width: context.setWidth(80),
+      width: context.setWidth(90),
       height: 60,
       margin: EdgeInsets.only(
           top: context.setHeight(2.5), bottom: context.setHeight(1.25)),

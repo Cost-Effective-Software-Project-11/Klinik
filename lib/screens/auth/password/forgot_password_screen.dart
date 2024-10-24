@@ -38,17 +38,21 @@ class _ResetPasswordState extends State<ResetPassword> {
       create: (context) => EmailBloc(FirebaseAuth.instance),
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.navigate_before, color: const Color(0xFF1D1B20), size: context.setHeight(7)),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
           backgroundColor:  Colors.transparent,
           centerTitle: true,
           elevation: 0,
           title: Text(
+
             passwordReset,
-            style: const TextStyle(
-              color: Color(0xFF1D1B20),
-              fontSize: 22,
-              fontFamily: 'Roboto',
+            style: TextStyle(
+              color: const Color(0xFF1D1B20),
+              fontSize: context.setWidth(6),
               fontWeight: FontWeight.w400,
-              height: 1.2,
+              //height: 1.2,
             ),
           ),
         ),
@@ -82,7 +86,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         height: 1.2,
                         letterSpacing: 0.15,
                       ),
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.left,
                     ),
                   ),
                   SizedBox(height: context.setHeight(5)),
@@ -99,7 +103,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         height: 1.2,
                         letterSpacing: 0.25,
                       ),
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.left,
                     ),
                   ),
                   SizedBox(height: context.setHeight(5)),
@@ -119,7 +123,7 @@ class _ResetPasswordState extends State<ResetPassword> {
     const borderRadius = Radius.circular(30);
 
     return SizedBox(
-      width: context.setWidth(80),
+      width: context.setWidth(90),
       child: TextFormField(
         controller: _emailController,
         focusNode: _emailFocusNode,
@@ -127,6 +131,11 @@ class _ResetPasswordState extends State<ResetPassword> {
           prefixIcon: const Icon(Icons.email_rounded),
           hintText: AppLocale.of(context)!.email_placeholder,
           labelText: AppLocale.of(context)!.email,
+          hintStyle: TextStyle(
+              color: const Color(0x6649454F),
+              fontSize: context.setWidth(4),
+              fontWeight: FontWeight.normal
+          ),
           enabledBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.only(
                   topLeft: borderRadius,
@@ -183,6 +192,8 @@ class _ResetPasswordState extends State<ResetPassword> {
   }
 
   Widget _buildSendButton(String text) {
+    Color buttonColor =  Colors.white54;
+
     return BlocConsumer<EmailBloc, EmailState>(
       listener: (context, state) {
         if (state is EmailSentSuccess) {
@@ -211,7 +222,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         }
 
         return SizedBox(
-          width: context.setWidth(80),
+          width: context.setWidth(90),
           height: 60,
           child: ElevatedButton(
             onPressed: () async {
@@ -233,13 +244,19 @@ class _ResetPasswordState extends State<ResetPassword> {
                 }
               }
             },
+
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF6750A4),
+              backgroundColor: buttonColor,
               padding: const EdgeInsets.symmetric(vertical: 15),
             ),
+
             child: Text(
               AppLocale.of(context)!.sendEmail,
-              style: const TextStyle(color: Colors.white),
+              style:  TextStyle(
+                  color: Colors.grey.shade700,
+                  fontSize: context.setWidth(3.5),
+                  fontWeight: FontWeight.w500
+              ),
             ),
           ),
         );

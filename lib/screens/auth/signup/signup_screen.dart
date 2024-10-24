@@ -121,7 +121,7 @@ class _SignUpViewState extends State<SignUpView> {
                       : AppLocale.of(context)!.patientSignUpTitle,
                   style: TextStyle(
                     color: const Color(0xFF1D1B20),
-                    fontSize: context.setWidth(5),
+                    fontSize: context.setWidth(6),
                     fontWeight: FontWeight.w400,
                   ),
                 ),
