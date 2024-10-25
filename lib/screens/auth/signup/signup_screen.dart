@@ -730,7 +730,7 @@ class _SignUpViewState extends State<SignUpView> {
           children: [
             Container(
               width: context.setWidth(90),
-              height: 70,
+              height: 60,
               margin: EdgeInsets.only(top: context.setHeight(1)),
               decoration: ShapeDecoration(
                 shape: RoundedRectangleBorder(
@@ -746,7 +746,11 @@ class _SignUpViewState extends State<SignUpView> {
                     Container(
                       margin: EdgeInsets.only(left: context.setWidth(2.8)),
                       alignment: Alignment.centerLeft,
-                      child: Icon(IconlyBold.bag_2, color: const Color(0xFF49454F), size: context.setWidth(6)),
+                      child: Icon(
+                        IconlyBold.bag_2,
+                        color: const Color(0xFF49454F),
+                        size: context.setWidth(6),
+                      ),
                     ),
                     Expanded(
                       child: Container(
@@ -760,6 +764,8 @@ class _SignUpViewState extends State<SignUpView> {
                             fontWeight: FontWeight.w400,
                             fontFamily: 'Roboto',
                           ),
+                          overflow: TextOverflow.ellipsis, // Add ellipsis for overflow
+                          softWrap: false, // Prevent text from wrapping to the next line
                         ),
                       ),
                     ),
@@ -788,9 +794,9 @@ class _SignUpViewState extends State<SignUpView> {
         Padding(
           padding: EdgeInsets.only(left: context.setWidth(5), top: context.setHeight(0.3)),
           child: Text(
-            _validateField(_workplaceController.value.text, 'Workplace') == null ?
-            _validateField(_workplaceController.value.text, 'Workplace')!:""
-            ,
+            _validateField(_workplaceController.value.text, 'Workplace') == null
+                ? _validateField(_workplaceController.value.text, 'Workplace')!
+                : "",
             style: TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
           ),
         ),

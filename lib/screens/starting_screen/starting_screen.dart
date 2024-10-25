@@ -8,8 +8,20 @@ import 'package:flutter_gp5/widgets/register_as_dialog.dart';
 class StartingScreen extends StatelessWidget {
   const StartingScreen({super.key});
 
+  // Widget backgroundDecoration() {
+  //   return Container(
+  //     decoration: const BoxDecoration(
+  //       image: DecorationImage(
+  //         image: AssetImage('assets/images/klinik-logo-reg-screen.png'),
+  //         fit: BoxFit.cover,
+  //       ),
+  //     ),
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
+    //backgroundDecoration();
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -21,6 +33,7 @@ class StartingScreen extends StatelessWidget {
             colors: [Colors.white, Color(0xFFD5EAE9), Color(0xFFA1D2CE)],
           ),
         ),
+
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -99,7 +112,6 @@ class StartingScreen extends StatelessWidget {
     );
   }
 }
-
 
 void _showRegisterAsDialog(BuildContext context) {
   showDialog(
