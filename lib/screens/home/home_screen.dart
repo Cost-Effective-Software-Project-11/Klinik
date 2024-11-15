@@ -62,7 +62,7 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          backgroundDecoration(),
+          backgroundDecoration(),//here!!!!!!!
           SafeArea(
             child: Padding(
               padding: EdgeInsets.only(top: context.setHeight(0)),
@@ -82,7 +82,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget backgroundDecoration() {
+  Widget backgroundDecoration() {//here!!!!!!!
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(

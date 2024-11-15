@@ -5,5 +5,6 @@ class ImageUtils {
   static const String logo2 = 'assets/images/klinik-logo-02.png';
   static const String logo3 = 'assets/images/klinik-logo-03.png';
   static const String logo4 = 'assets/images/klinik-logo-04.png';
+  static const String logo5 = 'assets/images/klinik-logo-reg-screen.png';
   static const String chatBackgroundPhoto = 'assets/images/msg.png';
 }

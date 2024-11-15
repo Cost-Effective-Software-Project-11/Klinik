@@ -59,6 +59,9 @@ class _SignUpViewState extends State<SignUpView> {
   List<String> institutionNames = [];
   String? selectedInstitution;
 
+  final FocusNode _phoneFocusNode = FocusNode();
+
+
   @override
   void initState() {
     super.initState();
@@ -176,58 +179,105 @@ class _SignUpViewState extends State<SignUpView> {
   }
 
   Widget _buildSignUpForm(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: context.setWidth(2.5), vertical: context.setHeight(1)),
-      child: Column(
-        children: [
-          _buildInputField(
-              context,
-              AppLocale.of(context)!.name,
-              Icons.account_circle,
-              AppLocale.of(context)!.enterYourName,
-              false,
-              _nameController,
-              keyboardType: TextInputType.name
-          ),
-          _buildInputField(
-              context, AppLocale.of(context)!.email,
-              IconlyBold.message,
-              AppLocale.of(context)!.email_placeholder,
-              false,
-              _emailController,
-              keyboardType: TextInputType.emailAddress
-          ),
-          if (widget.userType == UserType.doctor) ...[
-            _buildInstitutionDropdown(
-                context,
-            ),
-          ],
-          _buildPhoneField(
-            AppLocale.of(context)!.phone,
-            AppLocale.of(context)!.phone_placeholder,
+    return Column(
+      children: [
+        _buildInputField(
+            context,
+            AppLocale.of(context)!.name,
+            Icons.account_circle,
+            AppLocale.of(context)!.enterYourName,
             false,
-            _phoneController
-          ),
-          _buildInputField(
+            _nameController,
+            keyboardType: TextInputType.name,
+        ),
+        _buildInputField(
+            context, AppLocale.of(context)!.email,
+            IconlyBold.message,
+            AppLocale.of(context)!.email_placeholder,
+            false,
+            _emailController,
+            keyboardType: TextInputType.emailAddress
+        ),
+        _buildPhoneField(context),
+        if (widget.userType == UserType.doctor) ...[
+          _buildInstitutionDropdown(
               context,
-              AppLocale.of(context)!.password,
-              IconlyBold.lock,
-              AppLocale.of(context)!.password_placeholder,
-              true, _passwordController,
-              toggleVisibility: _togglePasswordVisibility
           ),
-          _buildInputField(
-              context,
-              AppLocale.of(context)!.confirm_password,
-              IconlyBold.unlock,
-              AppLocale.of(context)!.confirmYourPassword,
-              true,
-              _confirmPasswordController,
-              toggleVisibility: _toggleConfirmPasswordVisibility),
         ],
-      ),
+        _buildInputField(
+            context,
+            AppLocale.of(context)!.password,
+            IconlyBold.lock,
+            AppLocale.of(context)!.password_placeholder,
+            true, _passwordController,
+            toggleVisibility: _togglePasswordVisibility
+        ),
+        _buildInputField(
+            context,
+            AppLocale.of(context)!.confirm_password,
+            IconlyBold.unlock,
+            AppLocale.of(context)!.confirmYourPassword,
+            true,
+            _confirmPasswordController,
+            toggleVisibility: _toggleConfirmPasswordVisibility),
+      ],
     );
   }
+  // Container _inputField(
+  //     BuildContext context,
+  //     String label,
+  //     IconData icon,
+  //     String placeholder,
+  //     bool isPassword,
+  //     TextEditingController controller, {
+  //       VoidCallback? toggleVisibility,
+  //       TextInputType keyboardType = TextInputType.text,
+  //     }) {
+  //   return Container(
+  //     // padding: EdgeInsets.zero,// Ensure padding is minimized
+  //     // margin: EdgeInsets.symmetric(vertical: 5), // Control vertical spacing with smaller margin
+  //     width: context.setWidth(90),
+  //     //height: context.setHeight(60),
+  //     child: TextFormField(
+  //       controller: controller,
+  //       obscureText: isPassword, // Toggle password visibility if needed
+  //       keyboardType: keyboardType,
+  //       decoration: InputDecoration(// Reduce internal padding
+  //         labelText: label,
+  //         labelStyle: TextStyle(color: const Color(0xFF49454F)),
+  //         floatingLabelBehavior: FloatingLabelBehavior.always,
+  //         hintText: placeholder,
+  //         hintStyle: TextStyle(
+  //           color: const Color(0x6649454F),
+  //           fontSize: context.setWidth(4),
+  //           fontWeight: FontWeight.normal,
+  //         ),
+  //
+  //         // Add the prefix icon here
+  //         prefixIcon:Icon(
+  //             icon,
+  //             color: const Color(0xFF49454F),
+  //             size: context.setWidth(6)
+  //         ),
+  //
+  //         focusedBorder: OutlineInputBorder(
+  //           borderSide: const BorderSide(color: Color(0xFF6750A4), width: 2.0),
+  //           borderRadius: BorderRadius.circular(30),
+  //         ),
+  //         enabledBorder: OutlineInputBorder(
+  //           borderSide: const BorderSide(color: Color(0xFF79747E), width: 1.0),
+  //           borderRadius: BorderRadius.circular(30),
+  //         ),
+  //         // Red border for validation error
+  //         errorBorder: OutlineInputBorder(
+  //           borderSide: const BorderSide(color: Colors.red, width: 2.0),
+  //           borderRadius: BorderRadius.circular(30),
+  //         ),
+  //       ),
+  //       validator:(value) => controller.value.text.isEmpty || _validateField(controller.value.text, label) == null ? "" : _validateField(controller.value.text, label)! // Use validator function
+  //     ),
+  //   );
+  // }
 
   Widget _buildInputField(
       BuildContext context,
@@ -238,37 +288,26 @@ class _SignUpViewState extends State<SignUpView> {
       TextEditingController controller, {
         VoidCallback? toggleVisibility,
         TextInputType keyboardType = TextInputType.text,
-      }
-      ) {
+      }) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      //crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Stack(
-          alignment: Alignment.centerLeft,
+          //alignment: Alignment.centerLeft,
           children: [
             Container(
               width: context.setWidth(90),
-              height: 60,
-              margin: EdgeInsets.only(top: context.setHeight(1)),
-              decoration: ShapeDecoration(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  side: const BorderSide(color: Color(0xFF79747E)),
-                ),
-                color: const Color(0xFFFEF7FF),
-              ),
+              margin: EdgeInsets.only(top: context.setHeight(1.3)),
               child: Row(
                 children: [
-                  Container(
-                    margin: EdgeInsets.only(left: context.setWidth(3)),
-                    alignment: Alignment.centerLeft,
-                    child: Icon(icon, color: const Color(0xFF49454F), size: context.setWidth(6)),
-                  ),
                   Expanded(
                     child: TextFormField(
                       controller: controller,
                       obscureText: isPassword ? (label == AppLocale.of(context)!.password ? !_passwordVisible : !_confirmPasswordVisible) : false,
                       decoration: InputDecoration(
+                        labelText: label,
+                        labelStyle: TextStyle(color: const Color(0xFF49454F)),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
                         hintText: placeholder,
                         hintStyle: TextStyle(
                             color: const Color(0x6649454F),
@@ -276,7 +315,20 @@ class _SignUpViewState extends State<SignUpView> {
                             fontWeight: FontWeight.normal
                         ),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(vertical: context.setHeight(2), horizontal: context.setWidth(3)),
+                        prefixIcon: Icon(icon, color: const Color(0xFF49454F), size: context.setWidth(6)),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Color(0xFF6750A4), width: 2.0),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Color(0xFF79747E), width: 1.0),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        // Red border for validation error
+                        errorBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.red, width: 2.0),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
                         suffixIcon: isPassword ? IconButton(
                           icon: Icon(
                               (label == AppLocale.of(context)!.password ? _passwordVisible : _confirmPasswordVisible)
@@ -286,6 +338,7 @@ class _SignUpViewState extends State<SignUpView> {
                           color: const Color(0xFF49454F),
                         ) : null,
                       ),
+
                       textAlign: TextAlign.left,
                       validator: (value) => _validateField(value, label),
                       onFieldSubmitted: (value) {
@@ -303,14 +356,6 @@ class _SignUpViewState extends State<SignUpView> {
               child: Container(
                 padding: EdgeInsets.all(context.setWidth(1.6)),
                 color: Theme.of(context).scaffoldBackgroundColor,
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    color: const Color(0xFF49454F),
-                    fontSize: context.setWidth(3.5),
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  ),
-                ),
               ),
             ),
           ],
@@ -338,12 +383,11 @@ class _SignUpViewState extends State<SignUpView> {
     });
   }
 
-  String? _validateField(String? value, String fieldName) {
+  String? _validateField(String? value, String label) {
     if (value == null || value.isEmpty) {
-      return '$fieldName cannot be empty';
+      return '$label cannot be empty';
     }
-
-    switch (fieldName) {
+    switch (label) {
       case 'Name':
         if (value.length < 2) {
           return 'Name must be at least 2 characters long';
@@ -450,15 +494,7 @@ class _SignUpViewState extends State<SignUpView> {
     );
   }
 
-  Widget _buildPhoneField(
-      String label,
-      String placeholder,
-      bool isPassword,
-      TextEditingController controller, {
-        VoidCallback? toggleVisibility,
-        TextInputType keyboardType = TextInputType.text,
-      }
-      ) {
+  Widget _buildPhoneField(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -467,33 +503,32 @@ class _SignUpViewState extends State<SignUpView> {
           children: [
             Container(
               width: context.setWidth(90),
-              height: 60,
               margin: EdgeInsets.only(top: context.setHeight(1)),
-              decoration: ShapeDecoration(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  side: const BorderSide(color: Color(0xFF79747E)),
-                ),
-                color: const Color(0xFFFEF7FF),
-              ),
               child: Row(
                 children: [
                   Expanded(
                     child: IntlPhoneField(
                       decoration: InputDecoration(
                         hintText: AppLocale.of(context)!.enterYourPhone,
-                        hintStyle: TextStyle(
-                            color: const Color(0x6649454F),
-                            fontSize: context.setWidth(4),
-                            fontWeight: FontWeight.normal
+                        hintStyle: TextStyle(color: const Color(0x6649454F), fontSize: context.setWidth(4)),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Color(0xFF6750A4), width: 2.0),
+                          borderRadius: BorderRadius.circular(30),
                         ),
-                        border: InputBorder.none,
-                        counter: const SizedBox.shrink(),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Color(0xFF79747E), width: 1.0),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        // Red border for validation error
+                        errorBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.red, width: 2.0),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
 
                       ),
                       initialCountryCode: 'BG',
                       dropdownIcon: const Icon(Icons.arrow_drop_down, color: Color(0xFF49454F)),
-                      dropdownTextStyle: TextStyle(fontSize: context.setWidth(4), color: const Color(0xFF49454F)),
+                      dropdownTextStyle: TextStyle(fontSize: context.setWidth(4.3), color: const Color(0xFF49454F)),
                       controller: _phoneController,
                       onChanged: (phone) {
                         _fullPhoneNumber = phone.completeNumber;
@@ -528,7 +563,82 @@ class _SignUpViewState extends State<SignUpView> {
         Padding(
           padding: EdgeInsets.only(left: context.setWidth(5), top: context.setHeight(0.3)),
           child: Text(
-            controller.value.text.isEmpty || _validateField(controller.value.text, label) == null ? "" : _validateField(controller.value.text, label)!,
+            _phoneController.value.text.isEmpty || _validateField(_phoneController.value.text, 'Phone') == null ? "" :
+            _validateField(_phoneController.value.text, 'Phone')!,
+            style: TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInstitutionDropdown(BuildContext context) {
+    return Column(
+      children: [
+        Stack(
+          alignment: Alignment.centerLeft,
+          children: [
+            Container(
+              width: context.setWidth(90),
+              height: 60,
+              margin: EdgeInsets.only(top: context.setHeight(1)),
+              decoration: ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  side: const BorderSide(color: Color(0xFF79747E)),
+                ),
+                color: const Color(0xFFFEF7FF),
+              ),
+              child: InkWell(
+                onTap: () => _openInstitutionMenu(context),
+                child: Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(left: context.setWidth(3)),
+                      alignment: Alignment.centerLeft,
+                      child: Icon(IconlyBold.bag_2, color: const Color(0xFF49454F), size: context.setWidth(6)),
+                    ),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: context.setWidth(3)),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          selectedInstitution ?? "Select Institution",
+                          style: TextStyle(
+                            color: selectedInstitution == null ? const Color(0x6649454F) : const Color(0xFF49454F),
+                            fontSize: context.setWidth(4),
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Roboto',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              top: context.setHeight(-1.2),
+              left: context.setWidth(4),
+              child: Container(
+                padding: EdgeInsets.all(context.setWidth(1.1)),
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: Text(
+                  'Workplace',
+                  style: TextStyle(
+                    color: const Color(0xFF49454F),
+                    fontSize: context.setWidth(3.5),
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: context.setWidth(5), top: context.setHeight(0.3)),
+          child: Text(
+            selectedInstitution == null ? "" :"Workplace is required" ,
             style: TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
           ),
         ),
@@ -688,7 +798,9 @@ class _SignUpViewState extends State<SignUpView> {
   }
 
   Widget _buildSignUpButton(BuildContext context) {
-    Color buttonColor = _isFormFilled ? const Color(0xFF6750A4) : Colors.white54;
+    Color buttonColor = _isFormFilled ? const Color(0xFF6750A4) : Colors.white;
+    Color buttonTextColor = _isFormFilled ? Colors.white54  : Colors.grey.shade700;
+
 
     return Container(
       width: context.setWidth(90),
@@ -712,95 +824,12 @@ class _SignUpViewState extends State<SignUpView> {
         child: Text(
           AppLocale.of(context)!.signup,
           style: TextStyle(
-            color: Colors.grey.shade700,
+            color: buttonTextColor,
             fontSize: context.setWidth(3.5),
             fontWeight: FontWeight.w500,
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildInstitutionDropdown(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Stack(
-          alignment: Alignment.centerLeft,
-          children: [
-            Container(
-              width: context.setWidth(90),
-              height: 60,
-              margin: EdgeInsets.only(top: context.setHeight(1)),
-              decoration: ShapeDecoration(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  side: const BorderSide(color: Color(0xFF79747E)),
-                ),
-                color: const Color(0xFFFEF7FF),
-              ),
-              child: InkWell(
-                onTap: () => _openInstitutionMenu(context),
-                child: Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: context.setWidth(2.8)),
-                      alignment: Alignment.centerLeft,
-                      child: Icon(
-                        IconlyBold.bag_2,
-                        color: const Color(0xFF49454F),
-                        size: context.setWidth(6),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: context.setWidth(3)),
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          selectedInstitution ?? "Select Institution",
-                          style: TextStyle(
-                            color: selectedInstitution == null ? const Color(0x6649454F) : const Color(0xFF49454F),
-                            fontSize: context.setWidth(4),
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'Roboto',
-                          ),
-                          overflow: TextOverflow.ellipsis, // Add ellipsis for overflow
-                          softWrap: false, // Prevent text from wrapping to the next line
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Positioned(
-              top: context.setHeight(-1.6),
-              left: context.setWidth(4),
-              child: Container(
-                padding: EdgeInsets.all(context.setWidth(1.2)),
-                color: Theme.of(context).scaffoldBackgroundColor,
-                child: Text(
-                  'Workplace',
-                  style: TextStyle(
-                    color: const Color(0xFF49454F),
-                    fontSize: context.setWidth(3.4),
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        Padding(
-          padding: EdgeInsets.only(left: context.setWidth(5), top: context.setHeight(0.3)),
-          child: Text(
-            _validateField(_workplaceController.value.text, 'Workplace') == null
-                ? _validateField(_workplaceController.value.text, 'Workplace')!
-                : "",
-            style: TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
-          ),
-        ),
-      ],
     );
   }
 
@@ -965,6 +994,8 @@ class _SignUpViewState extends State<SignUpView> {
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _phoneFocusNode.dispose();
+
 
     if (widget.userType == UserType.doctor) {
       _workplaceController.removeListener(_updateSubmitButtonState);

@@ -8,11 +8,11 @@ import 'package:flutter_gp5/widgets/register_as_dialog.dart';
 class StartingScreen extends StatelessWidget {
   const StartingScreen({super.key});
 
-  // Widget backgroundDecoration() {
+  // Widget backgroundDecoration() {//here!!!!!!!
   //   return Container(
   //     decoration: const BoxDecoration(
   //       image: DecorationImage(
-  //         image: AssetImage('assets/images/klinik-logo-reg-screen.png'),
+  //         image: AssetImage(ImageUtils.logo5),
   //         fit: BoxFit.cover,
   //       ),
   //     ),
@@ -21,7 +21,7 @@ class StartingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //backgroundDecoration();
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -37,10 +37,12 @@ class StartingScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            //backgroundDecoration(),
             Container(
               width: 500,
               height: 230,
               decoration: const BoxDecoration(
+
                 image: DecorationImage(
                   image: AssetImage(ImageUtils.logo4),
                   fit: BoxFit.contain,
