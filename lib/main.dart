@@ -9,7 +9,7 @@ import 'package:flutter_gp5/screens/trials/bloc/trials_bloc.dart';
 import 'package:flutter_gp5/screens/trials/repository/trials_repository.dart';
 import 'package:flutter_gp5/services/storage_service.dart';
 
-import 'firebase_options.dart';
+import 'config/firebase_options.dart';
 import 'locale/l10n/app_locale.dart';
 import 'repos/authentication/authentication_repository.dart';
 import 'repos/user/user_repository.dart';
