@@ -12,32 +12,32 @@ dependencies:
   cupertino_icons: ^1.0.6
   firebase_core: ^2.4.1
   firebase_auth: ^4.17.7
+  firebase_app_check: ^0.2.2+7
+  firebase_storage: ^11.7.7
   cloud_firestore: ^4.1.0
   iconly: ^1.0.1
   intl_phone_field: ^3.2.0
   logger: ^2.3.0
-  uuid: ^3.0.0
+  uuid: ^4.5.1
   flutter_localizations:
     sdk: flutter
   intl: any
   flutter_svg: ^1.0.3
-  bloc: ^8.1.0
+  bloc: ^9.0.0
   equatable: ^2.0.3
-  flutter_bloc: ^8.1.1
+  flutter_bloc: ^9.0.0
   country_flags: ^3.0.0
   material_design_icons_flutter: ^7.0.7296
-  firebase_storage: ^11.7.7
   file_picker: ^8.0.7
   image_picker: ^1.1.2
   path: ^1.9.0
   permission_handler: ^11.3.1
-  firebase_app_check: ^0.2.2+7
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
-  bloc_test: ^9.0.0
+  bloc_test: ^10.0.0
   mocktail: ^1.0.0
 
 flutter:

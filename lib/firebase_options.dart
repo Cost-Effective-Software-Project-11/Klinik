@@ -47,7 +47,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDEeKg4v15QrscVDRZFQB3XzrM6zHYYpvQ',
+    apiKey: 'AIzaSyApN5DBcd6N8qwGlGrv4UwoE6kfqK4Pbkk',
     authDomain: 'gp5-firebase-60ae9.firebaseapp.com',
     projectId: 'gp5-firebase-60ae9',
     storageBucket: 'gp5-firebase-60ae9.appspot.com',
@@ -57,19 +57,19 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyC4qgIbZ7iXZqOwy_WX7Bse3vRDe_ANDLU',
-    appId: '1:886581177450:android:0e301a2614da3e73522e13',
-    messagingSenderId: '886581177450',
-    projectId: 'gp5-firebase-60ae9',
-    storageBucket: 'gp5-firebase-60ae9.appspot.com',
+    apiKey: 'AIzaSyApN5DBcd6N8qwGlGrv4UwoE6kfqK4Pbkk',
+    appId: '1:628322144355:android:4059e42be8af674832a856',
+    messagingSenderId: '628322144355',
+    projectId: 'klinik-322ca',
+    storageBucket: 'klinik-322ca.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBBY4O64T03KMCOgme-CAhAv0ZHU8U5Ljk',
-    appId: '1:886581177450:ios:add297054edd000d522e13',
-    messagingSenderId: '886581177450',
-    projectId: 'gp5-firebase-60ae9',
-    storageBucket: 'gp5-firebase-60ae9.appspot.com',
+    apiKey: 'AIzaSyDgM0bGjXeruRt7S4bR9D2qsd3D7GUBAlc',
+    appId: '1:628322144355:ios:aa6516a2e32978c032a856',
+    messagingSenderId: '628322144355',
+    projectId: 'klinik-322ca',
+    storageBucket: 'klinik-322ca.firebasestorage.app',
     iosBundleId: 'com.example.flutterGp5',
   );
 }
