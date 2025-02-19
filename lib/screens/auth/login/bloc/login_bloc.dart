@@ -25,7 +25,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(state.copyWith(status: StatusEnum.inProgress)); // Indicate that login is in progress
 
     try {
-      await _authenticationRepository.logIn(
+      await _authenticationRepository.login(
         email: event.email,
         password: event.password,
       );

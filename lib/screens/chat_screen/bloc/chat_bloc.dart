@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_gp5/models/message_model.dart';
+import 'package:flutter_gp5/models/user.dart';
 import 'package:flutter_gp5/repos/user/user_repository.dart';
 import 'package:flutter_gp5/screens/chat_screen/bloc/chat_states.dart';
 
@@ -21,7 +22,8 @@ class ChatBloc extends Bloc<ChatEvents, ChatStates> {
       GetUsersInChatWithCurrentUser event, Emitter<ChatStates> emit) async {
     emit(UsersLoadingState());
     try {
-      final currentUserId = authRepo.currentUser?.uid;
+      //final currentUserId = authRepo.currentUser?.uid;
+      final currentUserId = '';
       if (currentUserId != null) {
         // Fetch users in chat with the current user
         final chatPartners = await userRepository.getUsersInChatWith(currentUserId);

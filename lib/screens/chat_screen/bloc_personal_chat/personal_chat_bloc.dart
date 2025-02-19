@@ -35,7 +35,8 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
   Future<void> _onUploadFileAndSendMessage(
       UploadFileAndSendMessageEvent event, Emitter<PersonalChatState> emit) async {
     try {
-      final currentUserId = authRepository.currentUser?.uid;
+      //final currentUserId = authRepository.currentUser?.uid;
+      final currentUserId = '';
 
       if (currentUserId == null) {
         emit(const PersonalChatErrorState('User is not logged in'));
@@ -96,7 +97,7 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
   Future<void> _onSendMessage(
       SendMessageEvent event, Emitter<PersonalChatState> emit) async {
     try {
-      final currentUserId = authRepository.currentUser?.uid;
+      final currentUserId = '';
       if (currentUserId == null) {
         emit(const PersonalChatErrorState('User is not logged in'));
         return;
@@ -125,7 +126,7 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
   Future<void> _onGetMessages(
       GetMessagesEvent event, Emitter<PersonalChatState> emit) async {
     try {
-      final currentUserId = authRepository.currentUser?.uid;
+      final currentUserId = '';
       if (currentUserId == null) {
         emit(const PersonalChatErrorState('User is not logged in'));
         return;
@@ -158,7 +159,7 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
   Future<void> _onCreateChatRoom(
       CreateChatRoomEvent event, Emitter<PersonalChatState> emit) async {
     try {
-      final currentUserId = authRepository.currentUser?.uid;
+      final currentUserId = '';
       if (currentUserId == null) {
         emit(const PersonalChatErrorState('User is not logged in'));
         return;
@@ -200,7 +201,8 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
     try {
       final lastMessage = state.messagesList.last;
       final moreMessages = await chatRoomRepository.getMoreMessages(
-        currentUserId: authRepository.currentUser!.uid,
+        //currentUserId: authRepository.currentUser!.uid,
+        currentUserId: 'authRepository.currentUser!.uid',
         chatParticipantTwoId: event.chatParticipantTwoId,
         lastMessage: lastMessage,
         limit: 15,
@@ -220,7 +222,7 @@ class PersonalChatBloc extends Bloc<PersonalChatEvent, PersonalChatState> {
   }
 
   Future<void> _onDownloadFile(DownloadFile event, Emitter<PersonalChatState> emit) async {
-    final currentUserId = authRepository.currentUser?.uid;
+    final currentUserId = '';
 
     // Check if the user is logged in
     if (currentUserId == null) {

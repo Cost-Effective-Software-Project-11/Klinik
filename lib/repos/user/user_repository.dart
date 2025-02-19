@@ -20,7 +20,8 @@ class UserRepository {
       final doc = await _firestore.collection('users').doc(id).get();
       if (doc.exists && doc.data() != null) {
         // Safely parse the user using the refactored fromMap method
-        return User.fromMap(doc.data());
+        //return User.fromMap(doc.data());
+        return null;
       } else {
         _logger.w('User with id $id does not exist or data is null.');
       }
@@ -49,35 +50,6 @@ class UserRepository {
     return null;
   }
 
-  Future<List<User>> getAll() async {
-    List<User> userList = [];
-    try {
-      final userCollection = await _firestore.collection("users").get();
-      userCollection.docs.forEach((element) {
-        final user = User.fromMap(element.data());
-        // Create a new User instance with the document ID set
-        final userWithId = User(
-          id: element.id, // Set the document ID here
-          email: user.email,
-          name: user.name,
-          phone: user.phone,
-          speciality: user.speciality,
-          type: user.type,
-          workplace: user.workplace,
-        );
-
-        userList.add(userWithId);
-      });
-      return userList;
-    } on FirebaseException catch (e) {
-      _logger.e('FirebaseException: ${e.message}', error: e);
-    } catch (e, stack) {
-      _logger.e('Exception while fetching users: $e',
-          error: e, stackTrace: stack);
-    }
-    return userList;
-  }
-
   Future<List<User>> getUsersInChatWith(String currentUserId) async {
     List<User> userList = [];
     try {
@@ -90,15 +62,15 @@ class UserRepository {
       // Extract the userIds of the other participants
       Set<String> participantIds = {};
 
-      chatRoomCollection.docs.forEach((element) {
+      for (var element in chatRoomCollection.docs) {
         List<dynamic> participants = element.data()['participants'];
-        participants.forEach((participantId) {
+        for (var participantId in participants) {
           if(participantId!=currentUserId)
             {
               participantIds.add(participantId);
             }
-        });
-      });
+        }
+      }
 
       // Query the users collection to get the users with the participantIds
       if (participantIds.isNotEmpty) {
@@ -108,19 +80,20 @@ class UserRepository {
             .get();
 
         // Convert documents to User objects
-        userCollection.docs.forEach((element) {
-          final user = User.fromMap(element.data());
-          final userWithId = User(
-            id: element.id,
-            email: user.email,
-            name: user.name,
-            phone: user.phone,
-            speciality: user.speciality,
-            type: user.type,
-            workplace: user.workplace,
-          );
-          userList.add(userWithId);
-        });
+        // userCollection.docs.forEach((element) {
+        //   //final user = User.fromMap(element.data());
+        //   final user = User();
+        //   final userWithId = User(
+        //     id: element.id,
+        //     email: user.email,
+        //     name: user.name,
+        //     phone: user.phone,
+        //     speciality: user.speciality,
+        //     type: user.type,
+        //     workplace: user.workplace,
+        //   );
+        //   userList.add(userWithId);
+        // });
       }
       return userList;
     } on FirebaseException catch (e) {

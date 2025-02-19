@@ -1,112 +1,80 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:logger/logger.dart';
-
-import '../../enums/authentication_status_enum.dart';
-
-// Define the authentication status as an enumeration.
-enum _AuthenticationStatus { authenticated, unauthenticated }
+import 'package:flutter_gp5/config/log.dart';
+import 'package:flutter_gp5/enums/authentication.dart';
+import 'package:flutter_gp5/services/firebase/firebase_service.dart';
+import 'package:flutter_gp5/services/firebase/firestore_service.dart';
 
 class AuthenticationRepository {
-  final FirebaseAuth _firebaseAuth; // Instance of FirebaseAuth.
-  final FirebaseFirestore _firestore; // Instance of FirebaseFirestore.
-  // StreamController to handle the authentication status updates.
-  final StreamController<_AuthenticationStatus> _controller = StreamController<_AuthenticationStatus>();
-  final Logger _logger;
+  final FirebaseAuth _firebaseAuth = FirebaseService.auth;
 
-  // Constructor with optional parameters for FirebaseAuth and FirebaseFirestore.
-  AuthenticationRepository({
-    FirebaseAuth? firebaseAuth,
-    FirebaseFirestore? firestore,
-    Logger? logger,
-  })  : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-        _firestore = firestore ?? FirebaseFirestore.instance,
-        _logger = logger ?? Logger(){
-    // Listen to the auth state changes and update the stream accordingly.
-    _firebaseAuth.authStateChanges().listen((user) {
-      if (user != null) {
-        _controller.add(_AuthenticationStatus.authenticated);
-      } else {
-        _controller.add(_AuthenticationStatus.unauthenticated);
-      }
-    });
+  final StreamController<Authentication> _controller =
+  StreamController<Authentication>.broadcast();
+  late final StreamSubscription<User?> _authStateSubscription;
+
+  AuthenticationRepository() {
+    // Listen to authentication state changes and handle them with _authStateListener.
+    _authStateSubscription =
+        _firebaseAuth.authStateChanges().listen(_authStateListener);
   }
 
-  // Stream that provides continuous updates on the authentication status.
-  Stream<AuthenticationStatus> get status {
-    // Ensure this stream emits AuthenticationStatus
-    return _firebaseAuth.authStateChanges().map((user) {
-      return user != null ? AuthenticationStatus.authenticated : AuthenticationStatus.unauthenticated;
-    });
-  }
+  // Expose a stream of authentication statuses.
+  Stream<Authentication> get status => _controller.stream;
 
-
-  // Get the current user.
-  User? get currentUser => _firebaseAuth.currentUser;
-
-  // Method to log in a user using a username and password.
-  Future<void> logIn({
-    required String email,
-    required String password,
-  }) async {
-    try {
-    await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
-      _controller.add(_AuthenticationStatus.authenticated);
-    } catch (e) {
-      _logger.e('Login error:', error: e);
-      _controller.add(_AuthenticationStatus.unauthenticated);
-      rethrow;
+  // Handle authentication state changes.
+  void _authStateListener(User? user) {
+    if (user != null) {
+      _controller.add(Authentication.authenticated);
+      Log.info('User authenticated: ${user.email}');
+    } else {
+      _controller.add(Authentication.unauthenticated);
+      Log.info('User unauthenticated');
     }
   }
 
-  // Method to sign up a new user.
-  Future<void> signUp({
-    required String email,
-    required String password,
-    required String name,
-    required String phone,
-    required String specialty,
-    required String type,
-    required String workplace,
-  }) async {
-    try {
-      // Step 1: Create user with email and password.
-      UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+  Future<void> login({required String email, required String password}) async {
+    final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
 
-      // Step 2: Store user information in Firestore in the 'users' collection.
-      await _firestore.collection('users').doc(userCredential.user!.uid).set({
-        'email': email,
-        'password': password,
-        'name': name,
-        'phone': phone,
-        'speciality': specialty,
-        'type': type,
-        'workplace': workplace,
-      });
-      _controller.add(_AuthenticationStatus.authenticated);
-    } catch (e) {
-      _logger.e('Signup error:', error: e);
-      _controller.add(_AuthenticationStatus.unauthenticated);
-      rethrow;
+    User? user = userCredential.user;
+    if (user == null) {
+      throw FirebaseAuthException(code: 'error-null-user');
     }
   }
 
-  // Method to check if user is currently logged in.
-  bool isLoggedIn() {
-    var isLoggedIn = _firebaseAuth.currentUser != null;
-    return isLoggedIn;
+  Future<void> register({required String email, required String password}) async {
+    UserCredential userCredentials = await _firebaseAuth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    User? user = userCredentials.user;
+    if (user == null) {
+      throw FirebaseAuthException(code: 'error-null-user');
+    }
+
+    await FirestoreService.instance.createOrUpdateUser(user);
   }
 
-  // Method to log out the current user.
-  Future<void> logOut() async {
-    await _firebaseAuth.signOut();
-    _controller.add(_AuthenticationStatus.unauthenticated);
+  Future<void> logout() async {
+    try {
+      await _firebaseAuth.signOut();
+      _controller.add(Authentication.unauthenticated);
+      Log.info('User logged out successfully');
+    } catch (error) {
+      Log.error('Failed to log out: $error');
+      throw Exception('Logout failed');
+    }
   }
 
-  // Dispose method to close the StreamController when done.
-  void dispose() => _controller.close();
+  Future<void> sendPasswordResetEmail(String email) async {
+    await _firebaseAuth.sendPasswordResetEmail(email: email);
+  }
+
+  void dispose() {
+    _authStateSubscription.cancel();
+    _controller.close();
+  }
 }

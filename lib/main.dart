@@ -2,18 +2,13 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_gp5/repos/chat/chat_room_repository.dart';
-import 'package:flutter_gp5/screens/home/bloc/home_bloc.dart';
-import 'package:flutter_gp5/screens/home/repository/home_repository.dart';
-import 'package:flutter_gp5/screens/trials/bloc/trials_bloc.dart';
-import 'package:flutter_gp5/screens/trials/repository/trials_repository.dart';
-import 'package:flutter_gp5/services/storage_service.dart';
-
+import 'package:flutter_gp5/enums/authentication.dart';
+import 'package:flutter_gp5/extensions/build_context_extensions.dart';
+import 'package:flutter_gp5/screens/auth/login/login_screen.dart';
+import 'package:flutter_gp5/screens/home/home_screen.dart';
 import 'config/firebase_options.dart';
 import 'locale/l10n/app_locale.dart';
 import 'repos/authentication/authentication_repository.dart';
-import 'repos/user/user_repository.dart';
-import 'routes/app_routes.dart';
 import 'screens/auth/bloc/authentication_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -21,86 +16,81 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
   await FirebaseAppCheck.instance.activate(androidProvider: AndroidProvider.playIntegrity);
 
-  runApp(const MyApp());
+  runApp(const KlinikApp());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class KlinikApp extends StatefulWidget {
+  const KlinikApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<KlinikApp> createState() => _KlinikAppState();
 
   static Locale? locale = AppLocale.defaultSystemLocale;
 
   static void setLocale(BuildContext context, Locale newLocale) {
-    _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
+    _KlinikAppState? state = context.findAncestorStateOfType<_KlinikAppState>();
     state?.setLocale(newLocale);
   }
 }
 
-class _MyAppState extends State<MyApp> {
+class _KlinikAppState extends State<KlinikApp> {
+  late final AuthenticationRepository _authenticationRepository;
+
   void setLocale(Locale locale) {
     setState(() {
-      MyApp.locale = locale;
+      KlinikApp.locale = locale;
     });
   }
 
   @override
+  void initState() {
+    super.initState();
+    _authenticationRepository = AuthenticationRepository();
+  }
+
+  @override
+  void dispose() {
+    _authenticationRepository.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider<AuthenticationRepository>(
-          create: (_) => AuthenticationRepository(),
+    return RepositoryProvider.value(
+      value: _authenticationRepository,
+      child: BlocProvider<AuthenticationBloc>(
+        create: (context) => AuthenticationBloc(
+          authenticationRepository: _authenticationRepository,
         ),
-        RepositoryProvider<UserRepository>(
-          create: (_) => UserRepository(),
-        ),
-        RepositoryProvider<ChatRepository>(
-          create: (_) => ChatRepository(),
-        ),
-        RepositoryProvider<StorageService>(
-          create: (_) => StorageService(),
-        ),
-        RepositoryProvider<TrialRepository>(
-          create: (_) => TrialRepository(),
-        ),
-      ],
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider<AuthenticationBloc>(
-            create: (context) => createAuthenticationBloc(context),
-          ),
-          BlocProvider<HomeBloc>(
-            create: (context) => HomeBloc(HomeRepository())..add(LoadInitialData()),
-          ),
-          BlocProvider<TrialBloc>(
-            create: (context) => TrialBloc(context.read<TrialRepository>())..add(FetchTrials()), // Add the TrialBloc
-          ),
-        ],
-        child: MaterialApp(
-          title: 'GP5',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-          ),
-          initialRoute: AppRoutes.splash,
-          onGenerateRoute: AppRoutes.generateRoute,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          locale: MyApp.locale,
-        ),
+        child: klinik(),
       ),
     );
   }
 }
 
-AuthenticationBloc createAuthenticationBloc(BuildContext context) {
-  return AuthenticationBloc(
-    authenticationRepository: context.read<AuthenticationRepository>(),
-    userRepository: context.read<UserRepository>(),
+MaterialApp klinik() {
+  return MaterialApp(
+    title: 'klinik',
+    theme: ThemeData(
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Colors.deepPurple,
+      ),
+    ),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    locale: KlinikApp.locale,
+    home: BlocListener<AuthenticationBloc, AuthenticationState>(
+      listener: (context, state) {
+        if (state.status == Authentication.authenticated) {
+          context.showSuccessSnackBar('authenticated');
+        }
+        if (state.status == Authentication.unauthenticated) {
+          context.showFailureSnackBar('unauthenticated');
+        }
+      },
+      child: HomeScreen(),
+    ),
   );
 }

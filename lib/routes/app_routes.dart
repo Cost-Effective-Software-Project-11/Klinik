@@ -8,7 +8,6 @@ import '../screens/chat_screen/chat_screen.dart';
 import '../screens/starting_screen/starting_screen.dart';
 import '../screens/create_trials/create_trials_screen.dart';
 import '../screens/settings/settings_screen.dart';
-import '../screens/splash/splash_screen.dart';
 import '../screens/trials/trials_screen.dart';
 
 class AppRoutes {
@@ -25,8 +24,6 @@ class AppRoutes {
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case splash:
-        return MaterialPageRoute(builder: (_) => const SplashScreen());
       case home:
         return MaterialPageRoute(builder: (_) => const HomeScreenWrapper());
       case start:

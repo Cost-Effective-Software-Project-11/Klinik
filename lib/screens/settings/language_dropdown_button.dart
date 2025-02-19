@@ -16,14 +16,14 @@ class LanguageDropdownButtonState extends State<LanguageDropdownButton> {
   @override
   void initState() {
     super.initState();
-    _selectedLanguageCode = MyApp.locale!.languageCode;
+    _selectedLanguageCode = KlinikApp.locale!.languageCode;
   }
 
   void _changeLanguage(String languageCode) {
     setState(() {
       _selectedLanguageCode = languageCode;
     });
-    MyApp.setLocale(context, Locale(_selectedLanguageCode));
+    KlinikApp.setLocale(context, Locale(_selectedLanguageCode));
   }
 
   final supportedLanguages = Language.supportedLanguages();

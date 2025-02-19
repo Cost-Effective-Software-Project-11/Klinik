@@ -17,7 +17,7 @@ dependencies:
   cloud_firestore: ^4.1.0
   iconly: ^1.0.1
   intl_phone_field: ^3.2.0
-  logger: ^2.3.0
+  logger: ^2.5.0
   uuid: ^4.5.1
   flutter_localizations:
     sdk: flutter
@@ -32,6 +32,8 @@ dependencies:
   image_picker: ^1.1.2
   path: ^1.9.0
   permission_handler: ^11.3.1
+  meta: ^1.15.0
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:

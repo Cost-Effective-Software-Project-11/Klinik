@@ -29,14 +29,14 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     emit(state.copyWith(status: StatusEnum.inProgress)); // Indicate that the sign-up process is underway
 
     try {
-      await _authenticationRepository.signUp(
+      await _authenticationRepository.register(
         email: event.email,
         password: event.password,
-        name: event.name,
-        phone: event.phone,
-        specialty: event.specialty,
-        type: event.type.toString(),
-        workplace: event.workplace,
+        //name: event.name,
+        //phone: event.phone,
+        //specialty: event.specialty,
+        //type: event.type.toString(),
+        //workplace: event.workplace,
       );
       emit(state.copyWith(status: StatusEnum.success)); // Emit success if signup is successful
     } catch (_) {

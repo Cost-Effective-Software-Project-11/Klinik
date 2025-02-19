@@ -16,25 +16,16 @@ class HomeScreenWrapper extends StatefulWidget {
 }
 
 class _HomeScreenWrapperState extends State<HomeScreenWrapper> {
-  final TextEditingController searchController = TextEditingController();
-
-  @override
-  void dispose() {
-    searchController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return HomeScreen(
-      searchController: searchController,
-    );
+    return HomeScreen();
   }
 }
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key, required this.searchController}) : super(key: key);
-  final TextEditingController searchController;
+  HomeScreen({super.key});
+
+  final TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +94,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           searchAndFilterSection(context),
           SizedBox(height: context.setHeight(1)),
-          buttonRow(context),
+          //buttonRow(context),
         ],
       ),
     );
@@ -375,14 +366,18 @@ class HomeScreen extends StatelessWidget {
           Expanded(
             child: TabBarView(
               children: [
-                doctorList(context),
-                institutionList(context),
+                doctorList2(),
+                //institutionList(context),
               ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget doctorList2() {
+    return const Center(child: Text('Work in progres..'));
   }
 
   Widget doctorList(BuildContext context) {

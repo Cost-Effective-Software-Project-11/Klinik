@@ -57,7 +57,7 @@ class _SignUpViewState extends State<SignUpView> {
   String _fullPhoneNumber = '';
 
   List<String> institutionNames = [];
-  String? selectedInstitution;
+  String? selectedInstitution = 'Test';
 
   @override
   void initState() {
