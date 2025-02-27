@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../enums/user_type_enum.dart';
+import 'package:flutter_gp5/enums/user_type.dart';
 import '../screens/auth/login/login_screen.dart';
-import '../screens/auth/signup/signup_screen.dart';
+import '../screens/auth/signup_old/signup_screen.dart';
 import '../screens/home/doctor/doctor_screen.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/chat_screen/chat_screen.dart';

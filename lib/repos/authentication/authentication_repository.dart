@@ -2,8 +2,11 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_gp5/config/log.dart';
 import 'package:flutter_gp5/enums/authentication.dart';
+import 'package:flutter_gp5/enums/user_type.dart';
+import 'package:flutter_gp5/models/workplace.dart';
 import 'package:flutter_gp5/services/firebase/firebase_service.dart';
 import 'package:flutter_gp5/services/firebase/firestore_service.dart';
+import 'package:flutter_gp5/models/user.dart' as user_model;
 
 class AuthenticationRepository {
   final FirebaseAuth _firebaseAuth = FirebaseService.auth;
@@ -44,18 +47,52 @@ class AuthenticationRepository {
     }
   }
 
-  Future<void> register({required String email, required String password}) async {
-    UserCredential userCredentials = await _firebaseAuth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+  Future<void> register({
+    required String email,
+    required String password,
+    required String name,
+    required String phone,
+    required Workplace workplace,
+    required UserType userType,
+  }) async {
+    User? user;
 
-    User? user = userCredentials.user;
-    if (user == null) {
-      throw FirebaseAuthException(code: 'error-null-user');
+    try {
+      UserCredential userCredentials = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      user = userCredentials.user;
+      if (user == null) {
+        throw FirebaseAuthException(
+            code: 'error-null-user', message: 'User creation failed.');
+      }
+
+      user_model.User userModel = user_model.User(
+        id: user.uid,
+        name: name,
+        email: email,
+        phone: phone,
+        type: userType,
+        workplace: workplace,
+        speciality: '',
+      );
+
+      await FirestoreService.instance.createOrUpdateUser(userModel);
+    } catch (error) {
+      Log.error('Error during user registration: $error');
+      if (user != null) {
+        try {
+          await user.delete();
+          Log.error('Rollback: Firebase user deleted.');
+        } catch (deleteError) {
+          Log.error(
+              'Rollback failed: Unable to delete Firebase user - $deleteError');
+        }
+      }
+      rethrow;
     }
-
-    await FirestoreService.instance.createOrUpdateUser(user);
   }
 
   Future<void> logout() async {

@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Acibadem City Clinic Tokuda Hospital",
+    "city": "Sofia"
+  },
+  {
+    "name": "Aleksandrovska University Hospital",
+    "city": "Sofia"
+  },
+  {
+    "name": "Lozenetz Hospital",
+    "city": "Sofia"
+  },
+  {
+    "name": "Pirogov Hospital",
+    "city": "Sofia"
+  },
+  {
+    "name": "Queen Giovanna Hospital",
+    "city": "Sofia"
+  },
+  {
+    "name": "St. Ekaterina Hospital",
+    "city": "Sofia"
+  },
+  {
+    "name": "National Oncology Centre",
+    "city": "Sofia"
+  },
+  {
+    "name": "University Hospital St. George",
+    "city": "Plovdiv"
+  },
+  {
+    "name": "City Hospital 'Dr. Georgi Stranski'",
+    "city": "Plovdiv"
+  },
+  {
+    "name": "Plovdiv Medical University",
+    "city": "Plovdiv"
+  },
+  {
+    "name": "University Hospital St. Marina",
+    "city": "Varna"
+  },
+  {
+    "name": "Department of General and Operative Surgery",
+    "city": "Varna"
+  },
+  {
+    "name": "Medical Center Varna",
+    "city": "Varna"
+  },
+  {
+    "name": "Naval Hospital",
+    "city": "Varna"
+  },
+  {
+    "name": "Dr. Georgi Stranski University Hospital",
+    "city": "Pleven"
+  },
+  {
+    "name": "Hospital 'Akta-Medika'",
+    "city": "Sevlievo"
+  },
+  {
+    "name": "Multiprofile Hospital for Active Treatment 'Dr. Tota Venkova'",
+    "city": "Gabrovo"
+  },
+  {
+    "name": "General Hospital for Active Treatment 'St. Ivan Rilski'",
+    "city": "Gabrovo"
+  }
+]

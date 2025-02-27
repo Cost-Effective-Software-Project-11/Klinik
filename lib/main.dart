@@ -1,12 +1,11 @@
-import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_gp5/enums/authentication.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
-import 'package:flutter_gp5/screens/auth/login/login_screen.dart';
-import 'package:flutter_gp5/screens/home/home_screen.dart';
+import 'package:flutter_gp5/screens/auth/register/register_screen.dart';
 import 'config/firebase_options.dart';
+import 'config/service_locator.dart';
 import 'locale/l10n/app_locale.dart';
 import 'repos/authentication/authentication_repository.dart';
 import 'screens/auth/bloc/authentication_bloc.dart';
@@ -16,7 +15,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await FirebaseAppCheck.instance.activate(androidProvider: AndroidProvider.playIntegrity);
+
+  initializeDependencyInjection();
 
   runApp(const KlinikApp());
 }
@@ -36,8 +36,6 @@ class KlinikApp extends StatefulWidget {
 }
 
 class _KlinikAppState extends State<KlinikApp> {
-  late final AuthenticationRepository _authenticationRepository;
-
   void setLocale(Locale locale) {
     setState(() {
       KlinikApp.locale = locale;
@@ -45,27 +43,12 @@ class _KlinikAppState extends State<KlinikApp> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _authenticationRepository = AuthenticationRepository();
-  }
-
-  @override
-  void dispose() {
-    _authenticationRepository.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return RepositoryProvider.value(
-      value: _authenticationRepository,
-      child: BlocProvider<AuthenticationBloc>(
-        create: (context) => AuthenticationBloc(
-          authenticationRepository: _authenticationRepository,
-        ),
-        child: klinik(),
+    return BlocProvider<AuthenticationBloc>(
+      create: (context) => AuthenticationBloc(
+        authenticationRepository: getIt<AuthenticationRepository>(),
       ),
+      child: klinik(),
     );
   }
 }
@@ -90,7 +73,7 @@ MaterialApp klinik() {
           context.showFailureSnackBar('unauthenticated');
         }
       },
-      child: HomeScreen(),
+      child: const RegisterScreen(),
     ),
   );
 }

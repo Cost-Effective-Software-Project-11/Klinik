@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter_gp5/config/log.dart';
+import 'package:flutter_gp5/enums/user_type.dart';
 import 'package:flutter_gp5/models/user.dart';
+import 'package:flutter_gp5/models/workplace.dart';
 import 'firebase_service.dart';
 
 class FirestoreService {
@@ -16,12 +18,13 @@ class FirestoreService {
   // collections
   static const String _users = 'users';
 
-  Future<void> createOrUpdateUser(firebase_auth.User user) async {
-    await _firestore.collection(_users).doc(user.uid).set({
-      'uid': user.uid,
-      'username': user.displayName,
+  Future<void> createOrUpdateUser(User user) async {
+    await _firestore.collection(_users).doc(user.id).set({
+      'uid': user.id,
+      'name': user.name,
       'email': user.email,
-      'plan': 'standard',
+      'workplace': user.workplace.toJson(),
+      'phone': user.phone,
       'createdAt': FieldValue.serverTimestamp(),
       'changedAt': FieldValue.serverTimestamp(),
     });
@@ -37,8 +40,8 @@ class FirestoreService {
           name: currentUser.displayName ?? '',
           phone: '',
           speciality: '',
-          type: '',
-          workplace: '',
+          type: UserType.doctor,
+          workplace: const Workplace(name: '', city: 'city'),
         );
       }
     } catch (e) {

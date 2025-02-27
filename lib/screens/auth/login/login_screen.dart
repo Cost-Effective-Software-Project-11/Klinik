@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
-import 'package:flutter_gp5/enums/status_enum.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
 import 'package:flutter_gp5/routes/app_routes.dart';
 import 'package:flutter_gp5/screens/auth/password/forgot_password_screen.dart';
 import 'package:iconly/iconly.dart';
+import '../../../enums/status.dart';
 import '../../../repos/authentication/authentication_repository.dart';
 import '../../../widgets/register_as_dialog.dart';
 import 'bloc/login_bloc.dart';
@@ -129,9 +129,9 @@ class _LoginScreenState extends State<_LoginScreen> {
               padding: const EdgeInsets.all(12),
               child: BlocListener<LoginBloc, LoginState>(
                 listener: (context, state) {
-                  if (state.status == StatusEnum.success) {
+                  if (state.status == Status.success) {
                     Navigator.pushReplacementNamed(context, AppRoutes.home);
-                  } else if (state.status == StatusEnum.failure) {
+                  } else if (state.status == Status.error) {
                     ScaffoldMessenger.of(context)
                       ..hideCurrentSnackBar()
                       ..showSnackBar(

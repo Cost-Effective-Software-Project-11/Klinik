@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gp5/enums/user_type.dart';
 import '../../locale/l10n/app_locale.dart';
 import '../../routes/app_routes.dart';
-import '../enums/user_type_enum.dart';
 
 class RegisterAsDialog extends StatelessWidget {
   const RegisterAsDialog({super.key});

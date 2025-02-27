@@ -1,7 +1,7 @@
 part of 'signup_bloc.dart';
 
 class SignupState extends Equatable {
-  final StatusEnum status;
+  final Status status;
   final String email;
   final String password;
   final String confirmPassword;
@@ -13,7 +13,7 @@ class SignupState extends Equatable {
   final bool isValid;
 
   const SignupState({
-    this.status = StatusEnum.initial,
+    this.status = Status.initial,
     this.email = '',
     this.password = '',
     this.confirmPassword = '',
@@ -26,7 +26,7 @@ class SignupState extends Equatable {
   });
 
   SignupState copyWith({
-    StatusEnum? status,
+    Status? status,
     String? email,
     String? password,
     String? confirmPassword,

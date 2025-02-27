@@ -2,19 +2,19 @@ part of 'login_bloc.dart';
 
 final class LoginState extends Equatable {
   const LoginState({
-    this.status = StatusEnum.initial,
+    this.status = Status.initial,
     this.email = '',
     this.password = '',
     this.isValid = false,
   });
 
-  final StatusEnum status;
+  final Status status;
   final String email;
   final String password;
   final bool isValid;
 
   LoginState copyWith({
-    StatusEnum? status,
+    Status? status,
     String? email,
     String? password,
     bool? isValid,

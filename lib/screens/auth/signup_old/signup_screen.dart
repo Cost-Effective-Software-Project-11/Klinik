@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
-import '../../../enums/status_enum.dart';
-import '../../../enums/user_type_enum.dart';
+import '../../../enums/status.dart';
+import '../../../enums/user_type.dart';
 import '../../../locale/l10n/app_locale.dart';
 import '../../../repos/authentication/authentication_repository.dart';
 import '../../../routes/app_routes.dart';
@@ -97,9 +97,9 @@ class _SignUpViewState extends State<SignUpView> {
   Widget build(BuildContext context) {
     return BlocListener<SignupBloc, SignupState>(
         listener: (context, state) {
-          if (state.status == StatusEnum.success) {
+          if (state.status == Status.success) {
             Navigator.pushReplacementNamed(context, AppRoutes.home);
-          } else if (state.status == StatusEnum.failure) {
+          } else if (state.status == Status.error) {
             ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(AppLocale.of(context)!.signupfailure))
             );

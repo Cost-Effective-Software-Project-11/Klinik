@@ -1,4 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter_gp5/enums/user_type.dart';
+import 'package:flutter_gp5/models/workplace.dart';
 import 'package:meta/meta.dart';
 
 @immutable
@@ -18,8 +20,8 @@ class User extends Equatable {
   final String name;
   final String phone;
   final String speciality;
-  final String type;
-  final String workplace;
+  final UserType type;
+  final Workplace workplace;
 
   @override
   List<Object?> get props =>
