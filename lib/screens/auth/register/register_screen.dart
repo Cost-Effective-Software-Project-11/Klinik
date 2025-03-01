@@ -45,10 +45,10 @@ class _RegisterScreen extends StatelessWidget {
           icon: const Icon(Icons.navigate_before, size: md),
           onPressed: () => context.pop(),
         ),
-        title: Text(
-          userType == UserType.doctor ? 'Doctor Sign Up' : 'Patient Sign Up',
-        ),
         centerTitle: true,
+        title: Text(
+          '${userType == UserType.doctor ? 'Doctor' : 'Patient'} Sign Up',
+        ),
       ),
       body: BlocBuilder<RegisterBloc, RegisterState>(
         builder: (context, state) {
