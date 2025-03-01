@@ -15,7 +15,7 @@ class ErrorStateView extends StatelessWidget {
     this.messageColor,
     this.actionLabel,
     this.centerContent = true,
-    this.padding = const EdgeInsets.all(16.0),
+    this.padding = const EdgeInsets.all(xs),
   });
 
   final String? title;

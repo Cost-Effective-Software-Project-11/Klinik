@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_gp5/enums/authentication.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
-import 'package:flutter_gp5/screens/auth/register/register_screen.dart';
+import 'package:flutter_gp5/screens/auth/login/login_screen.dart';
 import 'package:flutter_gp5/services/text_file_loader_service.dart';
 import 'config/firebase_options.dart';
 import 'config/service_locator.dart';
@@ -15,8 +15,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   initializeDependencyInjection();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await TextFileLoaderService().preloadFiles();
 
   runApp(const KlinikApp());
@@ -74,7 +74,7 @@ MaterialApp klinik() {
           context.showFailureSnackBar('unauthenticated');
         }
       },
-      child: const RegisterScreen(),
+      child: const LoginScreen(),
     ),
   );
 }

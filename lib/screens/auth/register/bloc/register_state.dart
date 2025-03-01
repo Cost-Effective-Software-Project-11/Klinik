@@ -6,6 +6,7 @@ class RegisterState with _$RegisterState {
     @Default(Status.initial) Status status,
     @Default('') String name,
     @Default('') String email,
+    @Default(UserType.unknown) UserType userType,
     @Default(Workplace(name: '', city: '')) Workplace workplace,
     @Default('') String phone,
     @Default('') String password,

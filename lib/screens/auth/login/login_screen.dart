@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gp5/config/service_locator.dart';
+import 'package:flutter_gp5/design_system/atoms/spaces.dart';
+import 'package:flutter_gp5/design_system/molecules/button/primary_button/primary_button.dart';
+import 'package:flutter_gp5/design_system/molecules/dialogs.dart';
+import 'package:flutter_gp5/enums/user_type.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/locale/l10n/app_locale.dart';
 import 'package:flutter_gp5/routes/app_routes.dart';
 import 'package:flutter_gp5/screens/auth/password/forgot_password_screen.dart';
+import 'package:flutter_gp5/screens/auth/register/register_screen.dart';
 import 'package:iconly/iconly.dart';
 import '../../../enums/status.dart';
 import '../../../repos/authentication/authentication_repository.dart';
-import '../../../widgets/register_as_dialog.dart';
 import 'bloc/login_bloc.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -15,11 +20,9 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authenticationRepository =
-        RepositoryProvider.of<AuthenticationRepository>(context);
     return BlocProvider(
-      create: (context) =>
-          LoginBloc(authenticationRepository: authenticationRepository),
+      create: (context) => LoginBloc(
+          authenticationRepository: getIt<AuthenticationRepository>()),
       child: const _LoginScreen(),
     );
   }
@@ -76,7 +79,7 @@ class _LoginScreenState extends State<_LoginScreen> {
             padding: EdgeInsets.only(
                 top: context.setHeight(1), bottom: context.setHeight(1)),
             child: AppBar(
-              backgroundColor:  Colors.transparent,
+              backgroundColor: Colors.transparent,
               leading: IconButton(
                 icon: Icon(Icons.navigate_before,
                     color: const Color(0xFF1D1B20), size: context.setWidth(8)),
@@ -191,15 +194,15 @@ class _LoginScreenState extends State<_LoginScreen> {
   }
 
   Widget _buildInputField(
-      BuildContext context,
-      String label,
-      IconData icon,
-      String placeholder,
-      bool isPassword,
-      TextEditingController controller, {
-        VoidCallback? toggleVisibility,
-        TextInputType keyboardType = TextInputType.text,
-      }) {
+    BuildContext context,
+    String label,
+    IconData icon,
+    String placeholder,
+    bool isPassword,
+    TextEditingController controller, {
+    VoidCallback? toggleVisibility,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -242,12 +245,12 @@ class _LoginScreenState extends State<_LoginScreen> {
                             horizontal: context.setWidth(3)),
                         suffixIcon: isPassword
                             ? IconButton(
-                          icon: Icon(_passwordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off),
-                          onPressed: toggleVisibility,
-                          color: const Color(0xFF49454F),
-                        )
+                                icon: Icon(_passwordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: toggleVisibility,
+                                color: const Color(0xFF49454F),
+                              )
                             : null,
                       ),
                       textAlign: TextAlign.left,
@@ -284,11 +287,11 @@ class _LoginScreenState extends State<_LoginScreen> {
               left: context.setWidth(5), top: context.setHeight(0.3)),
           child: Text(
             controller.value.text.isEmpty ||
-                _validateField(controller.value.text, label) == null
+                    _validateField(controller.value.text, label) == null
                 ? ""
                 : _validateField(controller.value.text, label)!,
             style:
-            TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
+                TextStyle(color: Colors.red, fontSize: context.setWidth(3.5)),
           ),
         ),
       ],
@@ -413,12 +416,39 @@ class _LoginScreenState extends State<_LoginScreen> {
     );
   }
 
-
   showRegisterAsDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const RegisterAsDialog();
+        return CustomAlertDialog(
+          title: const Center(child: Text('Register as')),
+          content: const Divider(),
+          actions: [
+            SizedBox(
+              height: xxl,
+              child: PrimaryButton.blocked(
+                title: 'Patient',
+                onPressed: () {
+                  context.push(
+                    const RegisterScreen(userType: UserType.patient),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: xs),
+            SizedBox(
+              height: xxl,
+              child: PrimaryButton.blocked(
+                title: 'Doctor',
+                onPressed: () {
+                  context.push(
+                    const RegisterScreen(userType: UserType.doctor),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
       },
     );
   }

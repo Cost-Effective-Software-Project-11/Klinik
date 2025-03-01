@@ -8,6 +8,7 @@ import 'package:flutter_gp5/design_system/molecules/button/primary_button/primar
 import 'package:flutter_gp5/design_system/molecules/dialogs.dart';
 import 'package:flutter_gp5/design_system/molecules/fields.dart';
 import 'package:flutter_gp5/design_system/molecules/gradient_background.dart';
+import 'package:flutter_gp5/enums/user_type.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/models/workplace.dart';
 import 'package:flutter_gp5/screens/auth/login/login_screen.dart';
@@ -85,20 +86,21 @@ class _RegistrationFieldsState extends State<RegistrationFields> {
                   bloc.add(RegisterEvent.onEmailChanged(value));
                 },
               ),
-              CustomDropdownFormField(
-                padding: dimen.horizontal.sm + dimen.vertical.xxs,
-                borderRadius: lg,
-                isExpanded: true,
-                prefixIcon: Icons.medical_services,
-                hintText: 'Workplace',
-                items: widget.state.workplaces,
-                dropdownValues: (Workplace workplace) =>
-                    '${workplace.name}, ${workplace.city}',
-                onSaved: (value) {
-                  if (value == null) return;
-                  bloc.add(RegisterEvent.onWorkplaceChanged(value));
-                },
-              ),
+              if (widget.state.userType == UserType.doctor)
+                CustomDropdownFormField(
+                  padding: dimen.horizontal.sm + dimen.vertical.xxs,
+                  borderRadius: lg,
+                  isExpanded: true,
+                  prefixIcon: Icons.medical_services,
+                  hintText: 'Workplace',
+                  items: widget.state.workplaces,
+                  dropdownValues: (Workplace workplace) =>
+                      '${workplace.name}, ${workplace.city}',
+                  onSaved: (value) {
+                    if (value == null) return;
+                    bloc.add(RegisterEvent.onWorkplaceChanged(value));
+                  },
+                ),
               CustomTextFormField(
                 padding: dimen.horizontal.sm + dimen.vertical.xxs,
                 labelText: 'Phone',
@@ -150,19 +152,28 @@ class _RegistrationFieldsState extends State<RegistrationFields> {
                 onShowTermsOfServiceDialog: () => showDialog(
                   context: context,
                   builder: (context) => CustomAlertDialog(
-                    title: 'Terms & Conditions',
                     scrollable: true,
-                    content: TextFileLoaderService().getTermsOfService(),
-                    primaryButtonTitle: 'Close',
+                    title: const Text('Terms of Service'),
+                    content: Text(TextFileLoaderService().getTermsOfService()),
+                    actions: [
+                      PrimaryButton.small(
+                        title: 'Close',
+                        onPressed: () => context.pop(),
+                      ),
+                    ],
                   ),
                 ),
                 onShowPrivacyPolicyDialog: (context) => showDialog(
                   context: context,
                   builder: (context) => CustomAlertDialog(
-                    scrollable: true,
-                    title: 'Privacy Policy',
-                    content: TextFileLoaderService().getPrivacyPolicy(),
-                    primaryButtonTitle: 'Close',
+                    title: const Text('Privacy Policy'),
+                    content: Text(TextFileLoaderService().getPrivacyPolicy()),
+                    actions: [
+                      PrimaryButton.small(
+                        title: 'Close',
+                        onPressed: () => context.pop(),
+                      ),
+                    ],
                   ),
                 ),
               ),

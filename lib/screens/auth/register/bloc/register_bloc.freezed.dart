@@ -25,7 +25,6 @@ mixin _$RegisterEvent {
     required TResult Function(String phone) onPhoneChanged,
     required TResult Function(String password) onPasswordChanged,
     required TResult Function(String repeatPassword) onRepeatPasswordChanged,
-    required TResult Function(bool isAgreed) isAgreed,
     required TResult Function() onSubmitted,
   }) =>
       throw _privateConstructorUsedError;
@@ -38,7 +37,6 @@ mixin _$RegisterEvent {
     TResult? Function(String phone)? onPhoneChanged,
     TResult? Function(String password)? onPasswordChanged,
     TResult? Function(String repeatPassword)? onRepeatPasswordChanged,
-    TResult? Function(bool isAgreed)? isAgreed,
     TResult? Function()? onSubmitted,
   }) =>
       throw _privateConstructorUsedError;
@@ -51,7 +49,6 @@ mixin _$RegisterEvent {
     TResult Function(String phone)? onPhoneChanged,
     TResult Function(String password)? onPasswordChanged,
     TResult Function(String repeatPassword)? onRepeatPasswordChanged,
-    TResult Function(bool isAgreed)? isAgreed,
     TResult Function()? onSubmitted,
     required TResult orElse(),
   }) =>
@@ -66,7 +63,6 @@ mixin _$RegisterEvent {
     required TResult Function(_OnPasswordChanged value) onPasswordChanged,
     required TResult Function(_OnRepeatPasswordChanged value)
         onRepeatPasswordChanged,
-    required TResult Function(_OnIsAgreed value) isAgreed,
     required TResult Function(_OnSubmitted value) onSubmitted,
   }) =>
       throw _privateConstructorUsedError;
@@ -79,7 +75,6 @@ mixin _$RegisterEvent {
     TResult? Function(_OnPhoneChanged value)? onPhoneChanged,
     TResult? Function(_OnPasswordChanged value)? onPasswordChanged,
     TResult? Function(_OnRepeatPasswordChanged value)? onRepeatPasswordChanged,
-    TResult? Function(_OnIsAgreed value)? isAgreed,
     TResult? Function(_OnSubmitted value)? onSubmitted,
   }) =>
       throw _privateConstructorUsedError;
@@ -92,7 +87,6 @@ mixin _$RegisterEvent {
     TResult Function(_OnPhoneChanged value)? onPhoneChanged,
     TResult Function(_OnPasswordChanged value)? onPasswordChanged,
     TResult Function(_OnRepeatPasswordChanged value)? onRepeatPasswordChanged,
-    TResult Function(_OnIsAgreed value)? isAgreed,
     TResult Function(_OnSubmitted value)? onSubmitted,
     required TResult orElse(),
   }) =>
@@ -168,7 +162,6 @@ class _$OnLoadImpl implements _OnLoad {
     required TResult Function(String phone) onPhoneChanged,
     required TResult Function(String password) onPasswordChanged,
     required TResult Function(String repeatPassword) onRepeatPasswordChanged,
-    required TResult Function(bool isAgreed) isAgreed,
     required TResult Function() onSubmitted,
   }) {
     return onLoad();
@@ -184,7 +177,6 @@ class _$OnLoadImpl implements _OnLoad {
     TResult? Function(String phone)? onPhoneChanged,
     TResult? Function(String password)? onPasswordChanged,
     TResult? Function(String repeatPassword)? onRepeatPasswordChanged,
-    TResult? Function(bool isAgreed)? isAgreed,
     TResult? Function()? onSubmitted,
   }) {
     return onLoad?.call();
@@ -200,7 +192,6 @@ class _$OnLoadImpl implements _OnLoad {
     TResult Function(String phone)? onPhoneChanged,
     TResult Function(String password)? onPasswordChanged,
     TResult Function(String repeatPassword)? onRepeatPasswordChanged,
-    TResult Function(bool isAgreed)? isAgreed,
     TResult Function()? onSubmitted,
     required TResult orElse(),
   }) {
@@ -221,7 +212,6 @@ class _$OnLoadImpl implements _OnLoad {
     required TResult Function(_OnPasswordChanged value) onPasswordChanged,
     required TResult Function(_OnRepeatPasswordChanged value)
         onRepeatPasswordChanged,
-    required TResult Function(_OnIsAgreed value) isAgreed,
     required TResult Function(_OnSubmitted value) onSubmitted,
   }) {
     return onLoad(this);
@@ -237,7 +227,6 @@ class _$OnLoadImpl implements _OnLoad {
     TResult? Function(_OnPhoneChanged value)? onPhoneChanged,
     TResult? Function(_OnPasswordChanged value)? onPasswordChanged,
     TResult? Function(_OnRepeatPasswordChanged value)? onRepeatPasswordChanged,
-    TResult? Function(_OnIsAgreed value)? isAgreed,
     TResult? Function(_OnSubmitted value)? onSubmitted,
   }) {
     return onLoad?.call(this);
@@ -253,7 +242,6 @@ class _$OnLoadImpl implements _OnLoad {
     TResult Function(_OnPhoneChanged value)? onPhoneChanged,
     TResult Function(_OnPasswordChanged value)? onPasswordChanged,
     TResult Function(_OnRepeatPasswordChanged value)? onRepeatPasswordChanged,
-    TResult Function(_OnIsAgreed value)? isAgreed,
     TResult Function(_OnSubmitted value)? onSubmitted,
     required TResult orElse(),
   }) {
@@ -343,7 +331,6 @@ class _$OnNameChangedImpl implements _OnNameChanged {
     required TResult Function(String phone) onPhoneChanged,
     required TResult Function(String password) onPasswordChanged,
     required TResult Function(String repeatPassword) onRepeatPasswordChanged,
-    required TResult Function(bool isAgreed) isAgreed,
     required TResult Function() onSubmitted,
   }) {
     return onNameChanged(name);
@@ -359,7 +346,6 @@ class _$OnNameChangedImpl implements _OnNameChanged {
     TResult? Function(String phone)? onPhoneChanged,
     TResult? Function(String password)? onPasswordChanged,
     TResult? Function(String repeatPassword)? onRepeatPasswordChanged,
-    TResult? Function(bool isAgreed)? isAgreed,
     TResult? Function()? onSubmitted,
   }) {
     return onNameChanged?.call(name);
@@ -375,7 +361,6 @@ class _$OnNameChangedImpl implements _OnNameChanged {
     TResult Function(String phone)? onPhoneChanged,
     TResult Function(String password)? onPasswordChanged,
     TResult Function(String repeatPassword)? onRepeatPasswordChanged,
-    TResult Function(bool isAgreed)? isAgreed,
     TResult Function()? onSubmitted,
     required TResult orElse(),
   }) {
@@ -396,7 +381,6 @@ class _$OnNameChangedImpl implements _OnNameChanged {
     required TResult Function(_OnPasswordChanged value) onPasswordChanged,
     required TResult Function(_OnRepeatPasswordChanged value)
         onRepeatPasswordChanged,
-    required TResult Function(_OnIsAgreed value) isAgreed,
     required TResult Function(_OnSubmitted value) onSubmitted,
   }) {
     return onNameChanged(this);
@@ -412,7 +396,6 @@ class _$OnNameChangedImpl implements _OnNameChanged {
     TResult? Function(_OnPhoneChanged value)? onPhoneChanged,
     TResult? Function(_OnPasswordChanged value)? onPasswordChanged,
     TResult? Function(_OnRepeatPasswordChanged value)? onRepeatPasswordChanged,
-    TResult? Function(_OnIsAgreed value)? isAgreed,
     TResult? Function(_OnSubmitted value)? onSubmitted,
   }) {
     return onNameChanged?.call(this);
@@ -428,7 +411,6 @@ class _$OnNameChangedImpl implements _OnNameChanged {
     TResult Function(_OnPhoneChanged value)? onPhoneChanged,
     TResult Function(_OnPasswordChanged value)? onPasswordChanged,
     TResult Function(_OnRepeatPasswordChanged value)? onRepeatPasswordChanged,
-    TResult Function(_OnIsAgreed value)? isAgreed,
     TResult Function(_OnSubmitted value)? onSubmitted,
     required TResult orElse(),
   }) {
@@ -527,7 +509,6 @@ class _$OnEmailChangedImpl implements _OnEmailChanged {
     required TResult Function(String phone) onPhoneChanged,
     required TResult Function(String password) onPasswordChanged,
     required TResult Function(String repeatPassword) onRepeatPasswordChanged,
-    required TResult Function(bool isAgreed) isAgreed,
     required TResult Function() onSubmitted,
   }) {
     return onEmailChanged(email);
@@ -543,7 +524,6 @@ class _$OnEmailChangedImpl implements _OnEmailChanged {
     TResult? Function(String phone)? onPhoneChanged,
     TResult? Function(String password)? onPasswordChanged,
     TResult? Function(String repeatPassword)? onRepeatPasswordChanged,
-    TResult? Function(bool isAgreed)? isAgreed,
     TResult? Function()? onSubmitted,
   }) {
     return onEmailChanged?.call(email);
@@ -559,7 +539,6 @@ class _$OnEmailChangedImpl implements _OnEmailChanged {
     TResult Function(String phone)? onPhoneChanged,
     TResult Function(String password)? onPasswordChanged,
     TResult Function(String repeatPassword)? onRepeatPasswordChanged,
-    TResult Function(bool isAgreed)? isAgreed,
     TResult Function()? onSubmitted,
     required TResult orElse(),
   }) {
@@ -580,7 +559,6 @@ class _$OnEmailChangedImpl implements _OnEmailChanged {
     required TResult Function(_OnPasswordChanged value) onPasswordChanged,
     required TResult Function(_OnRepeatPasswordChanged value)
         onRepeatPasswordChanged,
-    required TResult Function(_OnIsAgreed value) isAgreed,
     required TResult Function(_OnSubmitted value) onSubmitted,
   }) {
     return onEmailChanged(this);
@@ -596,7 +574,6 @@ class _$OnEmailChangedImpl implements _OnEmailChanged {
     TResult? Function(_OnPhoneChanged value)? onPhoneChanged,
     TResult? Function(_OnPasswordChanged value)? onPasswordChanged,
     TResult? Function(_OnRepeatPasswordChanged value)? onRepeatPasswordChanged,
-    TResult? Function(_OnIsAgreed value)? isAgreed,
     TResult? Function(_OnSubmitted value)? onSubmitted,
   }) {
     return onEmailChanged?.call(this);
@@ -612,7 +589,6 @@ class _$OnEmailChangedImpl implements _OnEmailChanged {
     TResult Function(_OnPhoneChanged value)? onPhoneChanged,
     TResult Function(_OnPasswordChanged value)? onPasswordChanged,
     TResult Function(_OnRepeatPasswordChanged value)? onRepeatPasswordChanged,
-    TResult Function(_OnIsAgreed value)? isAgreed,
     TResult Function(_OnSubmitted value)? onSubmitted,
     required TResult orElse(),
   }) {
@@ -724,7 +700,6 @@ class _$OnWorkplaceChangedImpl implements _OnWorkplaceChanged {
     required TResult Function(String phone) onPhoneChanged,
     required TResult Function(String password) onPasswordChanged,
     required TResult Function(String repeatPassword) onRepeatPasswordChanged,
-    required TResult Function(bool isAgreed) isAgreed,
     required TResult Function() onSubmitted,
   }) {
     return onWorkplaceChanged(workplace);
@@ -740,7 +715,6 @@ class _$OnWorkplaceChangedImpl implements _OnWorkplaceChanged {
     TResult? Function(String phone)? onPhoneChanged,
     TResult? Function(String password)? onPasswordChanged,
     TResult? Function(String repeatPassword)? onRepeatPasswordChanged,
-    TResult? Function(bool isAgreed)? isAgreed,
     TResult? Function()? onSubmitted,
   }) {
     return onWorkplaceChanged?.call(workplace);
@@ -756,7 +730,6 @@ class _$OnWorkplaceChangedImpl implements _OnWorkplaceChanged {
     TResult Function(String phone)? onPhoneChanged,
     TResult Function(String password)? onPasswordChanged,
     TResult Function(String repeatPassword)? onRepeatPasswordChanged,
-    TResult Function(bool isAgreed)? isAgreed,
     TResult Function()? onSubmitted,
     required TResult orElse(),
   }) {
@@ -777,7 +750,6 @@ class _$OnWorkplaceChangedImpl implements _OnWorkplaceChanged {
     required TResult Function(_OnPasswordChanged value) onPasswordChanged,
     required TResult Function(_OnRepeatPasswordChanged value)
         onRepeatPasswordChanged,
-    required TResult Function(_OnIsAgreed value) isAgreed,
     required TResult Function(_OnSubmitted value) onSubmitted,
   }) {
     return onWorkplaceChanged(this);
@@ -793,7 +765,6 @@ class _$OnWorkplaceChangedImpl implements _OnWorkplaceChanged {
     TResult? Function(_OnPhoneChanged value)? onPhoneChanged,
     TResult? Function(_OnPasswordChanged value)? onPasswordChanged,
     TResult? Function(_OnRepeatPasswordChanged value)? onRepeatPasswordChanged,
-    TResult? Function(_OnIsAgreed value)? isAgreed,
     TResult? Function(_OnSubmitted value)? onSubmitted,
   }) {
     return onWorkplaceChanged?.call(this);
@@ -809,7 +780,6 @@ class _$OnWorkplaceChangedImpl implements _OnWorkplaceChanged {
     TResult Function(_OnPhoneChanged value)? onPhoneChanged,
     TResult Function(_OnPasswordChanged value)? onPasswordChanged,
     TResult Function(_OnRepeatPasswordChanged value)? onRepeatPasswordChanged,
-    TResult Function(_OnIsAgreed value)? isAgreed,
     TResult Function(_OnSubmitted value)? onSubmitted,
     required TResult orElse(),
   }) {
@@ -909,7 +879,6 @@ class _$OnPhoneChangedImpl implements _OnPhoneChanged {
     required TResult Function(String phone) onPhoneChanged,
     required TResult Function(String password) onPasswordChanged,
     required TResult Function(String repeatPassword) onRepeatPasswordChanged,
-    required TResult Function(bool isAgreed) isAgreed,
     required TResult Function() onSubmitted,
   }) {
     return onPhoneChanged(phone);
@@ -925,7 +894,6 @@ class _$OnPhoneChangedImpl implements _OnPhoneChanged {
     TResult? Function(String phone)? onPhoneChanged,
     TResult? Function(String password)? onPasswordChanged,
     TResult? Function(String repeatPassword)? onRepeatPasswordChanged,
-    TResult? Function(bool isAgreed)? isAgreed,
     TResult? Function()? onSubmitted,
   }) {
     return onPhoneChanged?.call(phone);
@@ -941,7 +909,6 @@ class _$OnPhoneChangedImpl implements _OnPhoneChanged {
     TResult Function(String phone)? onPhoneChanged,
     TResult Function(String password)? onPasswordChanged,
     TResult Function(String repeatPassword)? onRepeatPasswordChanged,
-    TResult Function(bool isAgreed)? isAgreed,
     TResult Function()? onSubmitted,
     required TResult orElse(),
   }) {
@@ -962,7 +929,6 @@ class _$OnPhoneChangedImpl implements _OnPhoneChanged {
     required TResult Function(_OnPasswordChanged value) onPasswordChanged,
     required TResult Function(_OnRepeatPasswordChanged value)
         onRepeatPasswordChanged,
-    required TResult Function(_OnIsAgreed value) isAgreed,
     required TResult Function(_OnSubmitted value) onSubmitted,
   }) {
     return onPhoneChanged(this);
@@ -978,7 +944,6 @@ class _$OnPhoneChangedImpl implements _OnPhoneChanged {
     TResult? Function(_OnPhoneChanged value)? onPhoneChanged,
     TResult? Function(_OnPasswordChanged value)? onPasswordChanged,
     TResult? Function(_OnRepeatPasswordChanged value)? onRepeatPasswordChanged,
-    TResult? Function(_OnIsAgreed value)? isAgreed,
     TResult? Function(_OnSubmitted value)? onSubmitted,
   }) {
     return onPhoneChanged?.call(this);
@@ -994,7 +959,6 @@ class _$OnPhoneChangedImpl implements _OnPhoneChanged {
     TResult Function(_OnPhoneChanged value)? onPhoneChanged,
     TResult Function(_OnPasswordChanged value)? onPasswordChanged,
     TResult Function(_OnRepeatPasswordChanged value)? onRepeatPasswordChanged,
-    TResult Function(_OnIsAgreed value)? isAgreed,
     TResult Function(_OnSubmitted value)? onSubmitted,
     required TResult orElse(),
   }) {
@@ -1094,7 +1058,6 @@ class _$OnPasswordChangedImpl implements _OnPasswordChanged {
     required TResult Function(String phone) onPhoneChanged,
     required TResult Function(String password) onPasswordChanged,
     required TResult Function(String repeatPassword) onRepeatPasswordChanged,
-    required TResult Function(bool isAgreed) isAgreed,
     required TResult Function() onSubmitted,
   }) {
     return onPasswordChanged(password);
@@ -1110,7 +1073,6 @@ class _$OnPasswordChangedImpl implements _OnPasswordChanged {
     TResult? Function(String phone)? onPhoneChanged,
     TResult? Function(String password)? onPasswordChanged,
     TResult? Function(String repeatPassword)? onRepeatPasswordChanged,
-    TResult? Function(bool isAgreed)? isAgreed,
     TResult? Function()? onSubmitted,
   }) {
     return onPasswordChanged?.call(password);
@@ -1126,7 +1088,6 @@ class _$OnPasswordChangedImpl implements _OnPasswordChanged {
     TResult Function(String phone)? onPhoneChanged,
     TResult Function(String password)? onPasswordChanged,
     TResult Function(String repeatPassword)? onRepeatPasswordChanged,
-    TResult Function(bool isAgreed)? isAgreed,
     TResult Function()? onSubmitted,
     required TResult orElse(),
   }) {
@@ -1147,7 +1108,6 @@ class _$OnPasswordChangedImpl implements _OnPasswordChanged {
     required TResult Function(_OnPasswordChanged value) onPasswordChanged,
     required TResult Function(_OnRepeatPasswordChanged value)
         onRepeatPasswordChanged,
-    required TResult Function(_OnIsAgreed value) isAgreed,
     required TResult Function(_OnSubmitted value) onSubmitted,
   }) {
     return onPasswordChanged(this);
@@ -1163,7 +1123,6 @@ class _$OnPasswordChangedImpl implements _OnPasswordChanged {
     TResult? Function(_OnPhoneChanged value)? onPhoneChanged,
     TResult? Function(_OnPasswordChanged value)? onPasswordChanged,
     TResult? Function(_OnRepeatPasswordChanged value)? onRepeatPasswordChanged,
-    TResult? Function(_OnIsAgreed value)? isAgreed,
     TResult? Function(_OnSubmitted value)? onSubmitted,
   }) {
     return onPasswordChanged?.call(this);
@@ -1179,7 +1138,6 @@ class _$OnPasswordChangedImpl implements _OnPasswordChanged {
     TResult Function(_OnPhoneChanged value)? onPhoneChanged,
     TResult Function(_OnPasswordChanged value)? onPasswordChanged,
     TResult Function(_OnRepeatPasswordChanged value)? onRepeatPasswordChanged,
-    TResult Function(_OnIsAgreed value)? isAgreed,
     TResult Function(_OnSubmitted value)? onSubmitted,
     required TResult orElse(),
   }) {
@@ -1282,7 +1240,6 @@ class _$OnRepeatPasswordChangedImpl implements _OnRepeatPasswordChanged {
     required TResult Function(String phone) onPhoneChanged,
     required TResult Function(String password) onPasswordChanged,
     required TResult Function(String repeatPassword) onRepeatPasswordChanged,
-    required TResult Function(bool isAgreed) isAgreed,
     required TResult Function() onSubmitted,
   }) {
     return onRepeatPasswordChanged(repeatPassword);
@@ -1298,7 +1255,6 @@ class _$OnRepeatPasswordChangedImpl implements _OnRepeatPasswordChanged {
     TResult? Function(String phone)? onPhoneChanged,
     TResult? Function(String password)? onPasswordChanged,
     TResult? Function(String repeatPassword)? onRepeatPasswordChanged,
-    TResult? Function(bool isAgreed)? isAgreed,
     TResult? Function()? onSubmitted,
   }) {
     return onRepeatPasswordChanged?.call(repeatPassword);
@@ -1314,7 +1270,6 @@ class _$OnRepeatPasswordChangedImpl implements _OnRepeatPasswordChanged {
     TResult Function(String phone)? onPhoneChanged,
     TResult Function(String password)? onPasswordChanged,
     TResult Function(String repeatPassword)? onRepeatPasswordChanged,
-    TResult Function(bool isAgreed)? isAgreed,
     TResult Function()? onSubmitted,
     required TResult orElse(),
   }) {
@@ -1335,7 +1290,6 @@ class _$OnRepeatPasswordChangedImpl implements _OnRepeatPasswordChanged {
     required TResult Function(_OnPasswordChanged value) onPasswordChanged,
     required TResult Function(_OnRepeatPasswordChanged value)
         onRepeatPasswordChanged,
-    required TResult Function(_OnIsAgreed value) isAgreed,
     required TResult Function(_OnSubmitted value) onSubmitted,
   }) {
     return onRepeatPasswordChanged(this);
@@ -1351,7 +1305,6 @@ class _$OnRepeatPasswordChangedImpl implements _OnRepeatPasswordChanged {
     TResult? Function(_OnPhoneChanged value)? onPhoneChanged,
     TResult? Function(_OnPasswordChanged value)? onPasswordChanged,
     TResult? Function(_OnRepeatPasswordChanged value)? onRepeatPasswordChanged,
-    TResult? Function(_OnIsAgreed value)? isAgreed,
     TResult? Function(_OnSubmitted value)? onSubmitted,
   }) {
     return onRepeatPasswordChanged?.call(this);
@@ -1367,7 +1320,6 @@ class _$OnRepeatPasswordChangedImpl implements _OnRepeatPasswordChanged {
     TResult Function(_OnPhoneChanged value)? onPhoneChanged,
     TResult Function(_OnPasswordChanged value)? onPasswordChanged,
     TResult Function(_OnRepeatPasswordChanged value)? onRepeatPasswordChanged,
-    TResult Function(_OnIsAgreed value)? isAgreed,
     TResult Function(_OnSubmitted value)? onSubmitted,
     required TResult orElse(),
   }) {
@@ -1389,190 +1341,6 @@ abstract class _OnRepeatPasswordChanged implements RegisterEvent {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$OnRepeatPasswordChangedImplCopyWith<_$OnRepeatPasswordChangedImpl>
       get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$OnIsAgreedImplCopyWith<$Res> {
-  factory _$$OnIsAgreedImplCopyWith(
-          _$OnIsAgreedImpl value, $Res Function(_$OnIsAgreedImpl) then) =
-      __$$OnIsAgreedImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({bool isAgreed});
-}
-
-/// @nodoc
-class __$$OnIsAgreedImplCopyWithImpl<$Res>
-    extends _$RegisterEventCopyWithImpl<$Res, _$OnIsAgreedImpl>
-    implements _$$OnIsAgreedImplCopyWith<$Res> {
-  __$$OnIsAgreedImplCopyWithImpl(
-      _$OnIsAgreedImpl _value, $Res Function(_$OnIsAgreedImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of RegisterEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? isAgreed = null,
-  }) {
-    return _then(_$OnIsAgreedImpl(
-      null == isAgreed
-          ? _value.isAgreed
-          : isAgreed // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$OnIsAgreedImpl implements _OnIsAgreed {
-  const _$OnIsAgreedImpl(this.isAgreed);
-
-  @override
-  final bool isAgreed;
-
-  @override
-  String toString() {
-    return 'RegisterEvent.isAgreed(isAgreed: $isAgreed)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$OnIsAgreedImpl &&
-            (identical(other.isAgreed, isAgreed) ||
-                other.isAgreed == isAgreed));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, isAgreed);
-
-  /// Create a copy of RegisterEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$OnIsAgreedImplCopyWith<_$OnIsAgreedImpl> get copyWith =>
-      __$$OnIsAgreedImplCopyWithImpl<_$OnIsAgreedImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() onLoad,
-    required TResult Function(String name) onNameChanged,
-    required TResult Function(String email) onEmailChanged,
-    required TResult Function(Workplace workplace) onWorkplaceChanged,
-    required TResult Function(String phone) onPhoneChanged,
-    required TResult Function(String password) onPasswordChanged,
-    required TResult Function(String repeatPassword) onRepeatPasswordChanged,
-    required TResult Function(bool isAgreed) isAgreed,
-    required TResult Function() onSubmitted,
-  }) {
-    return isAgreed(this.isAgreed);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? onLoad,
-    TResult? Function(String name)? onNameChanged,
-    TResult? Function(String email)? onEmailChanged,
-    TResult? Function(Workplace workplace)? onWorkplaceChanged,
-    TResult? Function(String phone)? onPhoneChanged,
-    TResult? Function(String password)? onPasswordChanged,
-    TResult? Function(String repeatPassword)? onRepeatPasswordChanged,
-    TResult? Function(bool isAgreed)? isAgreed,
-    TResult? Function()? onSubmitted,
-  }) {
-    return isAgreed?.call(this.isAgreed);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? onLoad,
-    TResult Function(String name)? onNameChanged,
-    TResult Function(String email)? onEmailChanged,
-    TResult Function(Workplace workplace)? onWorkplaceChanged,
-    TResult Function(String phone)? onPhoneChanged,
-    TResult Function(String password)? onPasswordChanged,
-    TResult Function(String repeatPassword)? onRepeatPasswordChanged,
-    TResult Function(bool isAgreed)? isAgreed,
-    TResult Function()? onSubmitted,
-    required TResult orElse(),
-  }) {
-    if (isAgreed != null) {
-      return isAgreed(this.isAgreed);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_OnLoad value) onLoad,
-    required TResult Function(_OnNameChanged value) onNameChanged,
-    required TResult Function(_OnEmailChanged value) onEmailChanged,
-    required TResult Function(_OnWorkplaceChanged value) onWorkplaceChanged,
-    required TResult Function(_OnPhoneChanged value) onPhoneChanged,
-    required TResult Function(_OnPasswordChanged value) onPasswordChanged,
-    required TResult Function(_OnRepeatPasswordChanged value)
-        onRepeatPasswordChanged,
-    required TResult Function(_OnIsAgreed value) isAgreed,
-    required TResult Function(_OnSubmitted value) onSubmitted,
-  }) {
-    return isAgreed(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_OnLoad value)? onLoad,
-    TResult? Function(_OnNameChanged value)? onNameChanged,
-    TResult? Function(_OnEmailChanged value)? onEmailChanged,
-    TResult? Function(_OnWorkplaceChanged value)? onWorkplaceChanged,
-    TResult? Function(_OnPhoneChanged value)? onPhoneChanged,
-    TResult? Function(_OnPasswordChanged value)? onPasswordChanged,
-    TResult? Function(_OnRepeatPasswordChanged value)? onRepeatPasswordChanged,
-    TResult? Function(_OnIsAgreed value)? isAgreed,
-    TResult? Function(_OnSubmitted value)? onSubmitted,
-  }) {
-    return isAgreed?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_OnLoad value)? onLoad,
-    TResult Function(_OnNameChanged value)? onNameChanged,
-    TResult Function(_OnEmailChanged value)? onEmailChanged,
-    TResult Function(_OnWorkplaceChanged value)? onWorkplaceChanged,
-    TResult Function(_OnPhoneChanged value)? onPhoneChanged,
-    TResult Function(_OnPasswordChanged value)? onPasswordChanged,
-    TResult Function(_OnRepeatPasswordChanged value)? onRepeatPasswordChanged,
-    TResult Function(_OnIsAgreed value)? isAgreed,
-    TResult Function(_OnSubmitted value)? onSubmitted,
-    required TResult orElse(),
-  }) {
-    if (isAgreed != null) {
-      return isAgreed(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _OnIsAgreed implements RegisterEvent {
-  const factory _OnIsAgreed(final bool isAgreed) = _$OnIsAgreedImpl;
-
-  bool get isAgreed;
-
-  /// Create a copy of RegisterEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$OnIsAgreedImplCopyWith<_$OnIsAgreedImpl> get copyWith =>
-      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -1623,7 +1391,6 @@ class _$OnSubmittedImpl implements _OnSubmitted {
     required TResult Function(String phone) onPhoneChanged,
     required TResult Function(String password) onPasswordChanged,
     required TResult Function(String repeatPassword) onRepeatPasswordChanged,
-    required TResult Function(bool isAgreed) isAgreed,
     required TResult Function() onSubmitted,
   }) {
     return onSubmitted();
@@ -1639,7 +1406,6 @@ class _$OnSubmittedImpl implements _OnSubmitted {
     TResult? Function(String phone)? onPhoneChanged,
     TResult? Function(String password)? onPasswordChanged,
     TResult? Function(String repeatPassword)? onRepeatPasswordChanged,
-    TResult? Function(bool isAgreed)? isAgreed,
     TResult? Function()? onSubmitted,
   }) {
     return onSubmitted?.call();
@@ -1655,7 +1421,6 @@ class _$OnSubmittedImpl implements _OnSubmitted {
     TResult Function(String phone)? onPhoneChanged,
     TResult Function(String password)? onPasswordChanged,
     TResult Function(String repeatPassword)? onRepeatPasswordChanged,
-    TResult Function(bool isAgreed)? isAgreed,
     TResult Function()? onSubmitted,
     required TResult orElse(),
   }) {
@@ -1676,7 +1441,6 @@ class _$OnSubmittedImpl implements _OnSubmitted {
     required TResult Function(_OnPasswordChanged value) onPasswordChanged,
     required TResult Function(_OnRepeatPasswordChanged value)
         onRepeatPasswordChanged,
-    required TResult Function(_OnIsAgreed value) isAgreed,
     required TResult Function(_OnSubmitted value) onSubmitted,
   }) {
     return onSubmitted(this);
@@ -1692,7 +1456,6 @@ class _$OnSubmittedImpl implements _OnSubmitted {
     TResult? Function(_OnPhoneChanged value)? onPhoneChanged,
     TResult? Function(_OnPasswordChanged value)? onPasswordChanged,
     TResult? Function(_OnRepeatPasswordChanged value)? onRepeatPasswordChanged,
-    TResult? Function(_OnIsAgreed value)? isAgreed,
     TResult? Function(_OnSubmitted value)? onSubmitted,
   }) {
     return onSubmitted?.call(this);
@@ -1708,7 +1471,6 @@ class _$OnSubmittedImpl implements _OnSubmitted {
     TResult Function(_OnPhoneChanged value)? onPhoneChanged,
     TResult Function(_OnPasswordChanged value)? onPasswordChanged,
     TResult Function(_OnRepeatPasswordChanged value)? onRepeatPasswordChanged,
-    TResult Function(_OnIsAgreed value)? isAgreed,
     TResult Function(_OnSubmitted value)? onSubmitted,
     required TResult orElse(),
   }) {
@@ -1728,12 +1490,12 @@ mixin _$RegisterState {
   Status get status => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
+  UserType get userType => throw _privateConstructorUsedError;
   Workplace get workplace => throw _privateConstructorUsedError;
   String get phone => throw _privateConstructorUsedError;
   String get password => throw _privateConstructorUsedError;
   String get repeatPassword => throw _privateConstructorUsedError;
   List<Workplace> get workplaces => throw _privateConstructorUsedError;
-  bool get isAgreed => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
 
   /// Create a copy of RegisterState
@@ -1753,12 +1515,12 @@ abstract class $RegisterStateCopyWith<$Res> {
       {Status status,
       String name,
       String email,
+      UserType userType,
       Workplace workplace,
       String phone,
       String password,
       String repeatPassword,
       List<Workplace> workplaces,
-      bool isAgreed,
       String? errorMessage});
 
   $WorkplaceCopyWith<$Res> get workplace;
@@ -1782,12 +1544,12 @@ class _$RegisterStateCopyWithImpl<$Res, $Val extends RegisterState>
     Object? status = null,
     Object? name = null,
     Object? email = null,
+    Object? userType = null,
     Object? workplace = null,
     Object? phone = null,
     Object? password = null,
     Object? repeatPassword = null,
     Object? workplaces = null,
-    Object? isAgreed = null,
     Object? errorMessage = freezed,
   }) {
     return _then(_value.copyWith(
@@ -1803,6 +1565,10 @@ class _$RegisterStateCopyWithImpl<$Res, $Val extends RegisterState>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
+      userType: null == userType
+          ? _value.userType
+          : userType // ignore: cast_nullable_to_non_nullable
+              as UserType,
       workplace: null == workplace
           ? _value.workplace
           : workplace // ignore: cast_nullable_to_non_nullable
@@ -1823,10 +1589,6 @@ class _$RegisterStateCopyWithImpl<$Res, $Val extends RegisterState>
           ? _value.workplaces
           : workplaces // ignore: cast_nullable_to_non_nullable
               as List<Workplace>,
-      isAgreed: null == isAgreed
-          ? _value.isAgreed
-          : isAgreed // ignore: cast_nullable_to_non_nullable
-              as bool,
       errorMessage: freezed == errorMessage
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -1857,12 +1619,12 @@ abstract class _$$RegisterStateImplCopyWith<$Res>
       {Status status,
       String name,
       String email,
+      UserType userType,
       Workplace workplace,
       String phone,
       String password,
       String repeatPassword,
       List<Workplace> workplaces,
-      bool isAgreed,
       String? errorMessage});
 
   @override
@@ -1885,12 +1647,12 @@ class __$$RegisterStateImplCopyWithImpl<$Res>
     Object? status = null,
     Object? name = null,
     Object? email = null,
+    Object? userType = null,
     Object? workplace = null,
     Object? phone = null,
     Object? password = null,
     Object? repeatPassword = null,
     Object? workplaces = null,
-    Object? isAgreed = null,
     Object? errorMessage = freezed,
   }) {
     return _then(_$RegisterStateImpl(
@@ -1906,6 +1668,10 @@ class __$$RegisterStateImplCopyWithImpl<$Res>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
+      userType: null == userType
+          ? _value.userType
+          : userType // ignore: cast_nullable_to_non_nullable
+              as UserType,
       workplace: null == workplace
           ? _value.workplace
           : workplace // ignore: cast_nullable_to_non_nullable
@@ -1926,10 +1692,6 @@ class __$$RegisterStateImplCopyWithImpl<$Res>
           ? _value._workplaces
           : workplaces // ignore: cast_nullable_to_non_nullable
               as List<Workplace>,
-      isAgreed: null == isAgreed
-          ? _value.isAgreed
-          : isAgreed // ignore: cast_nullable_to_non_nullable
-              as bool,
       errorMessage: freezed == errorMessage
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -1945,12 +1707,12 @@ class _$RegisterStateImpl implements _RegisterState {
       {this.status = Status.initial,
       this.name = '',
       this.email = '',
+      this.userType = UserType.unknown,
       this.workplace = const Workplace(name: '', city: ''),
       this.phone = '',
       this.password = '',
       this.repeatPassword = '',
       final List<Workplace> workplaces = const [],
-      this.isAgreed = false,
       this.errorMessage})
       : _workplaces = workplaces;
 
@@ -1963,6 +1725,9 @@ class _$RegisterStateImpl implements _RegisterState {
   @override
   @JsonKey()
   final String email;
+  @override
+  @JsonKey()
+  final UserType userType;
   @override
   @JsonKey()
   final Workplace workplace;
@@ -1985,14 +1750,11 @@ class _$RegisterStateImpl implements _RegisterState {
   }
 
   @override
-  @JsonKey()
-  final bool isAgreed;
-  @override
   final String? errorMessage;
 
   @override
   String toString() {
-    return 'RegisterState(status: $status, name: $name, email: $email, workplace: $workplace, phone: $phone, password: $password, repeatPassword: $repeatPassword, workplaces: $workplaces, isAgreed: $isAgreed, errorMessage: $errorMessage)';
+    return 'RegisterState(status: $status, name: $name, email: $email, userType: $userType, workplace: $workplace, phone: $phone, password: $password, repeatPassword: $repeatPassword, workplaces: $workplaces, errorMessage: $errorMessage)';
   }
 
   @override
@@ -2003,6 +1765,8 @@ class _$RegisterStateImpl implements _RegisterState {
             (identical(other.status, status) || other.status == status) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.email, email) || other.email == email) &&
+            (identical(other.userType, userType) ||
+                other.userType == userType) &&
             (identical(other.workplace, workplace) ||
                 other.workplace == workplace) &&
             (identical(other.phone, phone) || other.phone == phone) &&
@@ -2012,8 +1776,6 @@ class _$RegisterStateImpl implements _RegisterState {
                 other.repeatPassword == repeatPassword) &&
             const DeepCollectionEquality()
                 .equals(other._workplaces, _workplaces) &&
-            (identical(other.isAgreed, isAgreed) ||
-                other.isAgreed == isAgreed) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage));
   }
@@ -2024,12 +1786,12 @@ class _$RegisterStateImpl implements _RegisterState {
       status,
       name,
       email,
+      userType,
       workplace,
       phone,
       password,
       repeatPassword,
       const DeepCollectionEquality().hash(_workplaces),
-      isAgreed,
       errorMessage);
 
   /// Create a copy of RegisterState
@@ -2046,12 +1808,12 @@ abstract class _RegisterState implements RegisterState {
       {final Status status,
       final String name,
       final String email,
+      final UserType userType,
       final Workplace workplace,
       final String phone,
       final String password,
       final String repeatPassword,
       final List<Workplace> workplaces,
-      final bool isAgreed,
       final String? errorMessage}) = _$RegisterStateImpl;
 
   @override
@@ -2060,6 +1822,8 @@ abstract class _RegisterState implements RegisterState {
   String get name;
   @override
   String get email;
+  @override
+  UserType get userType;
   @override
   Workplace get workplace;
   @override
@@ -2070,8 +1834,6 @@ abstract class _RegisterState implements RegisterState {
   String get repeatPassword;
   @override
   List<Workplace> get workplaces;
-  @override
-  bool get isAgreed;
   @override
   String? get errorMessage;
 

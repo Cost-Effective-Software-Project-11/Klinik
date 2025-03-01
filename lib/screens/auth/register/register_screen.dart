@@ -4,6 +4,8 @@ import 'package:flutter_gp5/config/service_locator.dart';
 import 'package:flutter_gp5/design_system/molecules/error_state/error_state_view.dart';
 import 'package:flutter_gp5/design_system/atoms/spaces.dart';
 import 'package:flutter_gp5/enums/status.dart';
+import 'package:flutter_gp5/enums/user_type.dart';
+import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/repos/authentication/authentication_repository.dart';
 import 'package:flutter_gp5/screens/auth/register/widgets/registration_fields.dart';
 import 'package:flutter_gp5/services/hospital_service.dart';
@@ -11,7 +13,12 @@ import 'package:flutter_gp5/services/hospital_service.dart';
 import 'bloc/register_bloc.dart';
 
 class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
+  const RegisterScreen({
+    super.key,
+    required this.userType,
+  });
+
+  final UserType userType;
 
   @override
   Widget build(BuildContext context) {
@@ -19,21 +26,28 @@ class RegisterScreen extends StatelessWidget {
       create: (context) => RegisterBloc(
         getIt<AuthenticationRepository>(),
         getIt<HospitalService>(),
+        userType,
       ),
-      child: const _RegisterScreen(),
+      child: _RegisterScreen(userType),
     );
   }
 }
 
 class _RegisterScreen extends StatelessWidget {
-  const _RegisterScreen();
+  const _RegisterScreen(this.userType);
 
+  final UserType userType;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const Icon(Icons.navigate_before, size: xl),
-        title: const Text('Doctor Sign Up'),
+        leading: IconButton(
+          icon: const Icon(Icons.navigate_before, size: md),
+          onPressed: () => context.pop(),
+        ),
+        title: Text(
+          userType == UserType.doctor ? 'Doctor Sign Up' : 'Patient Sign Up',
+        ),
         centerTitle: true,
       ),
       body: BlocBuilder<RegisterBloc, RegisterState>(
@@ -44,7 +58,7 @@ class _RegisterScreen extends StatelessWidget {
 
           if (state.status == Status.error) {
             return ErrorStateView(
-              title: 'Title',
+              title: 'Error',
               message: state.errorMessage,
               actionLabel: 'Retry',
               onRetry: () {

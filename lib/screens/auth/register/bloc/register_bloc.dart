@@ -16,6 +16,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   RegisterBloc(
     this._authenticationRepository,
     this._workplaceService,
+    this.userType,
   ) : super(RegisterState()) {
     on<_OnLoad>(_onLoad);
     on<_OnNameChanged>(_onNameChanged);
@@ -32,12 +33,13 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
   final AuthenticationRepository _authenticationRepository;
   final HospitalService _workplaceService;
+  final UserType userType;
 
   Future<void> _onLoad(_OnLoad event, Emitter<RegisterState> emit) async {
     emit(state.copyWith(status: Status.loading));
     try {
       final workplaces = await _workplaceService.fetchWorkplaces();
-      emit(state.copyWith(workplaces: workplaces, status: Status.success));
+      emit(state.copyWith(userType: userType, workplaces: workplaces, status: Status.success));
     } catch (error) {
       emit(state.copyWith(
           errorMessage: 'Failed to fetch hospitals: $error',

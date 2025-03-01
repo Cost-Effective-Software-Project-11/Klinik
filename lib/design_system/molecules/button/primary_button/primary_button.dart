@@ -83,7 +83,6 @@ class PrimaryButton extends StatelessWidget {
       loaderColor: colors.icons.inverse,
       buttonType: _buttonType,
       icon: icon,
-      overlayButtonColor: colors.backgrounds.brandBolder,
       loadingButtonColor:
       colors.backgrounds.brand.withAlpha(Color.getAlphaFromOpacity(tiny)),
       disabledButtonColor: colors.backgrounds.subtle,
