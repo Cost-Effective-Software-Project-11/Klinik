@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gp5/design_system/atoms/spaces.dart';
 import 'package:flutter_gp5/design_system/molecules/loader_widget.dart';
-import 'package:flutter_gp5/design_system/themes/tide_colors.dart';
+import 'package:flutter_gp5/design_system/themes/klinik_colors.dart';
 import 'package:flutter_gp5/enums/action_button_size.dart';
 
 /// Tertiary button only uses {responsive} and {small} enum values
@@ -143,6 +143,6 @@ class TertiaryButton extends StatelessWidget {
   }
 
 
-  Color _foregroundColor(TideColors colors) =>
+  Color _foregroundColor(KlinikColors colors) =>
       isDestructive ? colors.texts.errorBold : colors.texts.brand;
 }

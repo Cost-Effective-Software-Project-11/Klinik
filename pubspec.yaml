@@ -62,3 +62,5 @@ flutter:
     - assets/images/msg.png
     - assets/hospitals.json
     - assets/icons/information.svg
+    - assets/privacy_policy.txt
+    - assets/terms_of_use.txt

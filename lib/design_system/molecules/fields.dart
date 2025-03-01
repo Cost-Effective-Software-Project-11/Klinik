@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gp5/design_system/atoms/dimensions.dart';
 import 'package:flutter_gp5/design_system/atoms/spaces.dart';
+import 'package:flutter_gp5/design_system/field_validators.dart';
 
 class CustomTextFormField extends StatefulWidget {
   const CustomTextFormField({
@@ -139,6 +140,7 @@ class _CustomDropdownFormFieldState<T> extends State<CustomDropdownFormField<T>>
     return Padding(
       padding: widget.padding,
       child: DropdownButtonFormField<T>(
+        validator: FieldValidators.notEmptyObject(),
         menuMaxHeight: imageWidth,
         focusNode: widget.focusNode,
         isExpanded: widget.isExpanded,

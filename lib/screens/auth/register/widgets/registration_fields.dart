@@ -4,10 +4,16 @@ import 'package:flutter_gp5/design_system/atoms/colors.dart';
 import 'package:flutter_gp5/design_system/atoms/dimensions.dart';
 import 'package:flutter_gp5/design_system/atoms/spaces.dart';
 import 'package:flutter_gp5/design_system/field_validators.dart';
+import 'package:flutter_gp5/design_system/molecules/button/primary_button/primary_button.dart';
+import 'package:flutter_gp5/design_system/molecules/dialogs.dart';
 import 'package:flutter_gp5/design_system/molecules/fields.dart';
 import 'package:flutter_gp5/design_system/molecules/gradient_background.dart';
+import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/models/workplace.dart';
+import 'package:flutter_gp5/screens/auth/login/login_screen.dart';
 import 'package:flutter_gp5/screens/auth/register/bloc/register_bloc.dart';
+import 'package:flutter_gp5/screens/auth/register/widgets/privacy_policy_agreement.dart';
+import 'package:flutter_gp5/services/text_file_loader_service.dart';
 
 class RegistrationFields extends StatefulWidget {
   const RegistrationFields({
@@ -37,6 +43,7 @@ class _RegistrationFieldsState extends State<RegistrationFields> {
   Widget build(BuildContext context) {
     final bloc = context.read<RegisterBloc>();
     return GradientBackground(
+      height: MediaQuery.sizeOf(context).height,
       colors: [
         primary100.withValues(alpha: tiny),
         primary200,
@@ -47,6 +54,7 @@ class _RegistrationFieldsState extends State<RegistrationFields> {
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomTextFormField(
                 padding: dimen.horizontal.sm + dimen.vertical.xxs,
@@ -138,9 +146,57 @@ class _RegistrationFieldsState extends State<RegistrationFields> {
                   bloc.add(RegisterEvent.onRepeatPasswordChanged(value));
                 },
               ),
-              ElevatedButton(
-                onPressed: () => _validateAndSubmit(context),
-                child: const Text('Submit'),
+              PrivacyPolicyAgreement(
+                onShowTermsOfServiceDialog: () => showDialog(
+                  context: context,
+                  builder: (context) => CustomAlertDialog(
+                    title: 'Terms & Conditions',
+                    scrollable: true,
+                    content: TextFileLoaderService().getTermsOfService(),
+                    primaryButtonTitle: 'Close',
+                  ),
+                ),
+                onShowPrivacyPolicyDialog: (context) => showDialog(
+                  context: context,
+                  builder: (context) => CustomAlertDialog(
+                    scrollable: true,
+                    title: 'Privacy Policy',
+                    content: TextFileLoaderService().getPrivacyPolicy(),
+                    primaryButtonTitle: 'Close',
+                  ),
+                ),
+              ),
+              Padding(
+                padding: dimen.horizontal.sm + dimen.vertical.xxs,
+                child: PrimaryButton.blocked(
+                  title: 'Sign Up',
+                  onPressed: () => _validateAndSubmit(context),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Already have an account?',
+                    style: TextStyle(fontSize: xxsPlus),
+                  ),
+                  const SizedBox(width: nano),
+                  GestureDetector(
+                    child: Text(
+                      'Sign In',
+                      style: TextStyle(
+                        fontSize: xxsPlus,
+                        color: Theme.of(context).primaryColor,
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    onTap: () {
+                      context.pushReplacement(const LoginScreen());
+                    },
+                  )
+                ],
               ),
             ],
           ),

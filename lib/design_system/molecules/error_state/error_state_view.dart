@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gp5/design_system/atoms/colors.dart';
 import 'package:flutter_gp5/design_system/atoms/icons/klinik_icons.dart';
 import 'package:flutter_gp5/design_system/atoms/spaces.dart';
-import 'package:flutter_gp5/design_system/molecules/tertiary_button.dart';
+import 'package:flutter_gp5/design_system/molecules/button/tertiary_button.dart';
+import 'package:flutter_gp5/design_system/molecules/gradient_background.dart';
 
 class ErrorStateView extends StatelessWidget {
   const ErrorStateView({
@@ -30,16 +32,24 @@ class ErrorStateView extends StatelessWidget {
     const defaultMessage = 'We were unable to complete your request. Please try again.';
     final icon = errorIcon ?? KlinikIcons.info();
 
-    return Padding(
-      padding: padding,
-      child: Column(
-        mainAxisAlignment: centerContent ? MainAxisAlignment.center : MainAxisAlignment.start,
-        children: [
-          icon,
-          if (title != null) ...[_buildTitle()],
-          _buildMessage(defaultMessage),
-          if (onRetry != null) _buildRetryButton(),
-        ],
+    return GradientBackground(
+      height: MediaQuery.sizeOf(context).height,
+      colors: [
+        primary100.withValues(alpha: tiny),
+        primary200,
+        primary300,
+      ],
+      child: Padding(
+        padding: padding,
+        child: Column(
+          mainAxisAlignment: centerContent ? MainAxisAlignment.center : MainAxisAlignment.start,
+          children: [
+            icon,
+            if (title != null) ...[_buildTitle()],
+            _buildMessage(defaultMessage),
+            if (onRetry != null) _buildRetryButton(),
+          ],
+        ),
       ),
     );
   }

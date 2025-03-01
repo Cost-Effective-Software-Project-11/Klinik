@@ -27,6 +27,17 @@ class FieldValidators {
     };
   }
 
+  static FormFieldValidator<T> notEmptyObject<T>({
+    String errorMessage = 'This field is required',
+  }) {
+    return (value) {
+      if (value == null) {
+        return errorMessage;
+      }
+      return null;
+    };
+  }
+
   /// Validate email format
   static FormFieldValidator<String> email({
     String errorMessage = 'Invalid email',

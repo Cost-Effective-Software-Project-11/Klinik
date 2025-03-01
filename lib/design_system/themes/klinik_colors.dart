@@ -3,8 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_gp5/design_system/atoms/colors.dart';
 import 'package:flutter_gp5/design_system/atoms/secondary_colors.dart';
 
-class TideColors {
-  const TideColors(this.buildContext);
+class KlinikColors {
+  const KlinikColors(this.buildContext);
 
   final BuildContext buildContext;
 

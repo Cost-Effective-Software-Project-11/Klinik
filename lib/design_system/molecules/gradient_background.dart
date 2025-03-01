@@ -9,9 +9,11 @@ class GradientBackground extends StatelessWidget {
     this.width = double.infinity,
     this.begin = Alignment.topLeft,
     this.end = Alignment.bottomRight,
+    this.height,
   });
 
   final double width;
+  final double? height;
   final Widget child;
   final Alignment begin;
   final Alignment end;
@@ -21,6 +23,7 @@ class GradientBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: width,
+      height: height,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: begin,
