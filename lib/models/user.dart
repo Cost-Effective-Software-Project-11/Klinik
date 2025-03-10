@@ -1,34 +1,20 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter_gp5/enums/user_type.dart';
 import 'package:flutter_gp5/models/workplace.dart';
-import 'package:meta/meta.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-@immutable
-class User extends Equatable {
-  const User({
-    required this.id,
-    required this.email,
-    required this.name,
-    required this.phone,
-    required this.speciality,
-    required this.type,
-    required this.workplace,
-  });
+part 'user.freezed.dart';
+part 'user.g.dart';
 
-  final String id;
-  final String email;
-  final String name;
-  final String phone;
-  final String speciality;
-  final UserType type;
-  final Workplace workplace;
+@freezed
+class User with _$User {
+  const factory User({
+    @JsonKey(name: 'uid') required String id,
+    required String email,
+    required String name,
+    required String phone,
+    required Workplace workplace,
+    required UserType userType,
+  }) = _User;
 
-  @override
-  List<Object?> get props =>
-      [id, email, name, phone, speciality, type, workplace];
-
-  @override
-  String toString() {
-    return 'User{id: $id, email: $email, name: $name, phone: $phone, speciality: $speciality, type: $type, workplace: $workplace}';
-  }
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 }

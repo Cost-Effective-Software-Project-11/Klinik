@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_gp5/enums/authentication.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
 import 'package:flutter_gp5/screens/auth/login/login_screen.dart';
+import 'package:flutter_gp5/screens/home/home_screen.dart';
 import 'package:flutter_gp5/services/text_file_loader_service.dart';
 import 'config/firebase_options.dart';
 import 'config/service_locator.dart';
@@ -46,9 +47,10 @@ class _KlinikAppState extends State<KlinikApp> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<AuthenticationBloc>(
-      create: (context) => AuthenticationBloc(
-        authenticationRepository: getIt<AuthenticationRepository>(),
-      ),
+      create: (context) =>
+          AuthenticationBloc(
+            authenticationRepository: getIt<AuthenticationRepository>(),
+          ),
       child: klinik(),
     );
   }
@@ -74,7 +76,14 @@ MaterialApp klinik() {
           context.showFailureSnackBar('unauthenticated');
         }
       },
-      child: const LoginScreen(),
+      child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+        builder: (context, state) {
+          if (state.status == Authentication.authenticated) {
+            return const HomeScreen();
+          }
+          return const LoginScreen();
+        },
+      ),
     ),
   );
 }
