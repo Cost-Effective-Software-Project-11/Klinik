@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter_gp5/config/log.dart';
-import 'package:flutter_gp5/enums/user_type.dart';
 import 'package:flutter_gp5/models/user.dart';
-import 'package:flutter_gp5/models/workplace.dart';
 import 'firebase_service.dart';
 
 class FirestoreService {
@@ -27,26 +24,45 @@ class FirestoreService {
       'phone': user.phone,
       'createdAt': FieldValue.serverTimestamp(),
       'changedAt': FieldValue.serverTimestamp(),
+      'userType': user.userType.name
     });
   }
 
-  User? getCurrentUser() {
+  Future<User?> getCurrentUser() async {
     try {
       final currentUser = FirebaseService.auth.currentUser;
-      if (currentUser != null) {
-        return User(
-          id: currentUser.uid,
-          email: currentUser.email ?? '',
-          name: currentUser.displayName ?? '',
-          phone: '',
-          speciality: '',
-          type: UserType.doctor,
-          workplace: const Workplace(name: '', city: 'city'),
-        );
+      if (currentUser == null) {
+        Log.error('No authenticated user found.');
+        return null;
       }
+
+      final userRef = _firestore.collection(_users).doc(currentUser.uid);
+      final userSnapshot = await userRef.get();
+
+      if (!userSnapshot.exists) {
+        Log.error('No user document found for UID: ${currentUser.uid}');
+        return null;
+      }
+
+      final userData = userSnapshot.data();
+      if (userData == null) {
+        Log.error('User document exists but contains no data.');
+        return null;
+      }
+
+      final userDetails = User.fromJson(userData);
+
+      return User(
+        id: currentUser.uid,
+        email: currentUser.email ?? 'missing email',
+        name: userDetails.name,
+        phone: userDetails.phone,
+        userType: userDetails.userType,
+        workplace: userDetails.workplace,
+      );
     } catch (e) {
-      Log.error('Error getting current user: $e');
+      Log.error('Error fetching user data: $e');
+      return null;
     }
-    return null;
   }
 }

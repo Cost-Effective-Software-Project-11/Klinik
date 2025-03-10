@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gp5/utils/svg_image/svg_image.dart';
+import 'package:flutter_gp5/design_system/molecules/image/svg_image/svg_image.dart';
 
 class KlinikIcons {
   KlinikIcons._();

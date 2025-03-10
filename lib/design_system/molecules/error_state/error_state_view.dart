@@ -32,24 +32,16 @@ class ErrorStateView extends StatelessWidget {
     const defaultMessage = 'We were unable to complete your request. Please try again.';
     final icon = errorIcon ?? KlinikIcons.info();
 
-    return GradientBackground(
-      height: MediaQuery.sizeOf(context).height,
-      colors: [
-        primary100.withValues(alpha: tiny),
-        primary200,
-        primary300,
-      ],
-      child: Padding(
-        padding: padding,
-        child: Column(
-          mainAxisAlignment: centerContent ? MainAxisAlignment.center : MainAxisAlignment.start,
-          children: [
-            icon,
-            if (title != null) ...[_buildTitle()],
-            _buildMessage(defaultMessage),
-            if (onRetry != null) _buildRetryButton(),
-          ],
-        ),
+    return Padding(
+      padding: padding,
+      child: Column(
+        mainAxisAlignment: centerContent ? MainAxisAlignment.center : MainAxisAlignment.start,
+        children: [
+          icon,
+          if (title != null) ...[_buildTitle()],
+          _buildMessage(defaultMessage),
+          if (onRetry != null) _buildRetryButton(),
+        ],
       ),
     );
   }
