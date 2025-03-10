@@ -49,7 +49,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   Future<void> _handleAuthenticated(Emitter<AuthenticationState> emit) async {
     try {
-      final user = FirestoreService.instance.getCurrentUser();
+      final user = await FirestoreService.instance.getCurrentUser();
 
       if (user != null) {
         emit(AuthenticationState.authenticated(user));

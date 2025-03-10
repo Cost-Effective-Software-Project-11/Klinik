@@ -66,7 +66,9 @@ class AuthenticationRepository {
       user = userCredentials.user;
       if (user == null) {
         throw FirebaseAuthException(
-            code: 'error-null-user', message: 'User creation failed.');
+          code: 'error-null-user',
+          message: 'User creation failed.',
+        );
       }
 
       user_model.User userModel = user_model.User(
@@ -74,9 +76,8 @@ class AuthenticationRepository {
         name: name,
         email: email,
         phone: phone,
-        type: userType,
+        userType: userType,
         workplace: workplace,
-        speciality: '',
       );
 
       await FirestoreService.instance.createOrUpdateUser(userModel);

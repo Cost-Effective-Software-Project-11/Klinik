@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gp5/config/service_locator.dart';
 import 'package:flutter_gp5/design_system/molecules/error_state/error_state_view.dart';
 import 'package:flutter_gp5/design_system/atoms/spaces.dart';
+import 'package:flutter_gp5/design_system/molecules/gradient_background.dart';
 import 'package:flutter_gp5/enums/status.dart';
 import 'package:flutter_gp5/enums/user_type.dart';
 import 'package:flutter_gp5/extensions/build_context_extensions.dart';
@@ -50,25 +51,27 @@ class _RegisterScreen extends StatelessWidget {
           '${userType == UserType.doctor ? 'Doctor' : 'Patient'} Sign Up',
         ),
       ),
-      body: BlocBuilder<RegisterBloc, RegisterState>(
-        builder: (context, state) {
-          if (state.status == Status.loading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: GradientBackground(
+        child: BlocBuilder<RegisterBloc, RegisterState>(
+          builder: (context, state) {
+            if (state.status == Status.loading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          if (state.status == Status.error) {
-            return ErrorStateView(
-              title: 'Error',
-              message: state.errorMessage,
-              actionLabel: 'Retry',
-              onRetry: () {
-                context.read<RegisterBloc>().add(const RegisterEvent.onLoad());
-              },
-            );
-          }
+            if (state.status == Status.error) {
+              return ErrorStateView(
+                title: 'Error',
+                message: state.errorMessage,
+                actionLabel: 'Retry',
+                onRetry: () {
+                  context.read<RegisterBloc>().add(const RegisterEvent.onLoad());
+                },
+              );
+            }
 
-          return RegistrationFields(state: state);
-        },
+            return RegistrationFields(state: state);
+          },
+        ),
       ),
     );
   }

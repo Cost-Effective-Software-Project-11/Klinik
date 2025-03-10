@@ -81,7 +81,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         name: state.name,
         phone: state.phone,
         workplace: state.workplace,
-        userType: UserType.doctor
+        userType: userType
       );
       emit(state.copyWith(status: Status.success));
     } on FirebaseAuthException catch (e) {
